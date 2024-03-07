@@ -9,7 +9,7 @@ mongoose.connect('mongodb://localhost:27017/Ec_Store')
         console.log('Error db not connected',error)
     })
 
-const schema = new mongoose.schema({
+const userSchema = new mongoose.Schema({
     name:{
         type:String,
         required:true
@@ -30,5 +30,5 @@ const schema = new mongoose.schema({
     }
 })
 
-const userData =  new mongoose.model('UserData',schema)
+const userData =  new mongoose.model('UserData',userSchema)
 module.exports = userData

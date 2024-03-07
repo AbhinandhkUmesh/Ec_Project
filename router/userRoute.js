@@ -1,72 +1,54 @@
-const express = require('express')
-const route = express.Router()
-const session = require('express-session')
-const bodyParser = require("body-parser")
-const user = require("../controllers/userconroller")
+const express = require('express');
+const router = express.Router();
+const session = require('express-session');
+const bodyParser = require("body-parser");
+const userController = require("../controllers/userController");
 
-route.use(bodyParser.json());
-route.use(bodyParser.urlencoded({ extended: true }))
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 
-route.use(function (req, res, next) {
+router.use(function (req, res, next) {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.header('Expires', '-1');
     res.header('Pragma', 'no-cache');
-    next()
+    next();
 });
 
-route.use(session({
-    secret:"Nothing",
-    resave:false,
-    saveUninitialized:true
-}))
+router.use(session({
+    secret: "Nothing",
+    resave: false,
+    saveUninitialized: true
+}));
 
-route.get('/',(req,res) => {
-        res.render('index')
-})
+router.get('/', (req, res) => {
+    res.render('index',{ isAuth: req.session.isAuth });
+});
 
-route.get('/login',(req,res) => {
-    if(req.session.isAuth){
-        res.redirect('/index')
+router.get('/login', (req, res) => {
+    if (req.session.isAuth) {
+        res.redirect('/index');
+    } else {
+        res.render('userlogin',{ isAuth: req.session.isAuth });
     }
-    else{
-        res.render('userlogin')
+});
+
+router.post("/login",userController.checkUserIn);
+
+router.get('/index', (req, res) => {
+    if (req.session.isAuth) {
+        console.log(req.session.isAuth)
+        res.render('index',{ isAuth: req.session.isAuth });
+    } else {
+        res.redirect('/login');
     }
-})
+});
 
+router.get("/userLogout",userController.userExit);
 
+router.get('/signup', (req, res) => {
+    res.render('signup');
+});
 
-route.get('/index',(req,res) => {
-    if(req.session.isAuth){
-        res.render('index')
-    }
-    else{
-        res.redirect('/login')
-    }
-})
+router.post("/signup",userController.addUser);
 
-route.post("/", user.checkUserIn)
-
-
-route.post("/index", user.checkUserIn)
-
-
-route.post('/login',async (req,res)=> {
-    
-
-})
-
-route.get('/index',(req,res) => {
-    if(req.session.isAuth){
-        res.render('index')
-    }else{
-        res.redirect('/login')
-    }
-})
-
-route.get('/signup' , (req,res) => {
-    res.render('signup')
-})
-
-// route.post('/signup',user.addUser)
-
-module.exports = route
+module.exports = router;
