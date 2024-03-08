@@ -17,12 +17,13 @@ const addUser = async (req, res) => {
             isAdmin: 0
         });
         if(conformPassword === hashedPassword){
+            console.log("conforming password")
             await newUser.save();
             res.redirect('/login'); 
         }
         else{
-            console.log("error")
-            res.redirect('/signup?message=Conform your password')
+            console.log("Password not conformed")
+            res.redirect(`/signup?message=Conform your password`,{message:req.query.id})
         }
     } catch (error) {
         console.error(error);
