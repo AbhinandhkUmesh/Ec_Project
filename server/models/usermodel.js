@@ -10,7 +10,7 @@ mongoose.connect('mongodb://localhost:27017/Ec_Store')
     })
 
 const userSchema = new mongoose.Schema({
-    name:{
+    Username:{
         type:String,
         required:true
     },
@@ -23,10 +23,10 @@ const userSchema = new mongoose.Schema({
         require:true
     },
     isAdmin:{
-        type:{
+       
             type:Number,
-            require:true
-        }
+            default:0
+        
     }
 })
 

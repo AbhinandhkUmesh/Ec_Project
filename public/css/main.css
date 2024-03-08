@@ -3398,6 +3398,12 @@ input.num-product::-webkit-inner-spin-button {
   text-decoration: none;
 }
 
+.error-message{
+  justify-content: center;
+  align-items: center;
+  color:red;
+}
+
 .button-submit {
   margin: 20px 0 10px 0;
   background-color: #151717;
