@@ -10,7 +10,7 @@ const adminLogin = async (req, res) => {
     }
     else {
         console.log("rendered adminlogin")
-        res.render('adminlogin')
+        res.render('adminlogin',{error:req.query.error})
     }
 }
 
@@ -42,7 +42,7 @@ const adminDashboard = async (req, res) => {
 
 const toDashboard = (req, res) => {
     try {
-        res.render("Dashboard", { username: req.session.username });
+        res.render("Dashboard", { Username: req.session.username });
         console.log("Admin Dashboard");
     } catch (error) {
         console.log("Dashboard  Error:" + error);
@@ -51,17 +51,25 @@ const toDashboard = (req, res) => {
 
 const adminlogout = (req, res) => {
     try {
-        delete req.session.isAdmin;
-        console.log("admin logged outed");
-        res.redirect("/admin");
+        // Clear all sessions
+        console.log("trying to logout")
+        req.session.destroy(err => {
+            if (err) {
+                console.log("Error clearing sessions:", err);
+                return res.status(500).send("Internal Server Error");
+            }
+            // Redirect to adminlogin page
+            res.redirect("/admin");
+        });
+        console.log("admin logged out");
     } catch (error) {
-        console.log("Error in Logging out" + error);
+        console.log("Error during user signout:", error);
+        res.status(500).send("Internal Server Error");
     }
 };
 module.exports = {
     adminLogin,
     adminDashboard,
     toDashboard,
-    adminlogout
-
+    adminlogout,
 }

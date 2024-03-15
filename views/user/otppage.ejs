@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+
+<body>
+    <div class="otp">
+
+        <form method="post" class="form">
+            <div class="flex-column">
+                <h1>Verify</h1>
+            </div>
+
+            <div class="flex-column">
+                <label>otp </label>
+            </div>
+            <div class="inputForm">
+
+                <input type="otp" class="input" name="otp" placeholder="Enter your otp" required>
+
+            </div>
+
+
+            <p class="error-message">
+                <%= error %>
+            </p>
+            <button class="button-submit" type="submit">Procced</button>
+            <p class="p">Don't have an account? <span class="span"><a href="/signup">Sign Up</a></span>
+
+            </p>
+
+
+        </form>
+    </div>
+
+
+</body>
+
+</html>

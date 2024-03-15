@@ -17,10 +17,11 @@ const index = async (req, res) => {
 
 const login = (req, res) => {
     try {
+        let error = req.query.error;
         if (req.session.isUser) {
             res.redirect('/home');
         } else {
-            res.render('userlogin', { isUser: req.session.isUser });
+            res.render('userlogin',  { error });
         }
     } catch (error) {
         console.log("Error while rendering user login page: " + error);
@@ -31,7 +32,7 @@ const login = (req, res) => {
 const signup = (req, res) => {
     try {
         let error = req.query.error;
-        res.render("signup", { error });
+        res.render("signup", {error});
         console.log("User signup");
     } catch (error) {
         console.log("Error while rendering user signup page: " + error);
@@ -41,6 +42,7 @@ const signup = (req, res) => {
 
 const addUser = async (req, res) => {
     try {
+        req
         const userExist = await userModel.findOne({ email: req.body.email });
         if (userExist) {
             return res.redirect("/signup?message=User with this email already exists");
@@ -48,6 +50,7 @@ const addUser = async (req, res) => {
 
         if (req.body.password !== req.body.confirmPassword) {
             return res.redirect("/signup?message=Passwords do not match");
+            
         }
 
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
