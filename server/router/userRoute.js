@@ -15,7 +15,7 @@ router.get("/home", userCheck.isUser, userController.redirectUser);
 router.get("/userDetails" ,userController.userDetails);
 router.post("/logout", userController.logout);
 
-router.get
+router.get('/otpPage',userController.otpPage)
 
 
 

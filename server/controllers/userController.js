@@ -31,14 +31,26 @@ const login = (req, res) => {
 
 const signup = (req, res) => {
     try {
-        let error = req.query.error;
-        res.render("signup", {error});
+        let message = req.query.message
+        res.render("signup", {message});
         console.log("User signup");
     } catch (error) {
         console.log("Error while rendering user signup page: " + error);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send("Internal Server Error signup");
     }
 };
+
+const otpPage = (req,res) => {
+    try{
+        let message = req.query.message
+        let email = req.session.email
+        res.render('otppage',{message,email})
+    }
+    catch (error) {
+        console.log("Error while rendering user otp page: " + error);
+        res.status(500).send("Internal Server Error on otp");
+    }
+}
 
 
 
@@ -63,7 +75,8 @@ const addUser = async (req, res) => {
             isAdmin: 0,
         });
         await registeredUser.save();
-        res.redirect('/login');
+        req.session.email = registeredUser.email;
+        res.redirect('/otpPage');
         console.log(registeredUser);
 
     } catch (error) {
@@ -161,5 +174,7 @@ module.exports = {
     redirectUser,
     userDetails,
     logout,
+    otpPage,
+    
 
 };
