@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-
-mongoose.connect('mongodb://localhost:27017/Ec_Store')
+require("dotenv").config();
+mongoose.connect(process.env.MONGODB_ATLAS_CONNECT)
     .then(() => {
         console.log('Monghodb Connected Successfull')
     })
@@ -23,10 +23,8 @@ const userSchema = new mongoose.Schema({
         require:true
     },
     isAdmin:{
-       
             type:Number,
-            default:0
-        
+            default:0  
     }
 })
 

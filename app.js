@@ -5,6 +5,7 @@ const adminRoute = require('./server/router/adminRoute')
 const bodyParser = require('body-parser')
 const path = require('path')
 const session = require('express-session');
+require("dotenv").config();
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
@@ -16,6 +17,13 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+
+app.use((req, res, next) => {
+    res.header("Cache-Control", "private,no-cache,no-store, must-revalidate");
+    res.header("Expires", "-1");
+    res.header("Pragma", "no-cache");
+    next();
+  });
 
 app.set('views',[
     path.join(__dirname,'views/user'),
