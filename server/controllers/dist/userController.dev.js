@@ -152,7 +152,7 @@ var generateOTP = function generateOTP(req, res) {
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'your_email@gmail.com',
+    user: '',
     pass: 'your_password'
   }
 });
