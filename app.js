@@ -35,6 +35,6 @@ app.use('/admin',adminRoute)
 // app.set('views','./views/user')
 // app.set('views','./views/Admin')
 
-app.listen(8080,() =>{
-    console.log("Server started")
+app.listen(process.env.APP_PORT,() =>{
+    console.log("Server started ", process.env.BASE_URL )
 })

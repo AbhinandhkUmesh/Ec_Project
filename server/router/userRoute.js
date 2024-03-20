@@ -16,6 +16,7 @@ router.get("/userDetails" ,userController.userDetails);
 router.post("/logout", userController.logout);
 
 router.get('/otpPage',userController.otpPage)
+router.post('/otpPage',userController.sentOtp)
 
 
 
