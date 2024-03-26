@@ -40,111 +40,105 @@
     <!-- Left Sidebar -->
     <%- include('./partials/sidebar.ejs') %>
 
-    <section class="content">
-        <div class="body_scroll">
-            <div class="block-header">
-                <div class="row">
-                    <div class="col-lg-7 col-md-6 col-sm-12">
-                        <h2>Product List</h2>
-                        <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html"><i class="zmdi zmdi-home"></i> Aero</a>
-                            </li>
-                            <li class="breadcrumb-item">eCommerce</li>
-                            <li class="breadcrumb-item active">Product List</li>
-                        </ul>
-                        <button class="btn btn-primary btn-icon mobile_menu" type="button"><i
-                                class="zmdi zmdi-sort-amount-desc"></i></button>
-                    </div>
-                    <button
-                        class="rounded-lg relative w-36 h-10 cursor-pointer flex items-center border border-green-500 bg-green-500 group hover:bg-green-500 active:bg-green-500 active:border-green-500">
-                        <span
-                            class="text-gray-200 font-semibold ml-8 transform group-hover:translate-x-20 transition-all duration-300">Add
-                            Item</span>
-                        <span
-                            class="absolute right-0 h-full w-10 rounded-lg bg-green-500 flex items-center justify-center transform group-hover:translate-x-0 group-hover:w-full transition-all duration-300">
-                            <svg class="svg w-8 text-white" fill="none" height="24" stroke="currentColor"
-                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
-                                width="24" xmlns="http://www.w3.org/2000/svg">
-                                <line x1="12" x2="12" y1="5" y2="19"></line>
-                                <line x1="5" x2="19" y1="12" y2="12"></line>
-                            </svg>
-                        </span>
-                    </button>
-
-                </div>
-            </div>
-            <div class="container-fluid">
-                <div class="row clearfix">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="table-responsive">
-                                <table class="table table-hover product_item_list c_table theme-color mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Image</th>
-                                            <th>Product Name</th>
-                                            <th data-breakpoints="sm xs">Detail</th>
-                                            <th data-breakpoints="xs">Amount</th>
-                                            <th data-breakpoints="xs md">Stock</th>
-                                            <th data-breakpoints="sm xs md">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% Products.forEach(Product => { %>
-                                        <tr>
-                                            <td><img src="/assets/images/ecommerce/1.png" width="48" alt="Product img">
-                                            </td>
-                                            <td>
-                                                <h5><%= Product.name %></h5>
-                                            </td>
-                                            <td><span class="text-muted"><%= Product.description %></span></td>
-                                            <td><%= Product.rate %></td>
-                                            <td><span class="col-green">In Stock</span></td>
-                                            <td>
-                                                <a href="javascript:void(0);"
-                                                    class="btn btn-default waves-effect waves-float btn-sm waves-green"><i
-                                                        class="zmdi zmdi-edit"></i></a>
-                                                <a href="javascript:void(0);"
-                                                    class="btn btn-default waves-effect waves-float btn-sm waves-red"><i
-                                                        class="zmdi zmdi-delete"></i></a>
-                                            </td>
-                                        </tr>
-
-                                        <% }) %>
-
-
-                                    </tbody>
-                                </table>
-                            </div>
+        <section class="content">
+            <div class="body_scroll">
+                <div class="block-header">
+                    <div class="row">
+                        <div class="col-lg-7 col-md-6 col-sm-12">
+                            <h2>Product List</h2>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index.html"><i class="zmdi zmdi-home"></i> Aero</a>
+                                </li>
+                                <li class="breadcrumb-item">eCommerce</li>
+                                <li class="breadcrumb-item active">Product List</li>
+                            </ul>
                         </div>
-                        <div class="card">
-                            <div class="body">
-                                <ul class="pagination pagination-primary m-b-0">
-                                    <li class="page-item"><a class="page-link" href="javascript:void(0);"><i
-                                                class="zmdi zmdi-arrow-left"></i></a></li>
-                                    <li class="page-item active"><a class="page-link" href="javascript:void(0);">1</a>
-                                    </li>
-                                    <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="javascript:void(0);">4</a></li>
-                                    <li class="page-item"><a class="page-link" href="javascript:void(0);"><i
-                                                class="zmdi zmdi-arrow-right"></i></a></li>
-                                </ul>
+                        <!--Add Product Button -->
+                        <a href="/admin/PdAddForm">
+                            <button class="btn btn-primary" type="submit">Add Product</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                    <div class="row clearfix">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="table-responsive">
+                                    <table class="table table-hover product_item_list c_table theme-color mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Image</th>
+                                                <th>Product Name</th>
+                                                <th data-breakpoints="sm xs">Category</th>
+                                                <th data-breakpoints="xs">Amount</th>
+                                                <th data-breakpoints="xs md">Stock</th>
+                                                <th data-breakpoints="sm xs md">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% Products.forEach(Product=> { %>
+                                                <tr>
+                                                    <td><img src="/assets/images/ecommerce/1.png" width="48"
+                                                            alt="Product img">
+                                                    </td>
+                                                    <td>
+                                                        <h5>
+                                                            <%= Product.name %>
+                                                        </h5>
+                                                    </td>
+                                                    <td><span class="text-muted">
+                                                            <%= Product.description %>
+                                                        </span></td>
+                                                    <td>
+                                                        <%= Product.rate %>
+                                                    </td>
+                                                    <td><span class="col-green">
+                                                            <%= Product.stock %>
+                                                        </span></td>
+                                                    <td>
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-default waves-effect waves-float btn-sm waves-green"><i
+                                                                class="zmdi zmdi-edit"></i></a>
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-default waves-effect waves-float btn-sm waves-red"><i
+                                                                class="zmdi zmdi-delete"></i></a>
+                                                    </td>
+                                                </tr>
+
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="body">
+                                    <ul class="pagination pagination-primary m-b-0">
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);"><i
+                                                    class="zmdi zmdi-arrow-left"></i></a></li>
+                                        <li class="page-item active"><a class="page-link"
+                                                href="javascript:void(0);">1</a>
+                                        </li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">4</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">
+                                                <i class="zmdi zmdi-arrow-right"></i></a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    <!-- Jquery Core Js -->
-    <script src="/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
-    <script src="/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+        </section>
+        <!-- Jquery Core Js -->
+        <script src="/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+        <script src="/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
 
-    <script src="/assets/bundles/footable.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+        <script src="/assets/bundles/footable.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
 
-    <script src="/assets/bundles/mainscripts.bundle.js"></script><!-- Custom Js -->
-    <script src="/assets/js/pages/tables/footable.js"></script><!-- Custom Js -->
+        <script src="/assets/bundles/mainscripts.bundle.js"></script><!-- Custom Js -->
+        <script src="/assets/js/pages/tables/footable.js"></script><!-- Custom Js -->
 </body>
 
 

@@ -62,38 +62,49 @@
                         </div>
 
 
-                        <a href="/shoping-cart"
-                            class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
-                            data-notify="2">
-                            <i class="zmdi zmdi-shopping-cart"></i>
-                        </a>
 
-                        <a href="#"
-                            class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-wishlist"
-                            data-notify="0">
-                            <i class="zmdi zmdi-favorite-outline"></i>
-                        </a>
                         <% if (isUser) { %>
+                            <!-- cart -->
+                            <a href="/shoping-cart"
+                                class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+                                data-notify="2">
+                                <i class="zmdi zmdi-shopping-cart"></i>
+                            </a>
+                            <!-- wishlist -->
+                            <a href="#"
+                                class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-wishlist"
+                                data-notify="0">
+                                <i class="zmdi zmdi-favorite-outline"></i>
+                            </a>
+                            <!-- Userdetails -->
                             <a href="/userDetails"
-                            class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
-                                <svg width="26" height="26" fill="currentColor" class="bi bi-person-fill"
-                                    viewBox="0 0 16 16">
-                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                </svg>
-                        </a>
-                        <% } else { %>
-                            <a href="/login"
-                            class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+                                class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
                                 <svg width="26" height="26" fill="currentColor" class="bi bi-person-fill"
                                     viewBox="0 0 16 16">
                                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                                 </svg>
                             </a>
-                        <% } %>
-                        
 
-                        
-                        </a>
+                            <% } else { %>
+                                <a href="/login"
+                                    class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti "
+                                    data-notify="2">
+                                    <i class="zmdi zmdi-shopping-cart"></i>
+                                </a>
+
+                                <a href="/login"
+                                    class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-wishlist"
+                                    data-notify="0">
+                                    <i class="zmdi zmdi-favorite-outline"></i>
+                                </a>
+                                <a href="/login" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 ">
+                                    <svg width="26" height="26" fill="currentColor" class="bi bi-person-fill"
+                                        viewBox="0 0 16 16">
+                                        <path
+                                            d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                    </svg>
+                                </a>
+                            <% } %>
                     </div>
                 </nav>
             </div>

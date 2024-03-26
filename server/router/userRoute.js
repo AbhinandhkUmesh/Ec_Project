@@ -9,15 +9,16 @@ const userCheck = require("../middleware/usermiddleware");
 router.get('/', userController.index);
 router.get("/login", userController.login);
 router.get("/signup", userController.signup);
-router.post("/signup", userController.addUser);
+
+router.post("/signup", userController.signUp);
+router.post("/verifyOTP", userController.authOTP);
+router.get("/otp", userController.otpPage);
+router.get("/regResOTP/:id", userController.resendOTP);
+
 router.post("/login", userController.checkUserIn);
+
 router.get("/home", userCheck.isUser, userController.redirectUser);
 router.get("/userDetails" ,userController.userDetails);
 router.post("/logout", userController.logout);
-
-router.get('/otpPage',userController.otpPage)
-router.post('/otpPage',userController.sentOtp)
-
-
 
 module.exports = router;

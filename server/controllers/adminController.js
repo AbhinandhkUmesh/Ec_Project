@@ -22,6 +22,7 @@ const adminDashboard = async (req, res) => {
       const adminData = await userModel.findOne({ email:email });
       console.log(adminData);
       if (adminData && adminData.isAdmin == 1) {
+        console.log("check2")
         password = await bcrypt.compare(req.body.password, adminData.password);
         if (password) {
           req.session.isAdmin = true;
@@ -42,8 +43,10 @@ const adminDashboard = async (req, res) => {
 
 const toDashboard = (req, res) => {
     try {
+      if (req.session.isAdmin) {
         res.render("Dashboard", { Username: req.session.username });
         console.log("Admin Dashboard");
+      }
     } catch (error) {
         console.log("Dashboard  Error:" + error);
     }
@@ -77,4 +80,4 @@ module.exports = {
     adminDashboard,
     toDashboard,
     adminlogout,
-}
+}      

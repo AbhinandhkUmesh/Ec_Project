@@ -4,9 +4,10 @@ var userModel = require('../models/usermodel');
 
 var bcrypt = require('bcrypt');
 
-var otpGenerator = require('otp-generator');
+var otpSend = require("../middleware/otp");
 
-var nodemailer = require('nodemailer');
+var _require = require('console'),
+    log = _require.log;
 
 var index = function index(req, res) {
   return regeneratorRuntime.async(function index$(_context) {
@@ -43,6 +44,7 @@ var login = function login(req, res) {
       res.redirect('/home');
     } else {
       res.render('userlogin', {
+        isUser: req.session.isUser,
         error: error
       });
     }
@@ -54,9 +56,10 @@ var login = function login(req, res) {
 
 var signup = function signup(req, res) {
   try {
-    var message = req.query.message;
+    var _message = req.query.message;
     res.render("signup", {
-      message: message
+      isUser: req.session.isUser,
+      message: _message
     });
     console.log("User signup");
   } catch (error) {
@@ -65,73 +68,117 @@ var signup = function signup(req, res) {
   }
 };
 
-var addUser = function addUser(req, res) {
-  var userExist, hashedPassword, registeredUser;
-  return regeneratorRuntime.async(function addUser$(_context2) {
+var OTP;
+
+var signUp = function signUp(req, res) {
+  try {
+    console.log(req.body);
+    req.session.userDetails = req.body;
+    message = "";
+    var email = req.body.email;
+    console.log("sending otp");
+    var otpData = otpSend.sendmail(email);
+    console.log(otpData);
+    OTP = otpData;
+    console.log("OTP received is: " + otpData);
+    res.render("otppage", {
+      OTP: OTP,
+      email: email,
+      message: message
+    });
+    console.log("User OTP Page");
+  } catch (err) {
+    console.log("error in veriy otp" + err);
+  }
+};
+
+var authOTP = function authOTP(req, res) {
+  var otp, storedOTP, hashedPassword, registeredUser;
+  return regeneratorRuntime.async(function authOTP$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           _context2.prev = 0;
-          _context2.next = 3;
-          return regeneratorRuntime.awrap(userModel.findOne({
-            email: req.body.email
-          }));
+          otp = req.body.otp;
+          storedOTP = OTP;
+          console.log(otp, "1st test", storedOTP); // Retrieve the OTP stored in the session
 
-        case 3:
-          userExist = _context2.sent;
-
-          if (!userExist) {
-            _context2.next = 6;
+          if (!(otp === storedOTP)) {
+            _context2.next = 16;
             break;
           }
 
-          return _context2.abrupt("return", res.redirect("/signup?message=User with this email already exists"));
+          _context2.next = 7;
+          return regeneratorRuntime.awrap(bcrypt.hash(req.session.userDetails.password, 10));
 
-        case 6:
-          if (!(req.body.password !== req.body.confirmPassword)) {
-            _context2.next = 8;
-            break;
-          }
-
-          return _context2.abrupt("return", res.redirect("/signup?message=Passwords do not match"));
-
-        case 8:
-          _context2.next = 10;
-          return regeneratorRuntime.awrap(bcrypt.hash(req.body.password, 10));
-
-        case 10:
+        case 7:
           hashedPassword = _context2.sent;
+          // Create a new user with hashed password
           registeredUser = new userModel({
-            Username: req.body.Username,
-            email: req.body.email,
+            Username: req.session.userDetails.Username,
             password: hashedPassword,
+            email: req.session.userDetails.email,
             isAdmin: 0
           });
-          req.session.email = registeredUser.email;
-          console.log(registeredUser);
-          res.redirect('/otpPage');
-          return _context2.abrupt("return", registeredUser);
+          console.log("2st test");
+          _context2.next = 12;
+          return regeneratorRuntime.awrap(registeredUser.save());
 
-        case 18:
-          _context2.prev = 18;
+        case 12:
+          // Save the user to the database
+          console.log("", registeredUser);
+          res.redirect("/login");
+          _context2.next = 17;
+          break;
+
+        case 16:
+          res.render("otppage", {
+            email: req.session.userDetails.email,
+            message: "Invalid OTP entered"
+          });
+
+        case 17:
+          _context2.next = 23;
+          break;
+
+        case 19:
+          _context2.prev = 19;
           _context2.t0 = _context2["catch"](0);
-          console.error("Error adding user: " + _context2.t0);
+          console.log("Error while authenticating OTP: " + _context2.t0);
           res.status(500).send("Internal Server Error");
 
-        case 22:
+        case 23:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 18]]);
+  }, null, null, [[0, 19]]);
+};
+
+var resendOTP = function resendOTP(req, res) {
+  try {
+    //console.log("Hello");
+    var email = req.session.emailDetail;
+    console.log("Resending OTP to email: " + email);
+    var otpRData = otpSend.sendmail(email);
+    console.log("otpRData is ++++++" + otpRData);
+    newOTP = otpRData;
+    console.log("OTP received after 60s is: " + newOTP + " and timestamp is:  " + otpRData);
+    req.session.otpTimestamp = otpRData[1];
+    message = req.session.otpError;
+    res.redirect("/otp");
+    console.log("USER RESEND OTP PAGE");
+  } catch (error) {
+    console.log("Error while resending OTP :" + error);
+  }
 };
 
 var otpPage = function otpPage(req, res) {
   try {
-    var message = req.query.message;
+    var _message2 = 0;
     var email = req.session.email;
     res.render('otppage', {
-      message: message,
+      message: "Invalid OTP entered",
       email: email
     });
   } catch (error) {
@@ -140,95 +187,44 @@ var otpPage = function otpPage(req, res) {
   }
 };
 
-var generateOTP = function generateOTP(req, res) {
-  var OTP = otpGenerator.generate(6, {
-    upperCaseAlphabets: false,
-    specialChars: false
-  });
-  console.log(OTP);
-  return OTP;
-};
-
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: '',
-    pass: 'your_password'
-  }
-});
-
-var sentOtp = function sentOtp(req, res) {
-  var email, OTP, mailOption;
-  return regeneratorRuntime.async(function sentOtp$(_context3) {
+var checkUserIn = function checkUserIn(req, res) {
+  var email, userProfile, checkPass;
+  return regeneratorRuntime.async(function checkUserIn$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
-          email = req.session.email;
-          console.log(email);
-          OTP = generateOTP();
-          mailOption = {
-            from: 'abhikappana@gmail.com',
-            to: email,
-            subject: "OTP From ANB_STORE",
-            text: "Your OTP is : ".concat(OTP)
-          };
-          transporter.sendMail(mailOption, function (error, info) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent successfully');
-            }
-          });
-
-        case 5:
-        case "end":
-          return _context3.stop();
-      }
-    }
-  });
-}; //  const verifyOtp = async (req ,rec) => {
-//     try{
-//     }
-//     catch (error) {
-//         console.error("Error occurred:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-//  }
-
-
-var checkUserIn = function checkUserIn(req, res) {
-  var email, userProfile, checkPass;
-  return regeneratorRuntime.async(function checkUserIn$(_context4) {
-    while (1) {
-      switch (_context4.prev = _context4.next) {
-        case 0:
-          _context4.prev = 0;
+          _context3.prev = 0;
+          console.log("check 1");
           email = req.body.email;
-          _context4.next = 4;
+          _context3.next = 5;
           return regeneratorRuntime.awrap(userModel.findOne({
             email: email
           }));
 
-        case 4:
-          userProfile = _context4.sent;
+        case 5:
+          userProfile = _context3.sent;
+          console.log(email, "check 2", userProfile);
 
           if (userProfile) {
-            _context4.next = 8;
+            _context3.next = 11;
             break;
           }
 
-          req.session.error = "Not a registered user. Please register first";
-          return _context4.abrupt("return", res.redirect('/login'));
+          console.log("User not found in the database.");
+          req.session.error = "Not a registered user. Please register first.";
+          return _context3.abrupt("return", res.redirect('/login'));
 
-        case 8:
-          _context4.next = 10;
+        case 11:
+          console.log(req.body.password);
+          console.log(userProfile.password);
+          _context3.next = 15;
           return regeneratorRuntime.awrap(bcrypt.compare(req.body.password, userProfile.password));
 
-        case 10:
-          checkPass = _context4.sent;
+        case 15:
+          checkPass = _context3.sent;
 
           if (!checkPass) {
-            _context4.next = 19;
+            _context3.next = 24;
             break;
           }
 
@@ -236,35 +232,36 @@ var checkUserIn = function checkUserIn(req, res) {
           req.session.isUser = true;
           req.session.Username = userProfile.Username;
           req.session.email = email;
-          return _context4.abrupt("return", res.redirect("/home"));
-
-        case 19:
-          req.session.error = "Incorrect password";
-          console.log("Incorrect password");
-          return _context4.abrupt("return", res.redirect("/login"));
-
-        case 22:
-          _context4.next = 28;
-          break;
+          return _context3.abrupt("return", res.redirect("/home"));
 
         case 24:
-          _context4.prev = 24;
-          _context4.t0 = _context4["catch"](0);
-          console.log("Error validating user: " + _context4.t0);
-          res.status(500).send("Internal Server Error");
+          console.log("Incorrect password");
+          req.session.error = "Incorrect password. Please try again.";
+          return _context3.abrupt("return", res.redirect("/login"));
 
-        case 28:
+        case 27:
+          _context3.next = 34;
+          break;
+
+        case 29:
+          _context3.prev = 29;
+          _context3.t0 = _context3["catch"](0);
+          console.log("Error validating user:", _context3.t0);
+          req.session.error = "Internal Server Error. Please try again later.";
+          return _context3.abrupt("return", res.status(500).redirect("/login"));
+
+        case 34:
         case "end":
-          return _context4.stop();
+          return _context3.stop();
       }
     }
-  }, null, null, [[0, 24]]);
+  }, null, null, [[0, 29]]);
 };
 
 var redirectUser = function redirectUser(req, res) {
-  return regeneratorRuntime.async(function redirectUser$(_context5) {
+  return regeneratorRuntime.async(function redirectUser$(_context4) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context4.prev = _context4.next) {
         case 0:
           try {
             res.render("home", {
@@ -277,7 +274,7 @@ var redirectUser = function redirectUser(req, res) {
 
         case 1:
         case "end":
-          return _context5.stop();
+          return _context4.stop();
       }
     }
   });
@@ -285,22 +282,23 @@ var redirectUser = function redirectUser(req, res) {
 
 var userDetails = function userDetails(req, res) {
   var userEmail, userProfile;
-  return regeneratorRuntime.async(function userDetails$(_context6) {
+  return regeneratorRuntime.async(function userDetails$(_context5) {
     while (1) {
-      switch (_context6.prev = _context6.next) {
+      switch (_context5.prev = _context5.next) {
         case 0:
-          _context6.prev = 0;
+          _context5.prev = 0;
           userEmail = req.session.email;
-          _context6.next = 4;
+          _context5.next = 4;
           return regeneratorRuntime.awrap(userModel.findOne({
             email: userEmail
           }));
 
         case 4:
-          userProfile = _context6.sent;
+          userProfile = _context5.sent;
 
           if (req.session.isUser) {
             res.render('userDetails', {
+              isUser: req.session.isUser,
               username: userProfile.Username,
               email: userProfile.email
             });
@@ -308,18 +306,18 @@ var userDetails = function userDetails(req, res) {
             res.redirect('/login');
           }
 
-          _context6.next = 12;
+          _context5.next = 12;
           break;
 
         case 8:
-          _context6.prev = 8;
-          _context6.t0 = _context6["catch"](0);
-          console.log("Error redirecting UserPage: " + _context6.t0);
+          _context5.prev = 8;
+          _context5.t0 = _context5["catch"](0);
+          console.log("Error redirecting UserPage: " + _context5.t0);
           res.status(500).send("Internal Server Error");
 
         case 12:
         case "end":
-          return _context6.stop();
+          return _context5.stop();
       }
     }
   }, null, null, [[0, 8]]);
@@ -346,11 +344,12 @@ module.exports = {
   index: index,
   login: login,
   signup: signup,
-  addUser: addUser,
+  authOTP: authOTP,
+  otpPage: otpPage,
   checkUserIn: checkUserIn,
   redirectUser: redirectUser,
   userDetails: userDetails,
   logout: logout,
-  otpPage: otpPage,
-  sentOtp: sentOtp
+  signUp: signUp,
+  resendOTP: resendOTP
 };

@@ -1,0 +1,129 @@
+<!doctype html>
+<html class="no-js " lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
+
+    <title>:: Aero Bootstrap4 Admin :: Product list</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Favicon-->
+    <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/plugins/footable-bootstrap/css/footable.bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/plugins/footable-bootstrap/css/footable.standalone.min.css">
+
+    <!-- Custom Css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/assets/css/style.min.css">
+</head>
+
+<body class="theme-blush">
+
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="m-t-30"><img class="zmdi-hc-spin" src="/assets/images/loader.svg" width="48" height="48"
+                    alt="Aero"></div>
+            <p>Please wait...</p>
+        </div>
+    </div>
+
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <!-- Main Search -->
+
+
+
+    <!-- Left Sidebar -->
+    <%- include('./partials/sidebar.ejs') %>
+
+        <section class="content">
+            <div class="body_scroll">
+                <div class="block-header">
+                    <div class="row">
+                        <div class="col-lg-7 col-md-6 col-sm-12">
+                            <h2>Add Product</h2>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-md-6">
+
+
+                            <div class="card-body">
+                                <form method="post" action="admin/PdAddForm">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            placeholder="Enter Product Name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label">Category</label>
+                                        <input type="text" class="form-control" id="category" name="category"
+                                            placeholder="Enter Product Category" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="rate" class="form-label">Rate</label>
+                                        <input type="number" class="form-control" id="rate" name="rate"
+                                            placeholder="Enter Product Rate" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Description</label>
+                                        <textarea class="form-control" id="description" name="description"
+                                            placeholder="Enter Product Description" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="stock" class="form-label">Stock</label>
+                                        <input type="number" class="form-control" id="stock" name="stock"
+                                            placeholder="Enter Product Stock" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="image" class="form-label">Image</label>
+                                        <input type="file" class="form-control" id="image" name="image[]" multiple
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="offer" class="form-label">Offer</label>
+                                        <input type="number" class="form-control" id="offer" name="offer"
+                                            placeholder="Enter Product Offer">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="discountAmount" class="form-label">Discount Amount</label>
+                                        <input type="number" class="form-control" id="discountAmount"
+                                            name="discountAmount" placeholder="Enter Discount Amount">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="catOffer" class="form-label">Category Offer</label>
+                                        <input type="number" class="form-control" id="catOffer" name="catOffer"
+                                            placeholder="Enter Category Offer">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Add Product</button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Jquery Core Js -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script src="/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+        <script src="/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+
+        <script src="/assets/bundles/footable.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+
+        <script src="/assets/bundles/mainscripts.bundle.js"></script><!-- Custom Js -->
+        <script src="/assets/js/pages/tables/footable.js"></script><!-- Custom Js -->
+</body>
+
+
+</html>

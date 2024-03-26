@@ -1,7 +1,7 @@
 const userModel = require('../models/usermodel');
 const bcrypt = require('bcrypt');
-const otpGenerator = require('otp-generator');
-const nodemailer = require('nodemailer');
+const otpSend = require("../middleware/otp");
+const { log } = require('console');
 
 const index = async (req, res) => {
     try {
@@ -26,6 +26,7 @@ const login = (req, res) => {
             res.redirect('/home');
         } else {
             res.render('userlogin', {
+                isUser: req.session.isUser,
                 error
             });
         }
@@ -39,8 +40,9 @@ const signup = (req, res) => {
     try {
         let message = req.query.message;
         res.render("signup", {
+            isUser: req.session.isUser,
             message
-        });
+       });
         console.log("User signup");
     } catch (error) {
         console.log("Error rendering user signup page: " + error);
@@ -48,44 +50,82 @@ const signup = (req, res) => {
     }
 };
 
+var OTP;
+const signUp = (req, res) => {
+  try {
+    console.log(req.body);
+    req.session.userDetails = req.body;
 
-const addUser = async (req, res) => {
+    message = ""
+    const email = req.body.email;
+    console.log("sending otp");
+    const otpData = otpSend.sendmail(email);
+    console.log(otpData);
+    OTP = otpData;
+    console.log("OTP received is: " + otpData);
+    res.render("otppage",{OTP,email,message});
+    console.log("User OTP Page");
+  } catch (err) {
+    console.log("error in veriy otp" + err);
+  }
+}; 
+
+const authOTP = async (req, res) => {
     try {
-        const userExist = await userModel.findOne({
-            email: req.body.email
-        });
-        if (userExist) {
-            return res.redirect("/signup?message=User with this email already exists");
+        const otp = req.body.otp;
+        const storedOTP = OTP;
+        console.log(otp,"1st test",storedOTP) // Retrieve the OTP stored in the session
+        if (otp === storedOTP) { // Compare the entered OTP with the stored one
+            // Hash the password
+            const hashedPassword = await bcrypt.hash(req.session.userDetails.password, 10);
+            // Create a new user with hashed password
+            const registeredUser = new userModel({
+                Username: req.session.userDetails.Username,
+                password: hashedPassword,
+                email: req.session.userDetails.email,
+                isAdmin: 0,
+            });
+            console.log("2st test")
+            await registeredUser.save(); // Save the user to the database
+            console.log("",registeredUser)
+            res.redirect("/login");
+        } else {
+            res.render("otppage", {email:req.session.userDetails.email,message: "Invalid OTP entered"});
         }
-
-        if (req.body.password !== req.body.confirmPassword) {
-            return res.redirect("/signup?message=Passwords do not match");
-        }
-
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const registeredUser = new userModel({
-            Username: req.body.Username,
-            email: req.body.email,
-            password: hashedPassword,
-            isAdmin: 0,
-        });
-        
-        req.session.email = registeredUser.email;
-        console.log(registeredUser);
-        res.redirect('/otpPage');
-        return registeredUser
-    } catch (error) {
-        console.error("Error adding user: " + error);
+    } catch (err) {
+        console.log("Error while authenticating OTP: " + err);
         res.status(500).send("Internal Server Error");
     }
-};
+}; 
+
+
+
+const resendOTP = (req, res) => {
+    try {
+      //console.log("Hello");
+      const email = req.session.emailDetail;
+      console.log("Resending OTP to email: " + email);
+      const otpRData = otpSend.sendmail(email);
+      console.log("otpRData is ++++++" + otpRData);
+      newOTP = otpRData;
+      console.log(
+        "OTP received after 60s is: " + newOTP + " and timestamp is:  " + otpRData
+      );
+      req.session.otpTimestamp = otpRData[1];
+      message = req.session.otpError;
+      res.redirect("/otp");
+      console.log("USER RESEND OTP PAGE");
+    } catch (error) {
+      console.log("Error while resending OTP :" + error);
+    }
+  }; 
 
 const otpPage = (req, res) => {
     try {
-        let message = req.query.message;
+        let message = 0;
         let email = req.session.email;
         res.render('otppage', {
-            message,
+            message: "Invalid OTP entered",
             email
         });
     } catch (error) {
@@ -94,70 +134,21 @@ const otpPage = (req, res) => {
     }
 };
 
-
-const generateOTP = (req,res) => {
-    const OTP = otpGenerator.generate(6, {
-        upperCaseAlphabets: false,
-        specialChars: false
-    });
-    console.log(OTP)
-    return OTP
-}
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-      
-    auth: {
-        user: '',
-        pass: 'your_password'
-    }
-});
-
-const sentOtp = async (req, res) => {
-    const email = req.session.email;
-    console.log(email);
-
-    const OTP = generateOTP();
-
-    var mailOption = {
-        from: 'abhikappana@gmail.com',
-        to: email,
-        subject: "OTP From ANB_STORE",
-        text: `Your OTP is : ${OTP}`
-    };
-
-    transporter.sendMail(mailOption, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent successfully');
-        }
-    });
-};
-
-
-//  const verifyOtp = async (req ,rec) => {
-//     try{
-
-//     }
-//     catch (error) {
-//         console.error("Error occurred:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-//  }
-
-
 const checkUserIn = async (req, res) => {
     try {
+        console.log("check 1");
         const email = req.body.email;
-        const userProfile = await userModel.findOne({
-            email
-        });
+        const userProfile = await userModel.findOne({ email: email });
+        console.log(email, "check 2", userProfile);
 
         if (!userProfile) {
-            req.session.error = "Not a registered user. Please register first";
+            console.log("User not found in the database.");
+            req.session.error = "Not a registered user. Please register first.";
             return res.redirect('/login');
         }
+
+        console.log(req.body.password);
+        console.log(userProfile.password);
 
         const checkPass = await bcrypt.compare(req.body.password, userProfile.password);
 
@@ -168,19 +159,20 @@ const checkUserIn = async (req, res) => {
             req.session.email = email;
             return res.redirect("/home");
         } else {
-            req.session.error = "Incorrect password";
             console.log("Incorrect password");
+            req.session.error = "Incorrect password. Please try again.";
             return res.redirect("/login");
         }
     } catch (error) {
-        console.log("Error validating user: " + error);
-        res.status(500).send("Internal Server Error");
+        console.log("Error validating user:", error);
+        req.session.error = "Internal Server Error. Please try again later.";
+        return res.status(500).redirect("/login");
     }
 };
 
+
 const redirectUser = async (req, res) => {
     try {
-
         res.render("home", {
             isUser: req.session.isUser
         });
@@ -193,11 +185,10 @@ const redirectUser = async (req, res) => {
 const userDetails = async (req, res) => {
     try {
         const userEmail = req.session.email;
-        const userProfile = await userModel.findOne({
-            email: userEmail
-        });
+        const userProfile = await userModel.findOne({ email: userEmail });
         if (req.session.isUser) {
             res.render('userDetails', {
+                isUser: req.session.isUser,
                 username: userProfile.Username,
                 email: userProfile.email
             });
@@ -230,12 +221,12 @@ module.exports = {
     index,
     login,
     signup,
-    addUser,
+    authOTP,
+    otpPage,
     checkUserIn,
     redirectUser,
     userDetails,
     logout,
-    otpPage,
-    sentOtp,
-
+    signUp,
+    resendOTP
 };

@@ -21,8 +21,8 @@ router.get("/adminlogout",adminController.adminlogout);      //GET request to lo
 
 
 router.get("/productmanagement",productController.adminProduct);
-
-
+router.get("/PdAddForm",productController.PdAddForm);
+router.post("/PdAddForm",productController.AddProduct);
 
 
 module.exports = router
