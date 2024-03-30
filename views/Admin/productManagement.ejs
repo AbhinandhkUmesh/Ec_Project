@@ -8,7 +8,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
 
-    <title>:: Aero Bootstrap4 Admin :: Product list</title>
+    <title>:: AnB</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <!-- Favicon-->
     <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
@@ -54,7 +54,7 @@
                             </ul>
                         </div>
                         <!--Add Product Button -->
-                        <a href="/admin/PdAddForm">
+                        <a href="/admin/NewProduct">
                             <button class="btn btn-primary" type="submit">Add Product</button>
                         </a>
                     </div>
@@ -78,8 +78,17 @@
                                         <tbody>
                                             <% Products.forEach(Product=> { %>
                                                 <tr>
-                                                    <td><img src="/assets/images/ecommerce/1.png" width="48"
-                                                            alt="Product img">
+                                                    <td>
+                                                        <% if (Product.image && Product.image.length> 0) { %>
+                                                            <!-- Check if the product has images -->
+                                                            <img src="<%= Product.image[0] %>" width="48"
+                                                                alt="Product img">
+                                                            <!-- Display the first image -->
+                                                            <% } else { %>
+                                                                <!-- If no images, display a placeholder or default image -->
+                                                                <img src="/uploads/admin/upload/NoImage.png" width="48"
+                                                                    alt="Product img">
+                                                        <% } %>
                                                     </td>
                                                     <td>
                                                         <h5>
@@ -90,7 +99,7 @@
                                                             <%= Product.description %>
                                                         </span></td>
                                                     <td>
-                                                        <%= Product.rate %>
+                                                        ₹<%= Product.rate %>
                                                     </td>
                                                     <td><span class="col-green">
                                                             <%= Product.stock %>
@@ -135,10 +144,10 @@
         <script src="/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
         <script src="/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
 
-        <script src="/assets/bundles/footable.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
 
-        <script src="/assets/bundles/mainscripts.bundle.js"></script><!-- Custom Js -->
-        <script src="/assets/js/pages/tables/footable.js"></script><!-- Custom Js -->
+
+        <script src="/assets/bundles/mainscripts.bundle.js"></script>
+      
 </body>
 
 

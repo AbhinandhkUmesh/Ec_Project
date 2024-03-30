@@ -2,10 +2,6 @@
 
 var productModel = require('../models/productmodel');
 
-var userDetails = require("../models/userModel");
-
-var multer = require("multer");
-
 var adminProduct = function adminProduct(req, res) {
   var products;
   return regeneratorRuntime.async(function adminProduct$(_context) {
@@ -24,14 +20,15 @@ var adminProduct = function adminProduct(req, res) {
           // Find all products and sort by _id in descending order
           if (req.session.prodData) {
             products = req.session.prodData; // If session data exists, use it instead
-          }
+          } // Render the view with the retrieved products
+
 
           res.render("productManagement", {
             Username: req.session.Username,
             Products: products // Pass products array to the view
 
           });
-          console.log(products, "product console");
+          console.log("product displayed :", products);
           _context.next = 13;
           break;
 
@@ -49,17 +46,19 @@ var adminProduct = function adminProduct(req, res) {
   }, null, null, [[0, 9]]);
 };
 
-var PdAddForm = function PdAddForm(req, res) {
-  return regeneratorRuntime.async(function PdAddForm$(_context2) {
+var NewProduct = function NewProduct(req, res) {
+  return regeneratorRuntime.async(function NewProduct$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           try {
+            console.log("entry 1");
             res.render('PdAddForm', {
               Username: req.session.Username
             });
+            console.log("ADMIN WILL ADD PRODUCT");
           } catch (error) {
-            console.error("Error occurred:", error);
+            console.error("Error while redirecting the page to add product: ", +error);
             res.status(500).send("Error occurred");
           }
 
@@ -72,79 +71,93 @@ var PdAddForm = function PdAddForm(req, res) {
 };
 
 var AddProduct = function AddProduct(req, res) {
-  var Prductdetails, imageData, imagePath, i, Product, _AddProduct;
+  var _req$body, name, category, rate, description, stock, offer, discountAmount, catOffer, imageData, imagePaths, i, existingProduct, newProduct;
 
   return regeneratorRuntime.async(function AddProduct$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
           _context3.prev = 0;
-          console.log("Check 1");
-          Prductdetails = req.body;
-          imageData = req.files;
-          imagePath = [];
+          console.log("Check 1 Adding product");
+          _req$body = req.body, name = _req$body.name, category = _req$body.category, rate = _req$body.rate, description = _req$body.description, stock = _req$body.stock, offer = _req$body.offer, discountAmount = _req$body.discountAmount, catOffer = _req$body.catOffer; // Check if files were uploaded
 
-          for (i = 0; i < imageData.length; i++) {
-            imagePath[i] = imageData[i].path.replace();
-          }
-
-          console.log(Prductdetails);
-          _context3.next = 9;
-          return regeneratorRuntime.awrap(productModel.findOne({
-            name: Prductdetails.name
-          }));
-
-        case 9:
-          Product = _context3.sent;
-          console.log("Check 2", Product);
-
-          if (!Product) {
-            _context3.next = 15;
+          if (!(!req.files || !req.files.length)) {
+            _context3.next = 6;
             break;
           }
 
-          console.log("Product already exist ,Update thr stock");
-          req.session.error = "Product already exist ,Update thr stock";
-          return _context3.abrupt("return", res.redirect('/PdAddForm'));
+          console.log("No files were uploaded.");
+          return _context3.abrupt("return", res.status(400).send("No files were uploaded."));
 
-        case 15:
-          console.log("Check 3");
-          _AddProduct = new productModel({
-            name: Prductdetails.name,
-            category: Prductdetails.category,
-            rate: Prductdetails.rate,
-            description: Prductdetails.description,
-            stock: Prductdetails.stock,
-            image: imagePath,
-            offer: Prductdetails.offer,
-            discountAmount: Prductdetails.discountAmount,
-            catOffer: Prductdetails.catOffer
-          });
-          _context3.next = 19;
-          return regeneratorRuntime.awrap(_AddProduct.save());
+        case 6:
+          // Extract image data from request
+          imageData = req.files;
+          console.log(imageData);
+          console.log("Name: " + name + " Category: " + category + " rate: " + rate); // Extract image paths
 
-        case 19:
-          console.log("Check 4");
-          res.redirect("/admin/productmanagement");
-          _context3.next = 27;
-          break;
+          imagePaths = [];
 
-        case 23:
-          _context3.prev = 23;
+          for (i = 0; i < imageData.length; i++) {
+            imagePaths.push(imageData[i].path.replace(/\\/g, "/").replace("public", "").replace("/admin", "../"));
+          }
+
+          console.log("imagePath: ", imagePaths); // Check if product already exists
+
+          _context3.next = 14;
+          return regeneratorRuntime.awrap(productModel.findOne({
+            name: name
+          }));
+
+        case 14:
+          existingProduct = _context3.sent;
+
+          if (!existingProduct) {
+            _context3.next = 18;
+            break;
+          }
+
+          req.session.error = "Product already exists, please update its stock";
+          return _context3.abrupt("return", res.redirect('/admin/NewProduct'));
+
+        case 18:
+          console.log("Check 3"); // Create new product instance
+
+          newProduct = new productModel({
+            name: name,
+            category: category,
+            rate: rate,
+            description: description,
+            stock: stock,
+            image: imagePaths,
+            // Assuming 'images' is the field in your schema to store image paths
+            offer: offer,
+            discountAmount: discountAmount,
+            catOffer: catOffer
+          }); // Save the new product
+
+          _context3.next = 22;
+          return regeneratorRuntime.awrap(newProduct.save());
+
+        case 22:
+          console.log("Check 4 added Product:", newProduct);
+          return _context3.abrupt("return", res.redirect("/admin/productmanagement?error=success"));
+
+        case 26:
+          _context3.prev = 26;
           _context3.t0 = _context3["catch"](0);
           console.error("Error occurred:", _context3.t0);
           res.status(500).send("Error occurred");
 
-        case 27:
+        case 30:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[0, 23]]);
+  }, null, null, [[0, 26]]);
 };
 
 module.exports = {
   adminProduct: adminProduct,
-  PdAddForm: PdAddForm,
+  NewProduct: NewProduct,
   AddProduct: AddProduct
 };

@@ -6,6 +6,8 @@ var adminController = require("../controllers/adminController");
 
 var adminCheck = require("../middleware/adminmiddleware");
 
+var multer = require("../middleware/multer");
+
 var productController = require("../controllers/productController");
 
 var router = express.Router();
@@ -23,7 +25,7 @@ router.get("/dashboard", adminCheck.isAdmin, adminController.toDashboard); //red
 
 router.get("/adminlogout", adminController.adminlogout); //GET request to log out the user from the account
 
-router.get("/productmanagement", productController.adminProduct);
-router.get("/PdAddForm", productController.PdAddForm);
-router.post("/PdAddForm", productController.AddProduct);
+router.get("/productmanagement", adminCheck.isAdmin, productController.adminProduct);
+router.get("/NewProduct", adminCheck.isAdmin, productController.NewProduct);
+router.post("/addProduct", adminCheck.isAdmin, multer.array("image", 4), productController.AddProduct);
 module.exports = router;

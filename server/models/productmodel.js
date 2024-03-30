@@ -33,9 +33,8 @@ const product = new mongoose.Schema({
         trim: true,
     },
     hide: {
-        type: Number,
-        required: true,
-        trim: true,
+        type: Boolean,
+        default: false  // Provide a default value
     },
     offer: {
         type: Number
