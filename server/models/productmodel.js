@@ -5,17 +5,17 @@ const product = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        trim: true,
+     
     },
     category: {
         type: String,
         required: true,
-        trim: true,
+      
     },
     rate: {
         type: Number,
         required: true,
-        trim: true,
+       
     },
     description: {
         type: String,
@@ -35,6 +35,11 @@ const product = new mongoose.Schema({
     hide: {
         type: Boolean,
         default: false  // Provide a default value
+    },
+    status:{
+        type:Boolean,
+        default: true ,
+        require:true
     },
     offer: {
         type: Number

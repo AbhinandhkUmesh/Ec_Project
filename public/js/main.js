@@ -175,7 +175,7 @@
 
 
     /*==================================================================
-    [ Cart ]*/
+    [ wishlist ]*/
     $('.js-show-wishlist').on('click',function(){
         $('.js-panel-wishlist').addClass('show-header-wishlist');
     });
@@ -185,7 +185,7 @@
     });
 
     /*==================================================================
-    [ Cart ]*/
+    [ wishlist ]*/
     $('.js-show-sidebar').on('click',function(){
         $('.js-sidebar').addClass('show-sidebar');
     });

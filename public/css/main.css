@@ -220,6 +220,52 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   height: 124px;
 }
 
+
+/*==================================================================
+[ Top bar ]*/
+.top-bar {
+  height: 40px;
+  background-color: #222;
+}
+
+/*---------------------------------------------*/
+.left-top-bar {
+  font-family: Poppins-Regular;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #b2b2b2;
+}
+
+
+/*---------------------------------------------*/
+.right-top-bar a {
+  font-family: Poppins-Regular;
+  font-size: 12px;
+  line-height: 1.8;
+
+  height: 100%;
+  color: #b2b2b2;
+  border-right: 1px solid rgba(255,255,255,0.3);
+}
+
+.right-top-bar a:first-child {
+  border-left: 1px solid rgba(255,255,255,0.3);
+}
+
+.right-top-bar a:hover {
+  color: #6c7ae0;
+}
+
+
+/*---------------------------------------------*/
+.topbar-mobile li {
+  padding: 8px 20px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  background-color: #222;
+}
+
+
+
 /*==================================================================
 [ Menu ]*/
 
@@ -229,7 +275,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   background-color: transparent;
   width: 100%;
   height: 84px;
-  top: 0px;
+  top: 40px;
   left: 0px; 
 
   -webkit-transition: height 0.3s, background-color 0.3s;
@@ -278,18 +324,15 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   display: flex;
   align-items: center;
   height: 65%;
-  color: #000;
   margin-right: 55px;
-  font-family: Poppins-bold;
-  font-size: 30px;
-  font-weight: 900;
 }
 
-
-a{
+.logo a{
+  font-size: 2.3em;
   text-decoration: none;
+  color: #000;
+  font-weight: 800;
 }
-
 
 /*------------------------------------------------------------------
 [ Menu ]*/
@@ -328,6 +371,7 @@ a{
   font-size: 14px;
   color: #333;
   padding: 5px 0px;
+  text-decoration: none;
   transition: all 0.4s;
   -webkit-transition: all 0.4s;
   -o-transition: all 0.4s;
@@ -383,7 +427,7 @@ a{
   font-size: 14px;
   line-height: 1.5;
   color: #555;
-
+  
   display: block;
   padding: 8px 20px; 
   width: 100%;
@@ -416,7 +460,7 @@ a{
 
 .sub-menu > li:hover > a {
   color: #6c7ae0;
-  text-decoration: none;
+  
 }
 
 @media (max-width: 1300px) {
@@ -440,11 +484,9 @@ a{
 
 .icon-header-item {
   position: relative;
-  padding-left: 30px;
   font-size: 26px;
   line-height: 1;
   cursor: pointer;
-  color: #000;
 }
 
 
@@ -475,128 +517,108 @@ a{
 
 /*------------------------------------------------------------------
 [ Modal search ]*/
-
-.search {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-align: center;
-
-}
-.containerS {
-  position: relative;
-  box-sizing: border-box;
-  width: fit-content;
-}
-
-.mainbox {
-  box-sizing: border-box;
-  position: relative;
-  width: 210px;
-  height: 50px;
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  justify-content: center;
-  border-radius:50px;
-  background-color: #b2b2b259;
-  transition: all 0.3s ease;
- 
-}
-
-.checkbox:focus {
-  border: none;
-  outline: none;
-  
-}
-
-.checkbox:checked {
-  right: 0;
-  
-  
-}
-
-.checkbox:checked ~ .mainbox {
-  width: 50px;
-  background-color: rgba(80, 80, 80, 0);
-}
-
-.checkbox:checked ~ .mainbox .search_input {
-  width: 0;
-  height: 0px;
-
-}
-
-.checkbox:checked ~ .mainbox .iconContainer {
-  padding-right: 8px;
-
-}
-
-.checkbox {
-  box-sizing: border-box;
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  right: 17px;
-  top: 10px;
-  z-index: 9;
-  cursor: pointer;
-  appearance: none;
-
-}
-
-.search_input {
-  box-sizing: border-box;
+.modal-search-header {
+  position: fixed;
+  z-index: 2000;
+  width: 100%;
   height: 100%;
-  width: 170px;
+  bottom: 101%;
+  left: 0;
+  background-color: rgba(255,255,255,0.9);
+  padding: 50px 15px 100px 15px;
+}
+
+.show-modal-search {
+  bottom: 0;
+}
+
+.container-search-header {
+  width: auto;
+  max-width: 100%;
+  position: relative;
+}
+
+/*---------------------------------------------*/
+.btn-hide-modal-search {
+  position: absolute;
+  padding: 5px;
+  right: 0;
+  top: -45px;
+  opacity: 0.8;
+}
+
+.btn-hide-modal-search:hover {
+  opacity: 1;
+}
+
+.wrap-search-header {
+  width: 960px;
+  max-width: 100%;
+  height: 80px;
+  border: 2px solid #e6e6e6;
+  background: #fff;
+  border-radius: 10px;
+}
+
+/*---------------------------------------------*/
+.wrap-search-header input {
+  font-family: Poppins-ExtraLight;
+  font-size: 20px;
+  line-height: 1.2;
+  color: #333;
+
+  padding: 0px 30px 0px 0px;
+  width: calc(100% - 70px);
+  height: 100%;
   background-color: transparent;
-  border: none;
-  outline: none;
-  padding-bottom: 4px;
-  padding-left: 10px;
-  font-size: 1.1em;
-  color: rgb(0, 0, 0);
-  
-  transition: all 0.3s ease;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.search_input::placeholder {
-  color: #999999;
+.wrap-search-header button {
+  font-size: 40px;
+  color: #333;
+  width: 70px;
+  height: 100%;
+  right: 0%;
 }
 
-.iconContainer {
-  box-sizing: border-box;
-  padding-top: 5px;
-  width: fit-content;
-  transition: all 0.3s ease;
+.wrap-search-header button:hover {
+  color: #6c7ae0;
 }
-
-.search_icon {
-  box-sizing: border-box;
-  fill: rgb(0, 0, 0);
-  font-size: 1.4em;
-}
-
-
-
 
 /*---------------------------------------------*/
+@media (max-width: 767px) {
+  .wrap-search-header input,
+  .wrap-search-header button {
+    font-size: 30px;
+  }
 
+  .wrap-search-header {
+    height: 90px;
+  }
+}
 
+@media (max-width: 575px) {
+  .wrap-search-header input,
+  .wrap-search-header button {
+    font-size: 20px;
+  }
 
-/*---------------------------------------------*/
+  .wrap-search-header button {
+    width: 40px;
+  }
 
+  .wrap-search-header {
+    height: 80px;
+  }
+}
 
-
-/*---------------------------------------------*/
 
 /*==================================================================
 [ Fixed menu desktop ]*/
 
 .fix-menu-desktop .wrap-menu-desktop {
   height: 70px;
-  background-color: rgb(255, 255, 255);
+  background-color: rgba(255,255,255,1);
   box-shadow: 0 0px 3px 0px rgba(0,0,0,0.2);
   -moz-box-shadow: 0 0px 3px 0px rgba(0,0,0,0.2);
   -webkit-box-shadow: 0 0px 3px 0px rgba(0,0,0,0.2);
@@ -619,7 +641,7 @@ a{
 
 /*---------------------------------------------*/
 .main-menu > li.active-menu > a {
-  color: #000000;
+  color: #6c7ae0;
 }
 
 
@@ -647,28 +669,21 @@ a{
 
 /*------------------------------------------------------------------
 [ Logo mobile ]*/
-.logo-mobile a{
+.logo-mobile {
   display: block;
   position: relative;
   height: 80%;
-  color: #000;
   padding-right: 25px;
   -webkit-flex-grow: 1;
   -moz-flex-grow: 1;
   flex-grow: 1;
-  font-family: Poppins-bold;
-  font-size: 30px;
-  font-weight: 900;
 }
 
-.logo-mobile img {
-  max-width: calc(100% - 20px);
-  max-height: 100%;
-  position:absolute;
-  top: 0; 
-  left: 0; 
-  bottom: 0;
-  margin: auto;
+.logo-mobile a{
+  font-size: 1.5em;
+  text-decoration: none;
+  font-weight: 800;
+  color: #000;
 }
 
 
@@ -726,6 +741,7 @@ a{
   color: white;
   line-height: 2.8;
   padding: 8px 20px 8px 20px;
+  text-decoration: none;
 }
 
 .main-menu-m > li {
@@ -780,6 +796,7 @@ a{
   color: #666;
   line-height: 2.5;
   padding: 5px 0 5px 0;
+  text-decoration: none;
 }
 
 .sub-menu-m a:hover {
@@ -891,7 +908,7 @@ a{
 
 
 /*//////////////////////////////////////////////////////////////////
-[ Header cart ]*/
+[ Header wishlist ]*/
 .wrap-header-wishlist {
   position: fixed;
   z-index: 1100;
@@ -1007,7 +1024,7 @@ a{
 }
 
 /*---------------------------------------------*/
-.header-wishlist-item-txt {
+.header-cart-item-txt {
   width: calc(100% - 80px);
 }
 
@@ -3315,189 +3332,62 @@ input.num-product::-webkit-inner-spin-button {
   }
 
 }
-.otp,
-.login{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 50px;
-}
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  padding: 30px;
-  width: 450px;
-  border-radius: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  box-shadow: 6px 6px 12px #aaaaaa13, -6px -6px 12px #aaaaaa13;
+
+
+/* Style for the eye icon */
+.eye-icon {
+    visibility: visible;
 }
 
-::placeholder {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+/* Style for the eye-slash icon */
+.eye-slash-icon {
+    visibility: hidden;
 }
 
-
-.flex-column > label {
-  color: #151717;
-  font-weight: 600;
+/* Style for the eye-slash icon when checkbox is checked */
+.eyeContainer input[type="checkbox"]:checked ~ .eye-icon {
+    visibility: hidden;
+}/* Style for the eye icon */
+.eye-icon {
+    visibility: visible;
 }
 
-.inputForm {
-  border: 1.5px solid #ecedec;
-  border-radius: 10px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
-  transition: 0.2s ease-in-out;
+/* Style for the eye-slash icon */
+.eye-slash-icon {
+    visibility: hidden;
 }
 
-.input {
-  margin-left: 10px;
-  border-radius: 10px;
-  border: none;
-  width: 100%;
- 
+/* Style for the eye-slash icon when checkbox is checked */
+.eyeContainer input[type="checkbox"]:checked ~ .eye-icon {
+    visibility: hidden;
 }
 
-.eye svg{
-  padding-right: 35px;
+/* Style for the eye icon when checkbox is checked */
+.eyeContainer input[type="checkbox"]:checked ~ .eye-slash-icon {
+    visibility: visible;
+}
+/* Style for the eye icon */
+.eye-icon {
+    visibility: visible;
 }
 
-/*------ Settings ------*/
-.eyeContainer {
-  --color: #a5a5b0;
-  --size: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-  font-size: var(--size);
-  user-select: none;
-  fill: var(--color);
+/* Style for the eye-slash icon */
+.eye-slash-icon {
+    visibility: hidden;
 }
 
-.eyeContainer .eye {
-  position: absolute;
-  animation: keyframes-fill .5s;
+/* Style for the eye-slash icon when checkbox is checked */
+.eyeContainer input[type="checkbox"]:checked ~ .eye-icon {
+    visibility: hidden;
 }
 
-.eyeContainer .eye-slash {
-  position: absolute;
-  animation: keyframes-fill .5s;
-  display: none;
-}
-
-/* ------ On check event ------ */
-.eyeContainer input:checked ~ .eye {
-  display: none;
-}
-
-.eyeContainer input:checked ~ .eye-slash {
-  display: block;
-}
-
-/* ------ Hide the default checkbox ------ */
-.eyeContainer input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-/* ------ Animation ------ */
-@keyframes keyframes-fill {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
+/* Style for the eye icon when checkbox is checked */
+.eyeContainer input[type="checkbox"]:checked ~ .eye-slash-icon {
+    visibility: visible;
 }
 
 
-.input:focus {
-  outline: none;
+/* Style for the eye icon when checkbox is checked */
+.eyeContainer input[type="checkbox"]:checked ~ .eye-slash-icon {
+    visibility: visible;
 }
-
-.inputForm:focus-within {
-  border: 1.2px solid #000000;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 7px;
-  justify-content: space-between;
-}
-
-.flex-row > div > label {
-  font-size: 14px;
-  color: #2d79f3;
-  font-weight: 400;
-}
-.span,
-.span a{
-  font-size: 15px;
-  margin-left: 5px;
-  color: #2d79f3;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.error-message{
-  justify-content: center;
-  align-items: center;
-  color:red;
-  margin: .5px;
-}
-
-.button-submit {
-  margin: 20px 0 10px 0;
-  background-color: #151717;
-  border: none;
-  color: white;
-  font-size: 15px;
-  font-weight: 500;
-  border-radius: 10px;
-  height: 50px;
-  width: 100%;
-  cursor: pointer;
-}
-
-.p {
-  text-align: center;
-  color: black;
-  font-size: 14px;
-  margin: 5px 0;
-}
-
-.btn {
-  margin-top: 10px;
-  width: 100%;
-  height: 50px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 500;
-  gap: 10px;
-  border: 1px solid #ededef;
-  background-color: white;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-}
-
-.btn:hover {
-  border: 1px solid #2d79f3;
-  
-}
-
-    

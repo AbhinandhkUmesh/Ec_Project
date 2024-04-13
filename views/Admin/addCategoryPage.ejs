@@ -1,0 +1,46 @@
+<!-- Left Sidebar -->
+<%- include('./partials/sidebar.ejs') %>
+
+    <body class="theme-blush">
+
+
+
+        <section class="content">
+            <div class="body_scroll">
+                <div class="block-header">
+                    <div class="row">
+                        <div class="col-lg-7 col-md-6 col-sm-12">
+                            <h2>Add Category</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-md-6">
+                            <div class="card-body">
+                                <form method="post" action="/admin/addcategory">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Category</label>
+                                        <input type="text" class="form-control" id="name" name="category"
+                                            placeholder="Enter Product Name">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="offer" class="form-label">Offer</label>
+                                        <input type="number" class="form-control" id="offer" name="offer"
+                                            placeholder="Enter Category Offer">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </body>
+
+
+    </html>

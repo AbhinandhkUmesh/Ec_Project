@@ -3,6 +3,7 @@ const adminController = require("../controllers/adminController")
 const adminCheck = require("../middleware/adminmiddleware")
 const multer = require("../middleware/multer")
 const productController = require("../controllers/productController")
+const categoryControl = require('../controllers/categoryController')
 const router = express.Router();
 
 
@@ -21,8 +22,26 @@ router.get("/dashboard",adminCheck.isAdmin,adminController.toDashboard);   //red
 router.get("/adminlogout",adminController.adminlogout);      //GET request to log out the user from the account
 
 
-router.get("/productmanagement", adminCheck.isAdmin,productController.adminProduct);
-router.get("/NewProduct", adminCheck.isAdmin,productController.NewProduct);
-router.post("/addProduct", adminCheck.isAdmin, multer.array("image", 4),productController.AddProduct);
+router.get("/categorylist", adminCheck.isAdmin,categoryControl.showCategory)// add category page
+router.get("/addCategoryPage", adminCheck.isAdmin,categoryControl.addCategoryPage)// add category page
+router.post("/addcategory", adminCheck.isAdmin,categoryControl.addCategory)// add new Category
+// category edit
+ //list or unlist category
+
+
+router.get("/productmanagement", adminCheck.isAdmin,productController.adminProduct);// show  products
+router.get("/NewProduct", adminCheck.isAdmin,productController.NewProduct); //admin add products
+router.post("/addProduct", adminCheck.isAdmin, multer.array("image", 4),productController.AddProduct); // go to the add product page
+router.get("/ProductStatus/:id", adminCheck.isAdmin, productController.ProductStatus);
+
+
+
+
+router.get("/userManagement", adminCheck.isAdmin, adminController.adminShowUsers);
+router.get("/userManagement/users", adminCheck.isAdmin, adminController.getUsersPage);
+router.get("/userStatus/:id", adminCheck.isAdmin, adminController.userStatus);
+
+
+router.get("/logout", adminController.logout);
 
 module.exports = router

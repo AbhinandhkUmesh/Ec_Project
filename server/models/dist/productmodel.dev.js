@@ -5,18 +5,15 @@ var mongoose = require('mongoose');
 var product = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    trim: true
+    required: true
   },
   category: {
     type: String,
-    required: true,
-    trim: true
+    required: true
   },
   rate: {
     type: Number,
-    required: true,
-    trim: true
+    required: true
   },
   description: {
     type: String,
@@ -37,6 +34,11 @@ var product = new mongoose.Schema({
     type: Boolean,
     "default": false // Provide a default value
 
+  },
+  status: {
+    type: Boolean,
+    "default": true,
+    require: true
   },
   offer: {
     type: Number

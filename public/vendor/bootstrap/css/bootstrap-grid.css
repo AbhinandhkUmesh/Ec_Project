@@ -19,6 +19,7 @@ html {
   padding-right: 15px;
   padding-left: 15px;
   width: 100%;
+ 
 }
 
 @media (min-width: 576px) {
@@ -36,6 +37,7 @@ html {
 @media (min-width: 992px) {
   .container {
     max-width: 960px;
+    
   }
 }
 

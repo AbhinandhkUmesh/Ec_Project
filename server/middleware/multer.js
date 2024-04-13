@@ -4,7 +4,7 @@ const path = require('path');
 // Multer setup for handling file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/admin/upload/') // Set your destination folder
+        cb(null, 'upload/images/') // Set your destination folder
     },
     filename: function (req, file, cb) {
         const timestamp = new Date().getTime();

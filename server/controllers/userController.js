@@ -1,7 +1,9 @@
 const userModel = require('../models/usermodel');
 const bcrypt = require('bcrypt');
 const otpSend = require("../middleware/otp");
-const { log } = require('console');
+const {
+    log
+} = require('console');
 
 const index = async (req, res) => {
     try {
@@ -21,13 +23,13 @@ const index = async (req, res) => {
 
 const login = (req, res) => {
     try {
-        let error = req.query.error;
+        let message = req.query.error;
         if (req.session.isUser) {
             res.redirect('/home');
         } else {
             res.render('userlogin', {
                 isUser: req.session.isUser,
-                error
+                message
             });
         }
     } catch (error) {
@@ -36,13 +38,13 @@ const login = (req, res) => {
     }
 };
 
-const signup = (req, res) => {
+const signupPage = (req, res) => {
     try {
         let message = req.query.message;
         res.render("signup", {
             isUser: req.session.isUser,
             message
-       });
+        });
         console.log("User signup");
     } catch (error) {
         console.log("Error rendering user signup page: " + error);
@@ -52,79 +54,96 @@ const signup = (req, res) => {
 
 var OTP;
 const signUp = (req, res) => {
-  try {
-    console.log(req.body);
-    req.session.userDetails = req.body;
+    try {
+        console.log(req.body);
+        req.session.userDetails = req.body;
 
-    message = ""
-    const email = req.body.email;
-    console.log("sending otp");
-    const otpData = otpSend.sendmail(email);
-    console.log(otpData);
-    OTP = otpData;
-    console.log("OTP received is: " + otpData);
-    res.render("otppage",{OTP,email,message});
-    console.log("User OTP Page");
-  } catch (err) {
-    console.log("error in veriy otp" + err);
-  }
-}; 
+        message = ""
+        const email = req.body.email;
+        console.log("sending otp");
+        const otpData = otpSend.sendmail(email);
+        console.log(otpData);
+        OTP = otpData;
+        console.log("OTP received is: " + otpData);
+        res.render("otppage", {
+            OTP,
+            email,
+            message,
+            isUser: req.session.isUser,
+        });
+        console.log("User OTP Page");
+    } catch (err) {
+        console.log("error in veriy otp" + err);
+    }
+};
 
 const authOTP = async (req, res) => {
     try {
         const otp = req.body.otp;
         const storedOTP = OTP;
-        console.log(otp,"1st test",storedOTP) // Retrieve the OTP stored in the session
+        console.log(otp, "=====1st test=====", storedOTP); // Retrieve the OTP stored in the session
         if (otp === storedOTP) { // Compare the entered OTP with the stored one
+            console.log("=====2st test=====");
+            // Check if userDetails and password exist in the session
+            if (!req.session.userDetails || !req.session.userDetails.password) {
+                throw new Error("User details or password not found in session.");
+            }
+
             // Hash the password
-            const hashedPassword = await bcrypt.hash(req.session.userDetails.password, 10);
+            const hashedPassword = await bcrypt.hash(req.session.userDetails.password.toString(), 10);
             // Create a new user with hashed password
             const registeredUser = new userModel({
                 Username: req.session.userDetails.Username,
                 password: hashedPassword,
                 email: req.session.userDetails.email,
+                status: true,
                 isAdmin: 0,
             });
-            console.log("2st test")
+            console.log("=====3st test=====");
             await registeredUser.save(); // Save the user to the database
-            console.log("",registeredUser)
+            console.log("", registeredUser);
             res.redirect("/login");
         } else {
-            res.render("otppage", {email:req.session.userDetails.email,message: "Invalid OTP entered"});
+            res.render("otppage", {
+                email: req.session.userDetails.email,
+                message: "Invalid OTP entered",
+                isUser: req.session.isUser
+            });
         }
     } catch (err) {
         console.log("Error while authenticating OTP: " + err);
         res.status(500).send("Internal Server Error");
     }
-}; 
+};
 
-
+  
 
 const resendOTP = (req, res) => {
     try {
-      //console.log("Hello");
-      const email = req.session.emailDetail;
-      console.log("Resending OTP to email: " + email);
-      const otpRData = otpSend.sendmail(email);
-      console.log("otpRData is ++++++" + otpRData);
-      newOTP = otpRData;
-      console.log(
-        "OTP received after 60s is: " + newOTP + " and timestamp is:  " + otpRData
-      );
-      req.session.otpTimestamp = otpRData[1];
-      message = req.session.otpError;
-      res.redirect("/otp");
-      console.log("USER RESEND OTP PAGE");
+        console.log("Session User Detail:", req.session.userDetails);
+        const email = req.session.userDetails.email;
+        console.log("=====Resending OTP to email:" + email);
+        const otpRData = otpSend.sendmail(email);
+        console.log("===== otpResendData is ========" + otpRData);
+        newOTP = otpRData;
+        console.log(
+            "OTP received after 60s is: " +   + " and timestamp is:  " + otpRData
+        );
+        req.session.otpTimestamp = otpRData[1];
+        message = req.session.otpError;
+        res.redirect("/otp");
+        console.log("USER RESEND OTP PAGE");
     } catch (error) {
-      console.log("Error while resending OTP :" + error);
+        console.log("Error while resending OTP :" + error);
     }
-  }; 
+};
 
 const otpPage = (req, res) => {
     try {
         let message = 0;
         let email = req.session.email;
         res.render('otppage', {
+            isUser: req.session.isUser,
             message: "Invalid OTP entered",
             email
         });
@@ -138,7 +157,9 @@ const checkUserIn = async (req, res) => {
     try {
         console.log("check 1");
         const email = req.body.email;
-        const userProfile = await userModel.findOne({ email: email });
+        const userProfile = await userModel.findOne({
+            email: email
+        });
         console.log(email, "check 2", userProfile);
 
         if (!userProfile) {
@@ -185,11 +206,13 @@ const redirectUser = async (req, res) => {
 const userDetails = async (req, res) => {
     try {
         const userEmail = req.session.email;
-        const userProfile = await userModel.findOne({ email: userEmail });
+        const userProfile = await userModel.findOne({
+            email: userEmail
+        });
         if (req.session.isUser) {
             res.render('userDetails', {
                 isUser: req.session.isUser,
-                username: userProfile.Username,
+                Username: userProfile.Username,
                 email: userProfile.email
             });
         } else {
@@ -217,10 +240,22 @@ const logout = (req, res) => {
     }
 };
 
+
+const productdetail = (req, res) => {
+    res.render('product-detail', {
+        isUser: req.session.isUser
+    })
+}
+const product = (req, res) => {
+    res.render('product', {
+        isUser: req.session.isUser
+    })
+}
+
 module.exports = {
     index,
     login,
-    signup,
+    signupPage,
     authOTP,
     otpPage,
     checkUserIn,
@@ -228,5 +263,9 @@ module.exports = {
     userDetails,
     logout,
     signUp,
-    resendOTP
+    resendOTP,
+
+    productdetail,
+    product
+
 };

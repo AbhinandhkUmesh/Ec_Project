@@ -1,35 +1,8 @@
-<!doctype html>
-<html class="no-js " lang="en">
-
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
-
-    <title>AnB Store</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <!-- Favicon-->
-    <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
-
-    <!-- Custom Css -->
-    <link rel="stylesheet" href="/assets/css/style.min.css">
-</head>
-
+   <!-- Sidebar -->
+   <%- include('./partials/sidebar.ejs') %>
 <body class="theme-blush">
 
-    <!-- Page Loader -->
 
-    <!-- Overlay For Sidebars -->
-    <div class="overlay"></div>
-
-    <!-- Main Search -->
-
-
-
-    <!-- Left Sidebar -->
-    <%- include('./partials/sidebar.ejs') %>
 
         <section class="content">
             <div class="body_scroll">
@@ -51,7 +24,13 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="category" class="form-label">Category</label>
-                                        <input type="text" class="form-control" id="category" name="category" placeholder="Enter Product Category" >
+                                        <select class="form-control" id="productCategory" name="category" required>
+    
+                                            <option value="" selected disabled>Choose a category</option>
+                                            <% for(let a of category) { %>
+                                                <option value="<%=a.name %>"><%=a.category %></option> 
+                                            <% } %>
+                                          </select>
                                     </div>
                                     <div class="mb-3">
                                         <label for="rate" class="form-label">Rate</label>
@@ -94,5 +73,3 @@
    
 </body>
 
-
-</html>

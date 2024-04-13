@@ -8,17 +8,20 @@ const userCheck = require("../middleware/usermiddleware");
 
 router.get('/', userController.index);
 router.get("/login", userController.login);
-router.get("/signup", userController.signup);
+router.get("/signup", userController.signupPage);
 
 router.post("/signup", userController.signUp);
-router.post("/verifyOTP", userController.authOTP);
 router.get("/otp", userController.otpPage);
+router.post("/verifyOTP", userController.authOTP);
 router.get("/regResOTP/:id", userController.resendOTP);
 
 router.post("/login", userController.checkUserIn);
 
 router.get("/home", userCheck.isUser, userController.redirectUser);
 router.get("/userDetails" ,userController.userDetails);
-router.post("/logout", userController.logout);
+router.get("/logout", userController.logout);
+
+router.get("/productdetail", userController.productdetail);
+router.get("/product", userController.product);
 
 module.exports = router;
