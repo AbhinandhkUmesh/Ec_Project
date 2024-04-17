@@ -1,124 +1,143 @@
-﻿<%- include('./partials/sidebar.ejs') %>
+﻿<!doctype html>
+<html class="no-js " lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
+
+    <title>:: AnB</title>
+
+    <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/plugins/footable-bootstrap/css/footable.bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/plugins/footable-bootstrap/css/footable.standalone.min.css">
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="/assets/css/style.min.css">
+</head>
+
 <body class="theme-blush">
 
+  
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <!-- Main Search -->
 
 
-        <section class="content">
-            <div class="body_scroll">
-                <div class="block-header">
-                    <div class="row">
-                        <div class="col-lg-7 col-md-6 col-sm-12">
-                            <h2>Product List</h2>
-                        
-                        </div>
-                        <!--Add Product Button -->
+
+    <!-- Left Sidebar -->
+    <%- include('./partials/sidebar.ejs') %>
+
+    <section class="content">
+        <div class="body_scroll">
+            <div class="block-header">
+                <div class="row">
+                    <div class="col-lg-7 col-md-6 col-sm-12">
+                        <h2>Product List</h2>
+                    </div>
+                    <!-- Add Product Button -->
+                    <div class="col-lg-5 col-md-6 col-sm-12">
                         <a href="/admin/NewProduct">
                             <button class="btn btn-primary flex-r" type="submit">Add Product</button>
                         </a>
                     </div>
                 </div>
-                <div class="container-fluid">
-                    <div class="row clearfix">
-                        <div class="col-lg-12">
-                            <div class="card">
-                                <div class="table-responsive">
-                                    <table class="table table-hover product_item_list c_table theme-color mb-0">
-                                        <thead>
-                                            <tr style="text-align:center";>
-                                                <th data-breakpoints="sm xs">Image</th>
-                                                <th data-breakpoints="sm xs">Product Name</th>
-                                                <th data-breakpoints="sm xs">Category</th>
-                                                <th data-breakpoints="sm xs">Amount</th>
-                                                <th data-breakpoints="xs md">Stock</th>
-
-                                                <th data-breakpoints="sm xs md"></th>
-
-                                                <th data-breakpoints="sm xs md">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% if(Products.length){ for(i=0;i<Products.length;i++){ %>
-
-                                                <tr style="text-align:center">
-                                                    <td data-breakpoints="sm xs">
-                                                        <% if (Products.image && Products.image.length> 0) { %>
-                                                            <!-- Check if the product has images -->
-                                                            <img src="<%= Products[i].image[0] %>" width="48"
-                                                                alt="Product img">
-                                                            <!-- Display the first image -->
-                                                            <% } else { %>
-                                                                <!-- If no images, display a placeholder or default image -->
-                                                                <img src="/images/NoImage.png" width="48" alt="NoImage">
-                                                                <% } %>
-                                                    </td>
-                                                    <td data-breakpoints="sm xs">
-                                                        <h5>
-                                                            <%= Products[i].name %>
-                                                        </h5>
-                                                    </td>
-                                                    <td data-breakpoints="sm xs"><span class="text-muted">
-                                                            <% console.log("Category shown==================",Products[i]); %>
-                                                            <%= Products[i].category %>
-                                                        </span></td>
-                                                    <td data-breakpoints=" xs">
-                                                                ₹<%= Products[i].rate %>
-                                                    </td>
-                                                    <td data-breakpoints="xs md"><span class="col-green">
-                                                            <%= Products[i].stock %>
-                                                        </span></td>
-
-                                                    <td>
-                                                        <td>
-                                                            <a href="/admin/productEdit%> "
-                                                                class="btn btn-outline-secondary"
-                                                                style="width: 100px;background-color:rgb(0, 0, 0);">Edit</a>
-                                                        
-                                                    <% if (Products[i].status) { %>
-                                                    <a href="/admin/ProductStatus/<%= Products[i]._id %>?status=<%= Products[i].status %> "
-                                                            class="btn btn-outline-secondary"
-                                                            style="width: 100px;background-color:green;">Block</a>
-                                                    
+            </div>
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="table-responsive">
+                                <table class="table table-hover product_item_list c_table theme-color mb-0">
+                                    <thead>
+                                        <tr style="text-align:center;">
+                                            <th data-breakpoints="sm xs">Image</th>
+                                            <th data-breakpoints="sm xs">Product Name</th>
+                                            <th data-breakpoints="sm xs">Category</th>
+                                            <th data-breakpoints="sm xs">Amount</th>
+                                            <th data-breakpoints="xs md">Stock</th>
+                                            
+                                            <th data-breakpoints="sm xs md">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% for(let i = 0; i < products.length; i++) { %>
+                                            <tr style="text-align:center;">
+                                                <td data-breakpoints="sm xs">
+                                                    <% if (products[i].image && products[i].image.length > 0) { %>
+                                                        <!-- Check if the product has images -->
+                                                        <img src="/images/<%= products[i].image[0] %>" width="48" alt="Product img">
                                                     <% } else { %>
-                                                        
-                                                            <a href="/admin/ProductStatus/<%= Products[i]._id %>?status=<%= Products[i].status %>"
-                                                                class="btn btn-outline-secondary"
-                                                                style="width: 100px;background-color:red;">Unblock</a>
-                                                        
-                                                        <% } %>
-                                                    </td>
-                                                </tr>
-                                                <%}}%>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                        <!-- If no images, display a placeholder or default image -->
+                                                        <img src="/images/NoImage.png" width="48" alt="NoImage">
+                                                    <% } %>
+                                                </td>
+                                                <td data-breakpoints="sm xs">
+                                                    <h5><%= products[i].name %></h5>
+                                                </td>
+                                                <td data-breakpoints="sm xs">
+                                                    <span class="text-muted"><%= products[i].category.category %></span>
+                                                </td>
+                                                <td data-breakpoints="xs">
+                                                    ₹<%= products[i].rate %>
+                                                </td>
+                                                <td data-breakpoints="xs md">
+                                                    <span class="col-green"><%= products[i].stock %></span>
+                                                </td>
+                                            
+                                               
+                                                <td>
+                                                    <a href="/admin/productEdit/<%= products[i]._id %>" class="btn btn-outline-secondary" style="width: 100px;background-color:rgb(0, 0, 0);">Edit</a>
+
+                                                    <% if (products[i].status) { %>
+                                                        <a href="/admin/ProductStatus/<%= products[i]._id %>?status=<%= products[i].status %>" class="btn btn-outline-secondary" style="width: 100px;background-color:green;">Block</a>
+                                                    
+                                                        <% } else { %>
+                                                        <a href="/admin/ProductStatus/<%= products[i]._id %>?status=<%= products[i].status %>" class="btn btn-outline-secondary" style="width: 100px;background-color:red;">Unblock</a>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    <ul class="pagination pagination-primary m-b-0">
-                                        <% if(currentPage> 1) { %>
-                                                <li class="page-item"><a class="page-link"
-                                                        href="?page=<%= currentPage - 1 %>"><i
-                                                            class="zmdi zmdi-arrow-left"></i></a></li>
-                                            <% } %>
-                                            <% for(var i=1; i <=totalPages; i++) { %>
-                                                <% if(i===currentPage) { %>
-                                                    <li class="page-item active"><a class="page-link" href="#"><%= i %></a></li>
-                                                <% } else { %>
-                                                    <li class="page-item"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
-                                                <% } %>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <ul class="pagination pagination-primary m-b-0">
+                                    <% if(currentPage > 1) { %>
+                                        <li class="page-item"><a class="page-link" href="?page=<%= currentPage - 1 %>"><i class="zmdi zmdi-arrow-left"></i></a></li>
+                                    <% } %>
+                                    <% for(let i = 1; i <= totalPages; i++) { %>
+                                        <% if(i === currentPage) { %>
+                                            <li class="page-item active"><a class="page-link" href="#"><%= i %></a></li>
+                                        <% } else { %>
+                                            <li class="page-item"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
                                         <% } %>
-                                        <% if(currentPage < totalPages) { %>
-                                            <li class="page-item"><a class="page-link" href="?page=<%= currentPage + 1 %>"><i class="zmdi zmdi-arrow-right"></i></a></li>
-                                        <% } %>
-                                    </ul>
-                                </div>
+                                    <% } %>
+                                    <% if(currentPage < totalPages) { %>
+                                        <li class="page-item"><a class="page-link" href="?page=<%= currentPage + 1 %>"><i class="zmdi zmdi-arrow-right"></i></a></li>
+                                    <% } %>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
+        <!-- Jquery Core Js -->
+        <script src="/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+        <script src="/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+
+
+
+        <script src="/assets/bundles/mainscripts.bundle.js"></script>
 
 </body>
 
 
+</html>

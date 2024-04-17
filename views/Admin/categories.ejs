@@ -1,14 +1,34 @@
-<%- include('./partials/sidebar.ejs') %>
+<!doctype html>
+<html class="no-js " lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
+
+    <title>:: AnB</title>
+
+    <!-- Favicon-->
+    <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/plugins/footable-bootstrap/css/footable.bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/plugins/footable-bootstrap/css/footable.standalone.min.css">
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="/assets/css/style.min.css">
+</head>
+
 <body class="theme-blush">
 
-    <!-- Page Loader -->
-    <div class="page-loader-wrapper">
-        <div class="loader">
-            <div class="m-t-30"><img class="zmdi-hc-spin" src="/assets/images/loader.svg" width="48" height="48"
-                    alt="Aero"></div>
-            <p>Please wait...</p>
-        </div>
-    </div>
+
+    <!-- Main Search -->
+
+
+
+    <!-- Left Sidebar -->
+    <%- include('./partials/sidebar.ejs') %>
+
 
         <section class="content">
             <div class="body_scroll">
@@ -42,31 +62,27 @@
                                         </thead>
                                         <tbody>
                                 
-                                            <% listData.forEach(listData=> { %>
+                                            <% for(let i = 0; i < category.length; i++) { %>
                                                 <tr>
                                                     
                                                     <td data-breakpoints="sm xs">
                                                         <h5>
-                                                            <%= listData.category %>
+                                                            <%= category[i].category %>
                                                         </h5>
                                                     </td>
                                                     <td data-breakpoints="xs"><span class="text-muted">
-                                                        <%= listData.list %>
+                                                        <%= category[i].list %>
                                                     </span></td>
                                                     <td  data-breakpoints="xs md"><span class="text-muted">
-                                                            <%= listData.offer %>
+                                                            <%= category[i].offer %>
                                                         </span></td>
                                                   
                                                     <td data-breakpoints="sm xs md">
-                                                        <a href="/admin/producEdit"
-                                                            class="btn btn-default waves-effect waves-float btn-sm waves-green"><i
-                                                                class="zmdi zmdi-edit"></i></a>
-                                                        <a href="/admin/productDelete"
-                                                            class="btn btn-default waves-effect waves-float btn-sm waves-red"><i
-                                                                class="zmdi zmdi-delete"></i></a>
+                                                        <a href="/admin/categoryEdit/<%= category[i]._id %>" class="btn btn-outline-secondary" style="width: 100px;background-color:rgb(0, 0, 0);">Edit</a>
+
                                                     </td>
                                                 </tr>
-                                            <% }) %>
+                                            <% } %>
                                         </tbody>    
                                     </table>
                                 </div>
@@ -74,16 +90,19 @@
                             <div class="card">
                                 <div class="body">
                                     <ul class="pagination pagination-primary m-b-0">
-                                        <li class="page-item"><a class="page-link" href="javascript:void(0);"><i
-                                                    class="zmdi zmdi-arrow-left"></i></a></li>
-                                        <li class="page-item active"><a class="page-link"
-                                                href="javascript:void(0);">1</a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
-                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">4</a></li>
-                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">
-                                                <i class="zmdi zmdi-arrow-right"></i></a></li>
+                                        <% if(currentPage > 1) { %>
+                                            <li class="page-item"><a class="page-link" href="?page=<%= currentPage - 1 %>"><i class="zmdi zmdi-arrow-left"></i></a></li>
+                                        <% } %>
+                                        <% for(let i = 1; i <= totalPages; i++) { %>
+                                            <% if(i === currentPage) { %>
+                                                <li class="page-item active"><a class="page-link" href="#"><%= i %></a></li>
+                                            <% } else { %>
+                                                <li class="page-item"><a class="page-link" href="?page=<%= i %>"><%= i %></a></li>
+                                            <% } %>
+                                        <% } %>
+                                        <% if(currentPage < totalPages) { %>
+                                            <li class="page-item"><a class="page-link" href="?page=<%= currentPage + 1 %>"><i class="zmdi zmdi-arrow-right"></i></a></li>
+                                        <% } %>
                                     </ul>
                                 </div>
                             </div>
@@ -92,5 +111,14 @@
                 </div>
             </div>
         </section>
+        <!-- Jquery Core Js -->
+        <script src="/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+        <script src="/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+
+
+
+
 </body>
 
+
+</html>

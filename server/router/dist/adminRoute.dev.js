@@ -32,9 +32,11 @@ router.get("/categorylist", adminCheck.isAdmin, categoryControl.showCategory); /
 router.get("/addCategoryPage", adminCheck.isAdmin, categoryControl.addCategoryPage); // add category page
 
 router.post("/addcategory", adminCheck.isAdmin, categoryControl.addCategory); // add new Category
-// category edit
-//list or unlist category
 
+router.get("/categoryEdit/:id", adminCheck.isAdmin, categoryControl.categoryEdit); // category edit
+
+router.post("/categoryUpdate/:id", adminCheck.isAdmin, categoryControl.categoryUpdate);
+router.get("/categorylist/category", adminCheck.isAdmin, categoryControl.getCategoryPage);
 router.get("/productmanagement", adminCheck.isAdmin, productController.adminProduct); // show  products
 
 router.get("/NewProduct", adminCheck.isAdmin, productController.NewProduct); //admin add products
@@ -42,6 +44,10 @@ router.get("/NewProduct", adminCheck.isAdmin, productController.NewProduct); //a
 router.post("/addProduct", adminCheck.isAdmin, multer.array("image", 4), productController.AddProduct); // go to the add product page
 
 router.get("/ProductStatus/:id", adminCheck.isAdmin, productController.ProductStatus);
+router.get("/productmanagement/products", adminCheck.isAdmin, productController.getproductPage);
+router.get("/productEdit/:id", adminCheck.isAdmin, productController.productEdit);
+router.post("/ProductUpdate/:id", adminCheck.isAdmin, multer.array("image", 4), productController.productupdate);
+router.get("/productImageDelete/:id", adminCheck.isAdmin, multer.array("image", 4), productController.productImageDelete);
 router.get("/userManagement", adminCheck.isAdmin, adminController.adminShowUsers);
 router.get("/userManagement/users", adminCheck.isAdmin, adminController.getUsersPage);
 router.get("/userStatus/:id", adminCheck.isAdmin, adminController.userStatus);

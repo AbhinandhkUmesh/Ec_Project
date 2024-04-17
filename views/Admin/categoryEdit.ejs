@@ -1,0 +1,70 @@
+<!doctype html>
+<html class="no-js " lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
+
+    <title>AnB Store</title>
+
+    <!-- Favicon-->
+    <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="/assets/css/style.min.css">
+</head>
+
+<body class="theme-blush">
+
+    <!-- Left Sidebar -->
+    <%- include('./partials/sidebar.ejs') %>
+        <section class="content">
+            <div class="body_scroll">
+                <div class="block-header">
+                    <div class="row">
+                        <div class="col-lg-7 col-md-6 col-sm-12">
+                            <h2>Update Category</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-md-6">
+                            <div class="card-body">
+                                <form method="post" action="/admin/categoryUpdate/<%= category._id %>">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Category</label>
+                                        <input type="text" class="form-control" id="name" name="category"
+                                        value="<%= category.category%>">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="offer" class="form-label">Offer</label>
+                                        <input type="number" class="form-control" id="offer" name="offer"
+                                        value="<%= category.offer%>">
+                                    </div>
+                                  
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+          <!-- Jquery Core Js -->
+          <script src="/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+          <script src="/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+  
+  
+  
+
+  
+  </body>
+  
+  
+  </html>

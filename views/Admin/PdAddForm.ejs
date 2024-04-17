@@ -1,9 +1,35 @@
-   <!-- Sidebar -->
-   <%- include('./partials/sidebar.ejs') %>
+<!doctype html>
+<html class="no-js " lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
+
+    <title>AnB Store</title>
+
+    <!-- Favicon-->
+    <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="/assets/css/style.min.css">
+</head>
+
 <body class="theme-blush">
 
+    <!-- Page Loader -->
+
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <!-- Main Search -->
 
 
+
+    <!-- Left Sidebar -->
+    <%- include('./partials/sidebar.ejs') %>
         <section class="content">
             <div class="body_scroll">
                 <div class="block-header">
@@ -23,12 +49,12 @@
                                         <input type="text" class="form-control" id="name" name="name" placeholder="Enter Product Name">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="category" class="form-label">Category</label>
+                                        <label for="productCategory" class="form-label">Category</label>
                                         <select class="form-control" id="productCategory" name="category" required>
     
                                             <option value="" selected disabled>Choose a category</option>
                                             <% for(let a of category) { %>
-                                                <option value="<%=a.name %>"><%=a.category %></option> 
+                                                <option value="<%=a._id%>"><%=a.category%></option> 
                                             <% } %>
                                           </select>
                                     </div>
@@ -42,7 +68,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="image" class="form-label">Image</label>
-                                        <input type="file" class="form-control" id="image" name="image">
+                                        <input type="file" class="form-control" id="image" name="image" multiple>
+                                        <div id="imagePreview" class="mt-3"></div>
                                     </div>
     
                                     <div class="mb-3">
@@ -61,6 +88,7 @@
                                         <label for="catOffer" class="form-label">Category Offer</label>
                                         <input type="number" class="form-control" id="catOffer" name="catOffer" placeholder="Enter Category Offer">
                                     </div>
+                                    
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
                             </div>
@@ -70,6 +98,37 @@
                 
             </div>
         </section>
-   
+        <script>
+            document.getElementById('image').addEventListener('change', function (event) {
+                const files = event.target.files;
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.innerHTML = ''; // Clear previous previews
+    
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+    
+                    reader.onload = function (e) {
+                        const imgElement = document.createElement('img');
+                        imgElement.src = e.target.result;
+                        imgElement.width = 100; // Set desired width
+                        imgElement.classList.add('preview-image');
+                        imagePreview.appendChild(imgElement);
+                    }
+    
+                    reader.readAsDataURL(file);
+                }
+            });
+        </script>
+        <!-- Jquery Core Js -->
+        <script src="/assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+        <script src="/assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+
+
+
+
+
 </body>
 
+
+</html>
