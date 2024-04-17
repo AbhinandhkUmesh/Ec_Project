@@ -107,9 +107,9 @@ const addCategory = async (req, res) => {
 const categoryEdit = async (req, res) => {
     try {
         const categoryId = req.params.id;
-        console.log("===========",categoryId)
+      
         const categoryData = await categoryModel.findOne({_id:categoryId});
-        console.log("=======++===",categoryData)
+      
         res.render('categoryedit', {
             Username: req.session.Username,
             category: categoryData,
@@ -126,15 +126,12 @@ const categoryUpdate = async (req,res) => {
         const categoryId = req.params.id
         const  updateData = req.body
         console.log(req.body);
-        console.log("=++++++++",categoryId);
-        console.log("=++++====++++",updateData);
 
-        const dataUpdate = await categoryModel.updateOne({_id:categoryId},{$set:{
+        await categoryModel.updateOne({_id:categoryId},{$set:{
             category:updateData.category,
             offer:updateData.offer
         }})
 
-        console.log(dataUpdate);
 
 } catch (error) {
     console.error("Error updating product:", error);

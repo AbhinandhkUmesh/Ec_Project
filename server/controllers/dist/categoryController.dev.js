@@ -201,38 +201,36 @@ var categoryEdit = function categoryEdit(req, res) {
         case 0:
           _context5.prev = 0;
           categoryId = req.params.id;
-          console.log("===========", categoryId);
-          _context5.next = 5;
+          _context5.next = 4;
           return regeneratorRuntime.awrap(categoryModel.findOne({
             _id: categoryId
           }));
 
-        case 5:
+        case 4:
           categoryData = _context5.sent;
-          console.log("=======++===", categoryData);
           res.render('categoryedit', {
             Username: req.session.Username,
             category: categoryData
           });
-          _context5.next = 14;
+          _context5.next = 12;
           break;
 
-        case 10:
-          _context5.prev = 10;
+        case 8:
+          _context5.prev = 8;
           _context5.t0 = _context5["catch"](0);
           console.error("Error in category edit:", _context5.t0);
           res.status(500).send("Internal Server Error");
 
-        case 14:
+        case 12:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[0, 10]]);
+  }, null, null, [[0, 8]]);
 };
 
 var categoryUpdate = function categoryUpdate(req, res) {
-  var categoryId, updateData, dataUpdate;
+  var categoryId, updateData;
   return regeneratorRuntime.async(function categoryUpdate$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
@@ -241,9 +239,7 @@ var categoryUpdate = function categoryUpdate(req, res) {
           categoryId = req.params.id;
           updateData = req.body;
           console.log(req.body);
-          console.log("=++++++++", categoryId);
-          console.log("=++++====++++", updateData);
-          _context6.next = 8;
+          _context6.next = 6;
           return regeneratorRuntime.awrap(categoryModel.updateOne({
             _id: categoryId
           }, {
@@ -253,24 +249,22 @@ var categoryUpdate = function categoryUpdate(req, res) {
             }
           }));
 
-        case 8:
-          dataUpdate = _context6.sent;
-          console.log(dataUpdate);
-          _context6.next = 16;
+        case 6:
+          _context6.next = 12;
           break;
 
-        case 12:
-          _context6.prev = 12;
+        case 8:
+          _context6.prev = 8;
           _context6.t0 = _context6["catch"](0);
           console.error("Error updating product:", _context6.t0);
           res.status(500).send("Internal Server Error");
 
-        case 16:
+        case 12:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 12]]);
+  }, null, null, [[0, 8]]);
 };
 
 module.exports = {

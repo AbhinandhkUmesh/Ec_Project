@@ -1,9 +1,7 @@
 const userModel = require('../models/usermodel');
 const bcrypt = require('bcrypt');
 const otpSend = require("../middleware/otp");
-const {
-    log
-} = require('console');
+
 
 const index = async (req, res) => {
     try {
@@ -29,7 +27,7 @@ const login = (req, res) => {
         } else {
             res.render('userlogin', {
                 isUser: req.session.isUser,
-                message
+                error:req.query.error
             });
         }
     } catch (error) {
@@ -40,10 +38,10 @@ const login = (req, res) => {
 
 const signupPage = (req, res) => {
     try {
-        let message = req.query.message;
+       
         res.render("signup", {
             isUser: req.session.isUser,
-            message
+            error:req.query.error
         });
         console.log("User signup");
     } catch (error) {
@@ -53,29 +51,41 @@ const signupPage = (req, res) => {
 };
 
 var OTP;
-const signUp = (req, res) => {
+const signUp = async (req, res) => {
     try {
         console.log(req.body);
-        req.session.userDetails = req.body;
-
-        message = ""
         const email = req.body.email;
-        console.log("sending otp");
-        const otpData = otpSend.sendmail(email);
-        console.log(otpData);
-        OTP = otpData;
-        console.log("OTP received is: " + otpData);
-        res.render("otppage", {
-            OTP,
-            email,
-            message,
-            isUser: req.session.isUser,
+        const username = req.body.username; // Assuming username is in req.body
+        const alreadyExist = await userModel.findOne({
+            $or: [{ email: email }, { username: username }]
         });
-        console.log("User OTP Page");
+
+        if (alreadyExist) {
+            if (alreadyExist.email === email) {
+                return res.redirect('/signup?error=Email Already Exist');
+            } else if (alreadyExist.username === username) {
+                return res.redirect('/signup?error=Username Already Exist');
+            }
+        } else {
+            req.session.userDetails = req.body;
+            console.log("sending otp");
+            const otpData = otpSend.sendmail(email);
+            console.log(otpData);
+            OTP = otpData;
+            console.log("OTP received is: " + otpData);
+            return res.render("otppage", {
+                OTP,
+                email,
+                error,
+                isUser: req.session.isUser,
+            });
+        }
     } catch (err) {
-        console.log("error in veriy otp" + err);
+        console.log("Error in signUp: ", err);
+        return res.status(500).send("Internal Server Error");
     }
 };
+
 
 const authOTP = async (req, res) => {
     try {
@@ -106,7 +116,7 @@ const authOTP = async (req, res) => {
         } else {
             res.render("otppage", {
                 email: req.session.userDetails.email,
-                message: "Invalid OTP entered",
+                error: "Invalid OTP entered",
                 isUser: req.session.isUser
             });
         }
@@ -130,7 +140,7 @@ const resendOTP = (req, res) => {
             "OTP received after 60s is: " +   + " and timestamp is:  " + otpRData
         );
         req.session.otpTimestamp = otpRData[1];
-        message = req.session.otpError;
+        error = req.session.otpError;
         res.redirect("/otp");
         console.log("USER RESEND OTP PAGE");
     } catch (error) {
@@ -144,7 +154,7 @@ const otpPage = (req, res) => {
         let email = req.session.email;
         res.render('otppage', {
             isUser: req.session.isUser,
-            message: "Invalid OTP entered",
+            error: "Invalid OTP entered",
             email
         });
     } catch (error) {
