@@ -52,7 +52,7 @@
                                 <div class="table-responsive">
                                     <table class="table table-hover product_item_list c_table theme-color mb-0">
                                         <thead>
-                                            <tr>
+                                            <tr style="text-align:center;">
         
                                                 <th data-breakpoints="sm xs">Category</th>
                                                 <th data-breakpoints="xs">list</th>
@@ -63,8 +63,7 @@
                                         <tbody>
                                 
                                             <% for(let i = 0; i < category.length; i++) { %>
-                                                <tr>
-                                                    
+                                                <tr style="text-align:center;">  
                                                     <td data-breakpoints="sm xs">
                                                         <h5>
                                                             <%= category[i].category %>
@@ -79,7 +78,13 @@
                                                   
                                                     <td data-breakpoints="sm xs md">
                                                         <a href="/admin/categoryEdit/<%= category[i]._id %>" class="btn btn-outline-secondary" style="width: 100px;background-color:rgb(0, 0, 0);">Edit</a>
-
+                                                        <% if (category[i].status) { %>
+                                                            <a href="/admin/categoryStatus/<%= category[i]._id %>?status=<%= category[i].status %>" class="btn btn-outline-secondary" style="width: 100px;background-color:green;">List</a>
+                                                        
+                                                            <% } else { %>
+                                                            <a href="/admin/categoryStatus/<%= category[i]._id %>?status=<%= category[i].status %>" class="btn btn-outline-secondary" style="width: 100px;background-color:red;">Unlist</a>
+                                                        <% } %>
+                                                    
                                                     </td>
                                                 </tr>
                                             <% } %>

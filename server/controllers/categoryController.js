@@ -1,6 +1,9 @@
-const categoryModel = require('../models/categorymodel')
-
+const categoryModel = require('../models/categorymodel');
 const productModel = require('../models/productmodel');
+const {
+    ObjectId
+} = require('mongoose').Types;
+
 
 const showCategory = async (req, res) => {
     try {
@@ -19,11 +22,11 @@ const showCategory = async (req, res) => {
 
 
         // Extracting any error message from the query parameters
-        const categoryFound = req.query.err;
+        req.query.err;
 
         res.render("categories", {
             category,
-            categoryFound,
+            error: req.query.error,
             Username: req.session.username,
             currentPage: page,
             totalPages
@@ -52,8 +55,8 @@ const addCategoryPage = async (req, res) => {
     try {
         console.log("entry 1")
         res.render('addCategoryPage', {
-            Username: req.session.username,
-            err:req.query.err
+            Username:req.session.username,
+            error:req.query.error
         })
         console.log("ADMIN WILL ADD CATEGORY");
 
@@ -81,7 +84,7 @@ const addCategory = async (req, res) => {
         console.log(categoryFound);
 
         if (categoryFound) {
-            return res.redirect("/admin/addCategoryPage?err=Category already exists");
+            return res.redirect("/admin/addCategoryPage?error=Category already exists");
         } else {
             if (category) {
                 // Creating a new category document
@@ -113,6 +116,7 @@ const categoryEdit = async (req, res) => {
         res.render('categoryedit', {
             Username: req.session.Username,
             category: categoryData,
+            error:req.query.error
         });
 
     } catch (error) {
@@ -131,7 +135,7 @@ const categoryUpdate = async (req,res) => {
             category:updateData.category,
             offer:updateData.offer
         }})
-
+        return res.redirect("/admin/categorylist");
 
 } catch (error) {
     console.error("Error updating product:", error);
@@ -139,12 +143,51 @@ const categoryUpdate = async (req,res) => {
 }
 }
 
+
+const categoryStatus = async (req, res) => {
+    try {
+        const categoryid = req.params.id;
+        const categoryStatus = req.query.status;
+        console.log("categoryStatus check1")
+        let updatedStatus;
+        if (categoryStatus === "true") {
+            console.log("ProductStatus check2=========")
+            updatedStatus = await categoryModel.updateOne({
+                _id: new ObjectId(categoryid)
+            }, {
+                $set: {
+                    status: false
+                }
+            });
+
+        } else {
+            console.log("categoryStatus check3 =========")
+            console.log(categoryid)
+            updatedStatus = await categoryModel.updateOne({
+                _id: new ObjectId(categoryid)
+            }, {
+                $set: {
+                    status: true
+                }
+            });
+
+        }
+
+        console.log("updatedStatus :", updatedStatus);
+        console.log("categoryStatus check4 ========")
+        res.redirect('/admin/categorylist');
+    } catch (error) {
+        console.error("Error updating user status:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
 module.exports = {
     showCategory,
     addCategory,
     addCategoryPage,
-   
     getCategoryPage,
     categoryEdit,
-    categoryUpdate
+    categoryUpdate,
+    categoryStatus
 }

@@ -4,8 +4,10 @@ var categoryModel = require('../models/categorymodel');
 
 var productModel = require('../models/productmodel');
 
+var ObjectId = require('mongoose').Types.ObjectId;
+
 var showCategory = function showCategory(req, res) {
-  var page, limit, skip, totalcategory, totalPages, category, categoryFound;
+  var page, limit, skip, totalcategory, totalPages, category;
   return regeneratorRuntime.async(function showCategory$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -36,10 +38,10 @@ var showCategory = function showCategory(req, res) {
           category = _context.sent;
           // Fetch users for the current page
           // Extracting any error message from the query parameters
-          categoryFound = req.query.err;
+          req.query.err;
           res.render("categories", {
             category: category,
-            categoryFound: categoryFound,
+            error: req.query.error,
             Username: req.session.username,
             currentPage: page,
             totalPages: totalPages
@@ -109,7 +111,7 @@ var addCategoryPage = function addCategoryPage(req, res) {
             console.log("entry 1");
             res.render('addCategoryPage', {
               Username: req.session.username,
-              err: req.query.err
+              error: req.query.error
             });
             console.log("ADMIN WILL ADD CATEGORY");
           } catch (error) {
@@ -152,7 +154,7 @@ var addCategory = function addCategory(req, res) {
             break;
           }
 
-          return _context4.abrupt("return", res.redirect("/admin/addCategoryPage?err=Category already exists"));
+          return _context4.abrupt("return", res.redirect("/admin/addCategoryPage?error=Category already exists"));
 
         case 11:
           if (!category) {
@@ -210,7 +212,8 @@ var categoryEdit = function categoryEdit(req, res) {
           categoryData = _context5.sent;
           res.render('categoryedit', {
             Username: req.session.Username,
-            category: categoryData
+            category: categoryData,
+            error: req.query.error
           });
           _context5.next = 12;
           break;
@@ -250,21 +253,88 @@ var categoryUpdate = function categoryUpdate(req, res) {
           }));
 
         case 6:
-          _context6.next = 12;
-          break;
+          return _context6.abrupt("return", res.redirect("/admin/categorylist"));
 
-        case 8:
-          _context6.prev = 8;
+        case 9:
+          _context6.prev = 9;
           _context6.t0 = _context6["catch"](0);
           console.error("Error updating product:", _context6.t0);
           res.status(500).send("Internal Server Error");
 
-        case 12:
+        case 13:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 8]]);
+  }, null, null, [[0, 9]]);
+};
+
+var categoryStatus = function categoryStatus(req, res) {
+  var categoryid, _categoryStatus, updatedStatus;
+
+  return regeneratorRuntime.async(function categoryStatus$(_context7) {
+    while (1) {
+      switch (_context7.prev = _context7.next) {
+        case 0:
+          _context7.prev = 0;
+          categoryid = req.params.id;
+          _categoryStatus = req.query.status;
+          console.log("categoryStatus check1");
+
+          if (!(_categoryStatus === "true")) {
+            _context7.next = 11;
+            break;
+          }
+
+          console.log("ProductStatus check2=========");
+          _context7.next = 8;
+          return regeneratorRuntime.awrap(categoryModel.updateOne({
+            _id: new ObjectId(categoryid)
+          }, {
+            $set: {
+              status: false
+            }
+          }));
+
+        case 8:
+          updatedStatus = _context7.sent;
+          _context7.next = 16;
+          break;
+
+        case 11:
+          console.log("categoryStatus check3 =========");
+          console.log(categoryid);
+          _context7.next = 15;
+          return regeneratorRuntime.awrap(categoryModel.updateOne({
+            _id: new ObjectId(categoryid)
+          }, {
+            $set: {
+              status: true
+            }
+          }));
+
+        case 15:
+          updatedStatus = _context7.sent;
+
+        case 16:
+          console.log("updatedStatus :", updatedStatus);
+          console.log("categoryStatus check4 ========");
+          res.redirect('/admin/categorylist');
+          _context7.next = 25;
+          break;
+
+        case 21:
+          _context7.prev = 21;
+          _context7.t0 = _context7["catch"](0);
+          console.error("Error updating user status:", _context7.t0);
+          res.status(500).send("Internal Server Error");
+
+        case 25:
+        case "end":
+          return _context7.stop();
+      }
+    }
+  }, null, null, [[0, 21]]);
 };
 
 module.exports = {
@@ -273,5 +343,6 @@ module.exports = {
   addCategoryPage: addCategoryPage,
   getCategoryPage: getCategoryPage,
   categoryEdit: categoryEdit,
-  categoryUpdate: categoryUpdate
+  categoryUpdate: categoryUpdate,
+  categoryStatus: categoryStatus
 };

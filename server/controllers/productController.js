@@ -1,42 +1,36 @@
 const productModel = require('../models/productmodel');
 const categoryModel = require('../models/categorymodel');
-const productData = require('../models/productmodel');
+
+
 const {
     ObjectId
 } = require('mongoose').Types;
 
+// Node.js route handlers
 const adminProduct = async (req, res) => {
     try {
         const page = req.query.page || 1; // Get page number from query parameters or default to 1
-        const limit = 6; // Number of documents per page
+        const limit = 6; // Number of products per page
         const skip = (page - 1) * limit; // Calculate the offset
 
-        const totalcategory = await categoryModel.countDocuments({}); // Get total number of users
+        const totalProducts = await productModel.countDocuments({}); // Get total number of products
+        const totalPages = Math.ceil(totalProducts / limit); // Calculate total pages
 
-        const totalPages = Math.ceil(totalcategory / limit); // Calculate total pages
-
-        let products = await productModel.find({}).sort({
-                _id: -1
-            }).sort({
-                name: -1
-            })
+        const products = await productModel.find({})
+            .sort({ _id: -1, name: -1 })
             .skip(skip)
-            .limit(limit).populate('category'); // Find all products and sort by _id in descending order
-
-        if (req.session.prodData) {
-            products = req.session.prodData; // If session data exists, use it instead
-        }
+            .limit(limit)
+            .populate('category'); // Find all products and sort by _id in descending order
 
         // Render the view with the retrieved products
         res.render("productManagement", {
             Username: req.session.Username,
             products: products,
-            // Pass products array to the view
-
+            error: req.query.error,
             currentPage: page,
-            totalPages
+            totalPages: totalPages // Pass totalPages to the view
         });
-        console.log("product displayed :", products);
+        console.log("Products displayed :", products);
     } catch (error) {
         console.error("Error occurred:", error);
         res.status(500).send("Error occurred");
@@ -48,19 +42,19 @@ const getproductPage = async (req, res) => {
         const page = parseInt(req.query.page) || 1; // Current page number, default to 1 if not provided
         const limit = 6; // Number of items per page
         const skip = (page - 1) * limit; // Number of items to skip based on the current page
-        const users = await userModel.find({
-            isAdmin: 0
-        }).skip(skip).limit(limit).sort({
-            Username: -1
-        });
-        res.json(users);
+
+        const products = await productModel.find({})
+            .skip(skip)
+            .limit(limit)
+            .sort({ name: -1 });
+
+        res.json(products);
     } catch (error) {
-        console.log("Error fetching users:", error);
-        res.status(500).json({
-            error: "Internal Server Error"
-        });
+        console.log("Error fetching products:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
 
 const NewProduct = async (req, res) => {
     const category = await categoryModel.find({}).sort({
@@ -71,7 +65,8 @@ const NewProduct = async (req, res) => {
         console.log("entry 1")
         res.render('PdAddForm', {
             Username: req.session.Username,
-            category
+            category,
+            error:req.query.error,
         })
         console.log("ADMIN WILL ADD PRODUCT");
 
@@ -101,23 +96,11 @@ const AddProduct = async (req, res) => {
             return res.status(400).send("No files were uploaded.");
 
         }
-        // // Extract image data from request
-        // const imageData = req.files
 
         console.log("Name: " + name +
             " Category: " + category +
             " rate: " + rate)
 
-        // // Extract image paths
-
-        // const imagePaths = [];
-        // for (let i = 0; i < imageData.length; i++) {
-        //     imagePaths.push(imageData[i].path
-        //         .replace(/\\/g, "/")
-        //         .replace("upload", "")
-        //         .replace("/admin", "/"));
-        // }
-        // console.log("imagePath: ", imagePaths)
         const files = req.files
         const images = []
         files.forEach((files) => {
@@ -131,8 +114,7 @@ const AddProduct = async (req, res) => {
         });
 
         if (existingProduct) {
-            req.session.error = "Product already exists, please update its stock";
-            return res.redirect('/admin/NewProduct');
+            return res.redirect('/admin/NewProduct?error=Product already exists, please update');
         }
         console.log(category, "cAT FID")
 
@@ -164,14 +146,9 @@ const AddProduct = async (req, res) => {
 
 
 const ProductStatus = async (req, res) => {
-    const Productid = req.params.id;
-    const ProductStatus = req.query.status;
-
-    if (!req.session.isAdmin) {
-        return res.redirect('/admin');
-    }
-
     try {
+        const Productid = req.params.id;
+        const ProductStatus = req.query.status;
         console.log("ProductStatus check1")
         let updatedStatus;
         if (ProductStatus === "true") {
@@ -301,7 +278,54 @@ const productImageDelete = async (req, res) => {
 }
 
 
+
+// =====User Side===========
+
+const product = (req, res) => {
+    res.render('product', {
+        isUser: req.session.isUser
+    })
+}
+
+const productdetail = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        console.log("Product ID:", productId);
+
+        const productData = await productModel.findOne({ _id: productId, status: true });
+        if (!productData) {
+            // Product not found or unavailable
+            return res.status(404).send("Product not found or unavailable.");
+        }
+
+        console.log("Product Data:", productData);
+
+        const categoryData = await categoryModel.findById(productData.category);
+        if (!categoryData) {
+            // Category not found or unavailable
+            return res.status(404).send("Category not found or unavailable.");
+        }
+
+        console.log("Category Data:", categoryData);
+
+        const relatedProduct = await productModel.find({ category: productData.category, status: true }).limit(4);
+        console.log("Related Products:", relatedProduct);
+
+        res.render('productDetail', {
+            isUser: req.session.isUser,
+            products: productData,
+            category: categoryData,
+            relatedProduct: relatedProduct
+        });
+    } catch (error) {
+        console.error("Error in productdetail:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+
 module.exports = {
+    // Admin
     adminProduct,
     NewProduct,
     AddProduct,
@@ -309,6 +333,11 @@ module.exports = {
     getproductPage,
     productEdit,
     productupdate,
-    productImageDelete
+    productImageDelete,
+
+    // User
+    product,
+    productdetail
+
 
 };

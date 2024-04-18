@@ -1,15 +1,23 @@
 const userModel = require('../models/usermodel');
 const bcrypt = require('bcrypt');
 const otpSend = require("../middleware/otp");
-
+const { isUser } = require('../middleware/usermiddleware');
+const productModel = require('../models/productmodel');
+const categoryModel = require('../models/categorymodel')
 
 const index = async (req, res) => {
     try {
+        const category = await categoryModel.find({})
+        let products = await productModel.find({})
+        console.log("=====",products)
         if (req.session.isUser) {
             res.redirect('/home');
         } else {
-            res.render('home', {
-                isUser: req.session.isUser
+            res.render('home',{
+                isUser:req.session.isUser,
+                error:req.session.error,
+                category,
+                products
             });
             console.log("index Page");
         }
@@ -21,7 +29,7 @@ const index = async (req, res) => {
 
 const login = (req, res) => {
     try {
-        let message = req.query.error;
+
         if (req.session.isUser) {
             res.redirect('/home');
         } else {
@@ -53,38 +61,47 @@ const signupPage = (req, res) => {
 var OTP;
 const signUp = async (req, res) => {
     try {
-        console.log(req.body);
         const email = req.body.email;
-        const username = req.body.username; // Assuming username is in req.body
+        const Username = req.body.Username; // Assuming username is in req.body
+
+        // Check if email or username already exists
         const alreadyExist = await userModel.findOne({
-            $or: [{ email: email }, { username: username }]
+            $or: [{ email: email }, { Username: Username }]
         });
 
         if (alreadyExist) {
             if (alreadyExist.email === email) {
                 return res.redirect('/signup?error=Email Already Exist');
-            } else if (alreadyExist.username === username) {
+            } else if (alreadyExist.Username === Username) {
                 return res.redirect('/signup?error=Username Already Exist');
             }
-        } else {
-            req.session.userDetails = req.body;
-            console.log("sending otp");
-            const otpData = otpSend.sendmail(email);
-            console.log(otpData);
-            OTP = otpData;
-            console.log("OTP received is: " + otpData);
-            return res.render("otppage", {
-                OTP,
-                email,
-                error,
-                isUser: req.session.isUser,
-            });
-        }
+        } 
+
+        // Set user details in session
+        req.session.userDetails = req.body;
+
+        // Assuming otpSend.sendmail(email) is an asynchronous function
+        console.log("sending otp");
+        const otpData = await otpSend.sendmail(email);
+        console.log(otpData);
+        
+        // Store OTP in session
+        req.session.OTP = otpData;
+
+        // Redirect to OTP verification page
+        return res.render("otppage", {
+            OTP: otpData,
+            email: email,
+            error: req.query.error,
+            isUser: req.session.isUser,
+        });
+      
     } catch (err) {
         console.log("Error in signUp: ", err);
         return res.status(500).send("Internal Server Error");
     }
 };
+
 
 
 const authOTP = async (req, res) => {
@@ -96,7 +113,9 @@ const authOTP = async (req, res) => {
             console.log("=====2st test=====");
             // Check if userDetails and password exist in the session
             if (!req.session.userDetails || !req.session.userDetails.password) {
+                res.redirect('/signup?error=User details or password not found')
                 throw new Error("User details or password not found in session.");
+               
             }
 
             // Hash the password
@@ -167,15 +186,15 @@ const checkUserIn = async (req, res) => {
     try {
         console.log("check 1");
         const email = req.body.email;
-        const userProfile = await userModel.findOne({
-            email: email
-        });
+        const userProfile = await userModel.findOne({ email: email });
         console.log(email, "check 2", userProfile);
 
         if (!userProfile) {
             console.log("User not found in the database.");
             req.session.error = "Not a registered user. Please register first.";
-            return res.redirect('/login');
+            return res.redirect('/login?error=User not found');
+        } else if (!userProfile.status) {
+            return res.redirect('/login?error=Your account is Blocked');
         }
 
         console.log(req.body.password);
@@ -192,7 +211,7 @@ const checkUserIn = async (req, res) => {
         } else {
             console.log("Incorrect password");
             req.session.error = "Incorrect password. Please try again.";
-            return res.redirect("/login");
+            return res.redirect("/login?error=Incorrect password");
         }
     } catch (error) {
         console.log("Error validating user:", error);
@@ -202,10 +221,15 @@ const checkUserIn = async (req, res) => {
 };
 
 
+
 const redirectUser = async (req, res) => {
     try {
+        const category = await categoryModel.find({})
+        let products = await productModel.find({})
         res.render("home", {
-            isUser: req.session.isUser
+            isUser: req.session.isUser,
+            products,
+            category
         });
     } catch (error) {
         console.log("Error redirecting user: " + error);
@@ -251,16 +275,7 @@ const logout = (req, res) => {
 };
 
 
-const productdetail = (req, res) => {
-    res.render('product-detail', {
-        isUser: req.session.isUser
-    })
-}
-const product = (req, res) => {
-    res.render('product', {
-        isUser: req.session.isUser
-    })
-}
+
 
 module.exports = {
     index,
@@ -275,7 +290,6 @@ module.exports = {
     signUp,
     resendOTP,
 
-    productdetail,
-    product
+  
 
 };

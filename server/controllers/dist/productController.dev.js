@@ -4,12 +4,11 @@ var productModel = require('../models/productmodel');
 
 var categoryModel = require('../models/categorymodel');
 
-var productData = require('../models/productmodel');
+var ObjectId = require('mongoose').Types.ObjectId; // Node.js route handlers
 
-var ObjectId = require('mongoose').Types.ObjectId;
 
 var adminProduct = function adminProduct(req, res) {
-  var page, limit, skip, totalcategory, totalPages, products;
+  var page, limit, skip, totalProducts, totalPages, products;
   return regeneratorRuntime.async(function adminProduct$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -17,61 +16,56 @@ var adminProduct = function adminProduct(req, res) {
           _context.prev = 0;
           page = req.query.page || 1; // Get page number from query parameters or default to 1
 
-          limit = 6; // Number of documents per page
+          limit = 6; // Number of products per page
 
           skip = (page - 1) * limit; // Calculate the offset
 
           _context.next = 6;
-          return regeneratorRuntime.awrap(categoryModel.countDocuments({}));
+          return regeneratorRuntime.awrap(productModel.countDocuments({}));
 
         case 6:
-          totalcategory = _context.sent;
-          // Get total number of users
-          totalPages = Math.ceil(totalcategory / limit); // Calculate total pages
+          totalProducts = _context.sent;
+          // Get total number of products
+          totalPages = Math.ceil(totalProducts / limit); // Calculate total pages
 
           _context.next = 10;
           return regeneratorRuntime.awrap(productModel.find({}).sort({
-            _id: -1
-          }).sort({
+            _id: -1,
             name: -1
           }).skip(skip).limit(limit).populate('category'));
 
         case 10:
           products = _context.sent;
-
           // Find all products and sort by _id in descending order
-          if (req.session.prodData) {
-            products = req.session.prodData; // If session data exists, use it instead
-          } // Render the view with the retrieved products
-
-
+          // Render the view with the retrieved products
           res.render("productManagement", {
             Username: req.session.Username,
             products: products,
-            // Pass products array to the view
+            error: req.query.error,
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages // Pass totalPages to the view
+
           });
-          console.log("product displayed :", products);
-          _context.next = 20;
+          console.log("Products displayed :", products);
+          _context.next = 19;
           break;
 
-        case 16:
-          _context.prev = 16;
+        case 15:
+          _context.prev = 15;
           _context.t0 = _context["catch"](0);
           console.error("Error occurred:", _context.t0);
           res.status(500).send("Error occurred");
 
-        case 20:
+        case 19:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 16]]);
+  }, null, null, [[0, 15]]);
 };
 
 var getproductPage = function getproductPage(req, res) {
-  var page, limit, skip, users;
+  var page, limit, skip, products;
   return regeneratorRuntime.async(function getproductPage$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
@@ -84,22 +78,20 @@ var getproductPage = function getproductPage(req, res) {
           skip = (page - 1) * limit; // Number of items to skip based on the current page
 
           _context2.next = 6;
-          return regeneratorRuntime.awrap(userModel.find({
-            isAdmin: 0
-          }).skip(skip).limit(limit).sort({
-            Username: -1
+          return regeneratorRuntime.awrap(productModel.find({}).skip(skip).limit(limit).sort({
+            name: -1
           }));
 
         case 6:
-          users = _context2.sent;
-          res.json(users);
+          products = _context2.sent;
+          res.json(products);
           _context2.next = 14;
           break;
 
         case 10:
           _context2.prev = 10;
           _context2.t0 = _context2["catch"](0);
-          console.log("Error fetching users:", _context2.t0);
+          console.log("Error fetching products:", _context2.t0);
           res.status(500).json({
             error: "Internal Server Error"
           });
@@ -130,7 +122,8 @@ var NewProduct = function NewProduct(req, res) {
             console.log("entry 1");
             res.render('PdAddForm', {
               Username: req.session.Username,
-              category: category
+              category: category,
+              error: req.query.error
             });
             console.log("ADMIN WILL ADD PRODUCT");
           } catch (error) {
@@ -167,18 +160,7 @@ var AddProduct = function AddProduct(req, res) {
           return _context4.abrupt("return", res.status(400).send("No files were uploaded."));
 
         case 7:
-          // // Extract image data from request
-          // const imageData = req.files
-          console.log("Name: " + name + " Category: " + category + " rate: " + rate); // // Extract image paths
-          // const imagePaths = [];
-          // for (let i = 0; i < imageData.length; i++) {
-          //     imagePaths.push(imageData[i].path
-          //         .replace(/\\/g, "/")
-          //         .replace("upload", "")
-          //         .replace("/admin", "/"));
-          // }
-          // console.log("imagePath: ", imagePaths)
-
+          console.log("Name: " + name + " Category: " + category + " rate: " + rate);
           files = req.files;
           images = [];
           files.forEach(function (files) {
@@ -195,14 +177,13 @@ var AddProduct = function AddProduct(req, res) {
           existingProduct = _context4.sent;
 
           if (!existingProduct) {
-            _context4.next = 17;
+            _context4.next = 16;
             break;
           }
 
-          req.session.error = "Product already exists, please update its stock";
-          return _context4.abrupt("return", res.redirect('/admin/NewProduct'));
+          return _context4.abrupt("return", res.redirect('/admin/NewProduct?error=Product already exists, please update'));
 
-        case 17:
+        case 16:
           console.log(category, "cAT FID"); // // Create new product instance
 
           newProduct = new productModel({
@@ -218,54 +199,46 @@ var AddProduct = function AddProduct(req, res) {
             catOffer: catOffer
           }); // // Save the new product
 
-          _context4.next = 21;
+          _context4.next = 20;
           return regeneratorRuntime.awrap(newProduct.save());
 
-        case 21:
+        case 20:
           console.log("Check 4 added Product:", newProduct);
           return _context4.abrupt("return", res.redirect("/admin/productmanagement?error=success"));
 
-        case 25:
-          _context4.prev = 25;
+        case 24:
+          _context4.prev = 24;
           _context4.t0 = _context4["catch"](0);
           console.error("Error occurred:", _context4.t0);
           res.status(500).send("Error occurred");
 
-        case 29:
+        case 28:
         case "end":
           return _context4.stop();
       }
     }
-  }, null, null, [[0, 25]]);
+  }, null, null, [[0, 24]]);
 };
 
 var ProductStatus = function ProductStatus(req, res) {
-  var Productid, ProductStatus, updatedStatus;
+  var Productid, _ProductStatus, updatedStatus;
+
   return regeneratorRuntime.async(function ProductStatus$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
+          _context5.prev = 0;
           Productid = req.params.id;
-          ProductStatus = req.query.status;
-
-          if (req.session.isAdmin) {
-            _context5.next = 4;
-            break;
-          }
-
-          return _context5.abrupt("return", res.redirect('/admin'));
-
-        case 4:
-          _context5.prev = 4;
+          _ProductStatus = req.query.status;
           console.log("ProductStatus check1");
 
-          if (!(ProductStatus === "true")) {
-            _context5.next = 13;
+          if (!(_ProductStatus === "true")) {
+            _context5.next = 11;
             break;
           }
 
           console.log("ProductStatus check2=========");
-          _context5.next = 10;
+          _context5.next = 8;
           return regeneratorRuntime.awrap(productModel.updateOne({
             _id: new ObjectId(Productid)
           }, {
@@ -274,15 +247,15 @@ var ProductStatus = function ProductStatus(req, res) {
             }
           }));
 
-        case 10:
+        case 8:
           updatedStatus = _context5.sent;
-          _context5.next = 18;
+          _context5.next = 16;
           break;
 
-        case 13:
+        case 11:
           console.log("ProductStatus check3 =========");
           console.log(Productid);
-          _context5.next = 17;
+          _context5.next = 15;
           return regeneratorRuntime.awrap(productModel.updateOne({
             _id: new ObjectId(Productid)
           }, {
@@ -291,33 +264,32 @@ var ProductStatus = function ProductStatus(req, res) {
             }
           }));
 
-        case 17:
+        case 15:
           updatedStatus = _context5.sent;
 
-        case 18:
+        case 16:
           console.log("updatedStatus :", updatedStatus);
           console.log("ProductStatus check4 ========");
           res.redirect('/admin/productmanagement');
-          _context5.next = 27;
+          _context5.next = 25;
           break;
 
-        case 23:
-          _context5.prev = 23;
-          _context5.t0 = _context5["catch"](4);
+        case 21:
+          _context5.prev = 21;
+          _context5.t0 = _context5["catch"](0);
           console.error("Error updating user status:", _context5.t0);
           res.status(500).send("Internal Server Error");
 
-        case 27:
+        case 25:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[4, 23]]);
+  }, null, null, [[0, 21]]);
 };
 
 var productEdit = function productEdit(req, res) {
-  var productId, _productData, categoryData;
-
+  var productId, productData, categoryData;
   return regeneratorRuntime.async(function productEdit$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
@@ -333,8 +305,8 @@ var productEdit = function productEdit(req, res) {
           }));
 
         case 6:
-          _productData = _context6.sent;
-          console.log("Product Data:", _productData);
+          productData = _context6.sent;
+          console.log("Product Data:", productData);
           _context6.next = 10;
           return regeneratorRuntime.awrap(categoryModel.find({}));
 
@@ -342,7 +314,7 @@ var productEdit = function productEdit(req, res) {
           categoryData = _context6.sent;
           res.render('productedit', {
             Username: req.session.Username,
-            product: _productData,
+            product: productData,
             category: categoryData
           });
           _context6.next = 18;
@@ -469,9 +441,91 @@ var productImageDelete = function productImageDelete(req, res) {
       }
     }
   }, null, null, [[0, 10]]);
+}; // =====User Side===========
+
+
+var product = function product(req, res) {
+  res.render('product', {
+    isUser: req.session.isUser
+  });
+};
+
+var productdetail = function productdetail(req, res) {
+  var productId, productData, categoryData, relatedProduct;
+  return regeneratorRuntime.async(function productdetail$(_context9) {
+    while (1) {
+      switch (_context9.prev = _context9.next) {
+        case 0:
+          _context9.prev = 0;
+          productId = req.params.id;
+          console.log("Product ID:", productId);
+          _context9.next = 5;
+          return regeneratorRuntime.awrap(productModel.findOne({
+            _id: productId,
+            status: true
+          }));
+
+        case 5:
+          productData = _context9.sent;
+
+          if (productData) {
+            _context9.next = 8;
+            break;
+          }
+
+          return _context9.abrupt("return", res.status(404).send("Product not found or unavailable."));
+
+        case 8:
+          console.log("Product Data:", productData);
+          _context9.next = 11;
+          return regeneratorRuntime.awrap(categoryModel.findById(productData.category));
+
+        case 11:
+          categoryData = _context9.sent;
+
+          if (categoryData) {
+            _context9.next = 14;
+            break;
+          }
+
+          return _context9.abrupt("return", res.status(404).send("Category not found or unavailable."));
+
+        case 14:
+          console.log("Category Data:", categoryData);
+          _context9.next = 17;
+          return regeneratorRuntime.awrap(productModel.find({
+            category: productData.category,
+            status: true
+          }).limit(4));
+
+        case 17:
+          relatedProduct = _context9.sent;
+          console.log("Related Products:", relatedProduct);
+          res.render('productDetail', {
+            isUser: req.session.isUser,
+            products: productData,
+            category: categoryData,
+            relatedProduct: relatedProduct
+          });
+          _context9.next = 26;
+          break;
+
+        case 22:
+          _context9.prev = 22;
+          _context9.t0 = _context9["catch"](0);
+          console.error("Error in productdetail:", _context9.t0);
+          res.status(500).send("Internal Server Error");
+
+        case 26:
+        case "end":
+          return _context9.stop();
+      }
+    }
+  }, null, null, [[0, 22]]);
 };
 
 module.exports = {
+  // Admin
   adminProduct: adminProduct,
   NewProduct: NewProduct,
   AddProduct: AddProduct,
@@ -479,5 +533,8 @@ module.exports = {
   getproductPage: getproductPage,
   productEdit: productEdit,
   productupdate: productupdate,
-  productImageDelete: productImageDelete
+  productImageDelete: productImageDelete,
+  // User
+  product: product,
+  productdetail: productdetail
 };

@@ -37,6 +37,7 @@ router.get("/categoryEdit/:id", adminCheck.isAdmin, categoryControl.categoryEdit
 
 router.post("/categoryUpdate/:id", adminCheck.isAdmin, categoryControl.categoryUpdate);
 router.get("/categorylist/category", adminCheck.isAdmin, categoryControl.getCategoryPage);
+router.get("/categoryStatus/:id", adminCheck.isAdmin, categoryControl.categoryStatus);
 router.get("/productmanagement", adminCheck.isAdmin, productController.adminProduct); // show  products
 
 router.get("/NewProduct", adminCheck.isAdmin, productController.NewProduct); //admin add products

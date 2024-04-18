@@ -28,6 +28,7 @@ router.post("/addcategory", adminCheck.isAdmin,categoryControl.addCategory)// ad
 router.get("/categoryEdit/:id", adminCheck.isAdmin, categoryControl.categoryEdit);// category edit
 router.post("/categoryUpdate/:id", adminCheck.isAdmin, categoryControl.categoryUpdate);
 router.get("/categorylist/category", adminCheck.isAdmin, categoryControl.getCategoryPage);
+router.get("/categoryStatus/:id", adminCheck.isAdmin, categoryControl.categoryStatus);
 
 router.get("/productmanagement", adminCheck.isAdmin,productController.adminProduct);// show  products
 router.get("/NewProduct", adminCheck.isAdmin,productController.NewProduct); //admin add products
@@ -38,7 +39,6 @@ router.get("/productmanagement/products", adminCheck.isAdmin, productController.
 router.get("/productEdit/:id", adminCheck.isAdmin, productController.productEdit);
 router.post("/ProductUpdate/:id", adminCheck.isAdmin, multer.array("image", 4), productController.productupdate);
 router.get("/productImageDelete/:id", adminCheck.isAdmin, multer.array("image", 4), productController.productImageDelete);
-
 
 router.get("/userManagement", adminCheck.isAdmin, adminController.adminShowUsers);
 router.get("/userManagement/users", adminCheck.isAdmin, adminController.getUsersPage);

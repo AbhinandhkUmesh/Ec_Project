@@ -16,6 +16,7 @@ var categorySchema = new mongoose.Schema({
   },
   status: {
     type: Boolean,
+    "default": true,
     require: true
   }
 });
