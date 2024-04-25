@@ -445,61 +445,92 @@ var productImageDelete = function productImageDelete(req, res) {
 
 
 var product = function product(req, res) {
-  res.render('product', {
-    isUser: req.session.isUser
-  });
-};
-
-var productdetail = function productdetail(req, res) {
-  var productId, productData, categoryData, relatedProduct;
-  return regeneratorRuntime.async(function productdetail$(_context9) {
+  var products, category;
+  return regeneratorRuntime.async(function product$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
         case 0:
           _context9.prev = 0;
+          _context9.next = 3;
+          return regeneratorRuntime.awrap(productModel.find({}));
+
+        case 3:
+          products = _context9.sent;
+          _context9.next = 6;
+          return regeneratorRuntime.awrap(categoryModel.find({}));
+
+        case 6:
+          category = _context9.sent;
+          res.render('product', {
+            isUser: req.session.isUser,
+            products: products,
+            category: category
+          });
+          _context9.next = 12;
+          break;
+
+        case 10:
+          _context9.prev = 10;
+          _context9.t0 = _context9["catch"](0);
+
+        case 12:
+        case "end":
+          return _context9.stop();
+      }
+    }
+  }, null, null, [[0, 10]]);
+};
+
+var productdetail = function productdetail(req, res) {
+  var productId, productData, categoryData, relatedProduct;
+  return regeneratorRuntime.async(function productdetail$(_context10) {
+    while (1) {
+      switch (_context10.prev = _context10.next) {
+        case 0:
+          _context10.prev = 0;
           productId = req.params.id;
           console.log("Product ID:", productId);
-          _context9.next = 5;
+          _context10.next = 5;
           return regeneratorRuntime.awrap(productModel.findOne({
             _id: productId,
             status: true
           }));
 
         case 5:
-          productData = _context9.sent;
+          productData = _context10.sent;
 
           if (productData) {
-            _context9.next = 8;
+            _context10.next = 8;
             break;
           }
 
-          return _context9.abrupt("return", res.status(404).send("Product not found or unavailable."));
+          return _context10.abrupt("return", res.status(404).send("Product not found or unavailable."));
 
         case 8:
           console.log("Product Data:", productData);
-          _context9.next = 11;
+          _context10.next = 11;
           return regeneratorRuntime.awrap(categoryModel.findById(productData.category));
 
         case 11:
-          categoryData = _context9.sent;
+          categoryData = _context10.sent;
 
           if (categoryData) {
-            _context9.next = 14;
+            _context10.next = 14;
             break;
           }
 
-          return _context9.abrupt("return", res.status(404).send("Category not found or unavailable."));
+          return _context10.abrupt("return", res.status(404).send("Category not found or unavailable."));
 
         case 14:
           console.log("Category Data:", categoryData);
-          _context9.next = 17;
+          _context10.next = 17;
           return regeneratorRuntime.awrap(productModel.find({
             category: productData.category,
             status: true
           }).limit(4));
 
         case 17:
-          relatedProduct = _context9.sent;
+          relatedProduct = _context10.sent;
           console.log("Related Products:", relatedProduct);
           res.render('productDetail', {
             isUser: req.session.isUser,
@@ -507,18 +538,18 @@ var productdetail = function productdetail(req, res) {
             category: categoryData,
             relatedProduct: relatedProduct
           });
-          _context9.next = 26;
+          _context10.next = 26;
           break;
 
         case 22:
-          _context9.prev = 22;
-          _context9.t0 = _context9["catch"](0);
-          console.error("Error in productdetail:", _context9.t0);
+          _context10.prev = 22;
+          _context10.t0 = _context10["catch"](0);
+          console.error("Error in productdetail:", _context10.t0);
           res.status(500).send("Internal Server Error");
 
         case 26:
         case "end":
-          return _context9.stop();
+          return _context10.stop();
       }
     }
   }, null, null, [[0, 22]]);

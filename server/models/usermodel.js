@@ -18,8 +18,20 @@ const userSchema = new mongoose.Schema({
         type:String,
         require:true
     },
+    image:{
+        type:String,
+        require:true
+    },
     email:{
         type:String,
+        require:true
+    },
+    phone:{
+        type:Number,
+        require:true
+    },
+    address:{
+        type: mongoose.Schema.Types.ObjectId,
         require:true
     },
     status:{

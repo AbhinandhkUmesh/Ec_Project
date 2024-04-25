@@ -233,7 +233,7 @@ var categoryEdit = function categoryEdit(req, res) {
 };
 
 var categoryUpdate = function categoryUpdate(req, res) {
-  var categoryId, updateData;
+  var categoryId, updateData, categoryFound;
   return regeneratorRuntime.async(function categoryUpdate$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
@@ -242,7 +242,26 @@ var categoryUpdate = function categoryUpdate(req, res) {
           categoryId = req.params.id;
           updateData = req.body;
           console.log(req.body);
-          _context6.next = 6;
+          console.log("=======", updateData.category);
+          _context6.next = 7;
+          return regeneratorRuntime.awrap(categoryModel.findOne({
+            category: {
+              $regex: new RegExp(updateData.category, "i")
+            }
+          }));
+
+        case 7:
+          categoryFound = _context6.sent;
+
+          if (!categoryFound) {
+            _context6.next = 10;
+            break;
+          }
+
+          return _context6.abrupt("return", res.redirect("/admin/addCategoryPage?error=Category already exists"));
+
+        case 10:
+          _context6.next = 12;
           return regeneratorRuntime.awrap(categoryModel.updateOne({
             _id: categoryId
           }, {
@@ -252,21 +271,21 @@ var categoryUpdate = function categoryUpdate(req, res) {
             }
           }));
 
-        case 6:
+        case 12:
           return _context6.abrupt("return", res.redirect("/admin/categorylist"));
 
-        case 9:
-          _context6.prev = 9;
+        case 15:
+          _context6.prev = 15;
           _context6.t0 = _context6["catch"](0);
           console.error("Error updating product:", _context6.t0);
           res.status(500).send("Internal Server Error");
 
-        case 13:
+        case 19:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 9]]);
+  }, null, null, [[0, 15]]);
 };
 
 var categoryStatus = function categoryStatus(req, res) {

@@ -281,10 +281,20 @@ const productImageDelete = async (req, res) => {
 
 // =====User Side===========
 
-const product = (req, res) => {
-    res.render('product', {
-        isUser: req.session.isUser
-    })
+const product = async (req, res) => {
+    try {
+        let products = await productModel.find({})
+        const category = await categoryModel.find({})
+        res.render('product', {
+            isUser: req.session.isUser,
+            products,
+            category
+            
+        })
+    } catch (error) {
+        
+    }
+   
 }
 
 const productdetail = async (req, res) => {

@@ -131,6 +131,16 @@ const categoryUpdate = async (req,res) => {
         const  updateData = req.body
         console.log(req.body);
 
+        console.log("=======",updateData.category)
+        
+        const categoryFound = await categoryModel.findOne({
+            category: {
+                $regex: new RegExp(updateData.category, "i")
+            },
+        });
+        if (categoryFound) {
+            return res.redirect("/admin/addCategoryPage?error=Category already exists");
+        }
         await categoryModel.updateOne({_id:categoryId},{$set:{
             category:updateData.category,
             offer:updateData.offer

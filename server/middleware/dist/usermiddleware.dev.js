@@ -6,13 +6,6 @@ var isUser = function isUser(req, res, next) {
       switch (_context.prev = _context.next) {
         case 0:
           try {
-            // const email = req.session.email
-            // const UserStatus = await userModel.findOne({ email: email });
-            // if(UserStatus.status == true){
-            //     next();
-            // }else{
-            //     res.redirect('/login?error=Your account is Blocked');
-            // }
             if (req.session.isUser) {
               next();
             } else {

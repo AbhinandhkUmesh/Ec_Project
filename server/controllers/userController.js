@@ -57,12 +57,17 @@ const signupPage = (req, res) => {
         res.status(500).send("Internal Server Error signup");
     }
 };
-
-var OTP;
 const signUp = async (req, res) => {
     try {
         const email = req.body.email;
         const Username = req.body.Username; // Assuming username is in req.body
+        const password = req.body.password;
+        const conformPassword = req.body.password;
+
+        const uppercaseRegex = /[A-Z]/;
+        const lowercaseRegex = /[a-z]/;
+        const numberRegex = /[0-9]/;
+        const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
 
         // Check if email or username already exists
         const alreadyExist = await userModel.findOne({
@@ -71,19 +76,30 @@ const signUp = async (req, res) => {
 
         if (alreadyExist) {
             if (alreadyExist.email === email) {
-                return res.redirect('/signup?error=Email Already Exist');
+                return res.redirect('/signup?error=Email Already Exists');
             } else if (alreadyExist.Username === Username) {
-                return res.redirect('/signup?error=Username Already Exist');
+                return res.redirect('/signup?error=Username Already Exists');
             }
         } 
-
+        if(conformPassword !== password){
+            return res.redirect('/signup?error=Conform your password');
+        }
+        
+        if (password.length < 6 ||
+            !uppercaseRegex.test(password) ||
+            !lowercaseRegex.test(password) ||
+            !numberRegex.test(password) ||
+            !specialCharRegex.test(password)) {
+            return res.redirect('/signup?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+        }
+        
         // Set user details in session
-        req.session.userDetails = req.body;
+        req.session.userDetails = { email, Username, password };
 
         // Assuming otpSend.sendmail(email) is an asynchronous function
-        console.log("sending otp");
+        console.log("Sending OTP to:", email);
         const otpData = await otpSend.sendmail(email);
-        console.log(otpData);
+        console.log("OTP sent:", otpData);
         
         // Store OTP in session
         req.session.OTP = otpData;
@@ -102,24 +118,23 @@ const signUp = async (req, res) => {
     }
 };
 
-
-
 const authOTP = async (req, res) => {
     try {
         const otp = req.body.otp;
-        const storedOTP = OTP;
+        const storedOTP =  req.session.OTP;
         console.log(otp, "=====1st test=====", storedOTP); // Retrieve the OTP stored in the session
         if (otp === storedOTP) { // Compare the entered OTP with the stored one
-            console.log("=====2st test=====");
+            console.log("=====2nd test=====");
             // Check if userDetails and password exist in the session
             if (!req.session.userDetails || !req.session.userDetails.password) {
-                res.redirect('/signup?error=User details or password not found')
+                res.redirect('/signup?error=User details or password not found');
                 throw new Error("User details or password not found in session.");
-               
             }
 
+            console.log(req.session.userDetails.password)
             // Hash the password
-            const hashedPassword = await bcrypt.hash(req.session.userDetails.password.toString(), 10);
+            const hashedPassword = await bcrypt.hash(req.session.userDetails.password, 10);
+            console.log(hashedPassword)
             // Create a new user with hashed password
             const registeredUser = new userModel({
                 Username: req.session.userDetails.Username,
@@ -128,9 +143,9 @@ const authOTP = async (req, res) => {
                 status: true,
                 isAdmin: 0,
             });
-            console.log("=====3st test=====");
+            console.log("=====3rd test=====");
             await registeredUser.save(); // Save the user to the database
-            console.log("", registeredUser);
+            console.log("Registered User:", registeredUser);
             res.redirect("/login");
         } else {
             res.render("otppage", {
@@ -145,35 +160,31 @@ const authOTP = async (req, res) => {
     }
 };
 
-  
-
-const resendOTP = (req, res) => {
+const resendOTP = async (req, res) => {
     try {
         console.log("Session User Detail:", req.session.userDetails);
         const email = req.session.userDetails.email;
         console.log("=====Resending OTP to email:" + email);
-        const otpRData = otpSend.sendmail(email);
+        const otpRData = await otpSend.sendmail(email);
         console.log("===== otpResendData is ========" + otpRData);
-        newOTP = otpRData;
-        console.log(
-            "OTP received after 60s is: " +   + " and timestamp is:  " + otpRData
-        );
-        req.session.otpTimestamp = otpRData[1];
-        error = req.session.otpError;
+        req.session.OTP = otpRData;
+        req.session.otpTimestamp = Date.now(); // Update the timestamp
+        req.session.otpError = null; // Reset OTP error
         res.redirect("/otp");
         console.log("USER RESEND OTP PAGE");
     } catch (error) {
         console.log("Error while resending OTP :" + error);
+        req.session.otpError = "Error resending OTP"; // Set OTP error
+        res.redirect("/otp");
     }
 };
 
 const otpPage = (req, res) => {
     try {
-        let message = 0;
-        let email = req.session.email;
+        const email = req.session.userDetails.email;
         res.render('otppage', {
             isUser: req.session.isUser,
-            error: "Invalid OTP entered",
+            error: req.session.otpError,
             email
         });
     } catch (error) {
@@ -181,6 +192,7 @@ const otpPage = (req, res) => {
         res.status(500).send("Internal Server Error on otp");
     }
 };
+
 
 const checkUserIn = async (req, res) => {
     try {
@@ -200,8 +212,9 @@ const checkUserIn = async (req, res) => {
         console.log(req.body.password);
         console.log(userProfile.password);
 
+        
         const checkPass = await bcrypt.compare(req.body.password, userProfile.password);
-
+        console.log(checkPass)
         if (checkPass) {
             console.log("Password checked");
             req.session.isUser = true;
@@ -237,6 +250,90 @@ const redirectUser = async (req, res) => {
     }
 };
 
+
+const changePassword = (req, res) => {
+    try {
+        res.render('changepassword', {
+            isUser: req.session.isUser,
+            error:req.query.error
+        });
+    } catch (error) {
+        console.log("Error during user forgot password:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+const changeVerify = async (req, res) => {
+    try {
+        const email = req.session.email
+        const newPassword = req.body.newPassword;
+        const oldPassword = req.body.oldPassword;
+
+        const uppercaseRegex = /[A-Z]/;
+        const lowercaseRegex = /[a-z]/;
+        const numberRegex = /[0-9]/;
+        const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+        // Check if email or username already exists
+        const userProfile = await userModel.findOne({
+           email: email
+        });
+
+
+        if (!userProfile.password === newPassword) {
+            return res.redirect('/forgotPassword?error= Please Sign in User not found');
+        }
+        
+
+        const verifyOldPassword = await bcrypt.compare(oldPassword, userProfile.password);
+        const verifyNewPassword = await bcrypt.compare(newPassword, userProfile.password);
+
+        if (!verifyOldPassword) {
+            return res.redirect('/changePassword?error= Oldpassword is wrong');
+        }
+        if (!verifyNewPassword) {
+            return res.redirect('/changePassword?error= Old password and new Password  is same ');
+        }
+
+        if (newPassword.length < 6 ||
+            !uppercaseRegex.test(password) ||
+            !lowercaseRegex.test(password) ||
+            !numberRegex.test(password) ||
+            !specialCharRegex.test(password)) {
+            return res.redirect('/changePassword?error=Password must be at least 6 characters,one uppercase letter, one lowercase letter, one number, and one special character.');
+        }
+        const hashedPassword = await bcrypt.hash(newPassword.toString(), 10);
+
+        await userModel.updateOne({ email: email},{$set:{
+            password:hashedPassword,
+        }})
+        res.redirect('/login?error=Password Changed');
+    } catch (error) {
+        console.log("Error during user forgot password:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+const logout = (req, res) => {
+    try {
+
+        if(req.session.timeoutTimer){
+            clearTimeout(req.session.timeoutTimer)
+        }
+        req.session.destroy(err => {
+            if (err) {
+                console.log("Error clearing sessions:", err);
+                return res.status(500).send("Internal Server Error");
+            }
+            res.redirect("/login");
+        });
+    } catch (error) {
+        console.log("Error during user signout:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+
+
 const userDetails = async (req, res) => {
     try {
         const userEmail = req.session.email;
@@ -245,9 +342,10 @@ const userDetails = async (req, res) => {
         });
         if (req.session.isUser) {
             res.render('userDetails', {
+                userProfile,
                 isUser: req.session.isUser,
-                Username: userProfile.Username,
-                email: userProfile.email
+                Username: req.session.Username,
+                
             });
         } else {
             res.redirect('/login');
@@ -258,23 +356,54 @@ const userDetails = async (req, res) => {
     }
 };
 
-const logout = (req, res) => {
+const userUpdate = async (req, res) => {
     try {
-        req.session.destroy(err => {
-            if (err) {
-                console.log("Error clearing sessions:", err);
-                return res.status(500).send("Internal Server Error");
+        const userID = req.params.id;
+        const updateData = req.body;
+
+        // Get the filename from uploaded files
+        const image = req.files[0].filename;
+        console.log(req.files,"file:", image);
+        // Update user data in the database
+        const dataUpload = await userModel.updateOne({
+            _id: userID
+        }, {
+            $set: {
+                Username: updateData.Username,
+                email: updateData.email,
+                phone: updateData.phone,
+                image: image
             }
-            res.redirect("/login");
         });
-        console.log("User logged out");
+
+        // Check the result of the database update
+        console.log("Data Upload Result:", dataUpload);
+      
+        res.redirect("/userdetails");
     } catch (error) {
-        console.log("Error during user signout:", error);
+        console.error("Error updating user:", error);
         res.status(500).send("Internal Server Error");
     }
 };
 
-
+const userImageDelete = async (req, res) => {
+    try {
+        const userID = req.params.id
+        
+        const imageDelete = await userModel.updateOne({
+            _id: userID
+        }, {
+            $set: {
+                image:""
+            }
+        })
+        console.log(imageDelete)
+        res.redirect(`/userdetails`);
+    }catch (error) {
+            console.error("Error updating user:", error);
+            res.status(500).send("Internal Server Error");
+        }
+}
 
 
 module.exports = {
@@ -285,10 +414,19 @@ module.exports = {
     otpPage,
     checkUserIn,
     redirectUser,
+
     userDetails,
+    userUpdate,
+    userImageDelete,
+
+    changePassword,
+    changeVerify,
+    // changeOtpPage,
+
     logout,
     signUp,
     resendOTP,
+
 
   
 

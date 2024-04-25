@@ -3391,3 +3391,27 @@ input.num-product::-webkit-inner-spin-button {
 .eyeContainer input[type="checkbox"]:checked ~ .eye-slash-icon {
     visibility: visible;
 }
+
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100; /* Ensure sidebar stays above content */
+  padding: px 0; /* Padding top and bottom */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow */
+  background-color: #f8f9fa; /* Sidebar background color */
+}
+/* Style for sidebar links */
+.sidebar a {
+  display: block;
+  padding: 10px 20px;
+  color: #333; /* Link color */
+  text-decoration: none;
+}
+/* Active link style */
+.sidebar a.active {
+  font-weight: bold;
+  color: #007bff; /* Active link color */
+}
