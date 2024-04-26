@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 const passport = require('passport')
 require('dotenv').config()
 
@@ -27,6 +27,4 @@ passport.serializeUser((user,done) => {
 passport.deserializeUser((user,done) => {
     done(null,user)
 })
-=======
 
->>>>>>> 67fec8c5460d04f863ab6a99ddf82a63e2d51334
