@@ -15,8 +15,7 @@ var userSchema = new mongoose.Schema({
     required: true
   },
   password: {
-    type: String,
-    require: true
+    type: String
   },
   image: {
     type: String,
@@ -27,12 +26,10 @@ var userSchema = new mongoose.Schema({
     require: true
   },
   phone: {
-    type: Number,
-    require: true
+    type: Number
   },
   address: {
-    type: mongoose.Schema.Types.ObjectId,
-    require: true
+    type: mongoose.Schema.Types.ObjectId
   },
   status: {
     type: Boolean,

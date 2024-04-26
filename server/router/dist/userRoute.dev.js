@@ -10,6 +10,8 @@ var userCheck = require("../middleware/usermiddleware");
 
 var productController = require("../controllers/productController");
 
+var authController = require("../controllers/authcontroller");
+
 var multer = require("../middleware/multer"); // const session = require('express-session');
 // const bodyParser = require("body-parser");
 

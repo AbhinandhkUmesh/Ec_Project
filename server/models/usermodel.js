@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-        require:true
+  
     },
     image:{
         type:String,
@@ -28,11 +28,11 @@ const userSchema = new mongoose.Schema({
     },
     phone:{
         type:Number,
-        require:true
+
     },
     address:{
         type: mongoose.Schema.Types.ObjectId,
-        require:true
+
     },
     status:{
         type:Boolean,

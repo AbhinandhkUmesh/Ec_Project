@@ -596,6 +596,7 @@ var userDetails = function userDetails(req, res) {
 
         case 4:
           userProfile = _context8.sent;
+          console.log("|||||||||||", userProfile);
 
           if (req.session.isUser) {
             res.render('userDetails', {
@@ -603,25 +604,26 @@ var userDetails = function userDetails(req, res) {
               isUser: req.session.isUser,
               Username: req.session.Username
             });
+            console.log("================99999999", userProfile.image);
           } else {
             res.redirect('/login');
           }
 
-          _context8.next = 12;
+          _context8.next = 13;
           break;
 
-        case 8:
-          _context8.prev = 8;
+        case 9:
+          _context8.prev = 9;
           _context8.t0 = _context8["catch"](0);
           console.log("Error redirecting UserPage: " + _context8.t0);
           res.status(500).send("Internal Server Error");
 
-        case 12:
+        case 13:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[0, 8]]);
+  }, null, null, [[0, 9]]);
 };
 
 var userUpdate = function userUpdate(req, res) {

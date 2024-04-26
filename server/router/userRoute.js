@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const userCheck = require("../middleware/usermiddleware");
 const productController = require("../controllers/productController")
+const authController = require("../controllers/authcontroller")
 var multer = require("../middleware/multer");
 // const session = require('express-session');
 // const bodyParser = require("body-parser");
@@ -18,7 +19,6 @@ router.get("/otp", userController.otpPage);
 router.post("/verifyOTP", userController.authOTP);
 router.get("/regResOTP/:id", userController.resendOTP);
 router.post("/login", userController.checkUserIn);
-
 
 router.get("/home", userCheck.isUser, userController.redirectUser);
 router.get("/logout", userController.logout);

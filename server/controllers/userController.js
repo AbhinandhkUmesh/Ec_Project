@@ -340,16 +340,19 @@ const userDetails = async (req, res) => {
         const userProfile = await userModel.findOne({
             email: userEmail
         });
+        console.log("|||||||||||",userProfile)
         if (req.session.isUser) {
             res.render('userDetails', {
                 userProfile,
                 isUser: req.session.isUser,
                 Username: req.session.Username,
-                
             });
+            console.log("================99999999",userProfile.image)
         } else {
             res.redirect('/login');
         }
+
+
     } catch (error) {
         console.log("Error redirecting UserPage: " + error);
         res.status(500).send("Internal Server Error");
