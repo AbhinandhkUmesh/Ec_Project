@@ -86,12 +86,6 @@
                   <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
                     <div class="p-2"><%= userProfile.phone%></div>
                   </div>
-                  <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
-                    <div class="p-2">Address</div>
-                  </div>
-                  <div class="col-7 col-md-9 bg-light border-start border-bottom border-white border-3">
-                    <div class="p-2"><%= userProfile.address%></div>
-                  </div>
 
                   <% if (addressData){%>
                   <div class="col-5 col-md-3 bg-light border-bottom border-white border-3">
@@ -139,7 +133,7 @@
 
                   <div class="col-12 col-md-6">
                     <label for="inputPhone" class="form-label">Phone</label>
-                    <input type="tel" class="form-control" id="inputPhone" name="phone" value="<%= userProfile.phone%>">
+                    <input type="tel" class="form-control" id="inputPhone" name="phone" placeholder="Phone" value="<%= userProfile.phone%>">
                   </div>
                   <div class="col-12  mt-2">
                     <% if (!addressData) { %>
@@ -147,7 +141,7 @@
                     <div  class="row">
 
                       <select class="col-5 form-select" id="inputCountry" name="country">
-                        <option value="" selected>Select Country</option>
+                        <option value="Select Country" selected>Select Country</option>
                         <option value="Afghanistan">Afghanistan</option>
                         <option value="Åland Islands">Åland Islands</option>
                         <option value="Albania">Albania</option>
@@ -401,7 +395,7 @@
                    <% }else { %>
                     <div  class="row">
 
-                      <select class="col-5 form-select" id="inputCountry" name="country">
+                      <select class="col-5 form-select" id="inputCountry" name="country" >
                         <option value="<%= addressData.country %>" selected><%= addressData.country %></option>
                         <option value="Afghanistan">Afghanistan</option>
                         <option value="Åland Islands">Åland Islands</option>
@@ -648,18 +642,16 @@
                         <option value="Zambia">Zambia</option>
                         <option value="Zimbabwe">Zimbabwe</option>
                       </select>
-                      <input type="text" class="col-5 form-control m-1" id="inputAddress" name="city" value="<%= addressData.city %>">
-                      <input type="text" class="col-5 form-control m-1" id="inputAddress" name="state" value="<%= addressData.state %>">
-                      <input type="text" class="col-5 form-control m-1" id="inputAddress" name="postalCode" value="<%= addressData.postalCode %>">
+                      <input type="text" class="col-5 form-control m-1" id="inputAddress" placeholder="City" name="city" value="<%= addressData.city %>">
+                      <input type="text" class="col-5 form-control m-1" id="inputAddress" placeholder="State" name="state" value="<%= addressData.state %>">
+                      <input type="text" class="col-5 form-control m-1" id="inputAddress" placeholder="postalCode" name="postalCode" value="<%= addressData.postalCode %>">
   
                     </div>
 
                     <% } %>
                     <button id="addAddressBtn" class="btn btn-primary">Add Address</button>
                   </div>
-                  <div id="additionalAddresses" class="col-12 col-md-6">
-                    <!-- Additional address fields will be appended here -->
-                  </div>>
+                  
 
                   <div class="col-6">
                     <button type="submit" class="btn btn-primary">Save Changes</button>

@@ -54,7 +54,7 @@ var adminProduct = function adminProduct(req, res) {
           _context.prev = 15;
           _context.t0 = _context["catch"](0);
           console.error("Error occurred:", _context.t0);
-          res.status(500).send("Error occurred");
+          res.render('error'); // Render an error page if there's an error
 
         case 19:
         case "end":
@@ -92,9 +92,7 @@ var getproductPage = function getproductPage(req, res) {
           _context2.prev = 10;
           _context2.t0 = _context2["catch"](0);
           console.log("Error fetching products:", _context2.t0);
-          res.status(500).json({
-            error: "Internal Server Error"
-          });
+          res.render('error'); // Render an error page if there's an error
 
         case 14:
         case "end":
@@ -128,7 +126,7 @@ var NewProduct = function NewProduct(req, res) {
             console.log("ADMIN WILL ADD PRODUCT");
           } catch (error) {
             console.error("Error while redirecting the page to add product: ", +error);
-            res.status(500).send("Error occurred");
+            res.render('error'); // Render an error page if there's an error
           }
 
         case 4:
@@ -151,15 +149,11 @@ var AddProduct = function AddProduct(req, res) {
           _req$body = req.body, name = _req$body.name, category = _req$body.category, rate = _req$body.rate, description = _req$body.description, stock = _req$body.stock, offer = _req$body.offer, discountAmount = _req$body.discountAmount, catOffer = _req$body.catOffer;
           console.log(req.body); // // Check if files were uploaded
 
-          if (!(!req.files || !req.files.length)) {
-            _context4.next = 7;
-            break;
+          if (!req.files || !req.files.length) {
+            console.log("No files were uploaded.");
+            res.render('error'); // Render an error page if there's an error
           }
 
-          console.log("No files were uploaded.");
-          return _context4.abrupt("return", res.status(400).send("No files were uploaded."));
-
-        case 7:
           console.log("Name: " + name + " Category: " + category + " rate: " + rate);
           files = req.files;
           images = [];
@@ -168,22 +162,22 @@ var AddProduct = function AddProduct(req, res) {
             images.push(image);
           }); // Check if product already exists
 
-          _context4.next = 13;
+          _context4.next = 11;
           return regeneratorRuntime.awrap(productModel.findOne({
             name: name
           }));
 
-        case 13:
+        case 11:
           existingProduct = _context4.sent;
 
           if (!existingProduct) {
-            _context4.next = 16;
+            _context4.next = 14;
             break;
           }
 
           return _context4.abrupt("return", res.redirect('/admin/NewProduct?error=Product already exists, please update'));
 
-        case 16:
+        case 14:
           console.log(category, "cAT FID"); // // Create new product instance
 
           newProduct = new productModel({
@@ -199,25 +193,25 @@ var AddProduct = function AddProduct(req, res) {
             catOffer: catOffer
           }); // // Save the new product
 
-          _context4.next = 20;
+          _context4.next = 18;
           return regeneratorRuntime.awrap(newProduct.save());
 
-        case 20:
+        case 18:
           console.log("Check 4 added Product:", newProduct);
           return _context4.abrupt("return", res.redirect("/admin/productmanagement?error=success"));
 
-        case 24:
-          _context4.prev = 24;
+        case 22:
+          _context4.prev = 22;
           _context4.t0 = _context4["catch"](0);
           console.error("Error occurred:", _context4.t0);
-          res.status(500).send("Error occurred");
+          res.render('error'); // Render an error page if there's an error
 
-        case 28:
+        case 26:
         case "end":
           return _context4.stop();
       }
     }
-  }, null, null, [[0, 24]]);
+  }, null, null, [[0, 22]]);
 };
 
 var ProductStatus = function ProductStatus(req, res) {
@@ -278,7 +272,7 @@ var ProductStatus = function ProductStatus(req, res) {
           _context5.prev = 21;
           _context5.t0 = _context5["catch"](0);
           console.error("Error updating user status:", _context5.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error'); // Render an error page if there's an error
 
         case 25:
         case "end":
@@ -324,7 +318,7 @@ var productEdit = function productEdit(req, res) {
           _context6.prev = 14;
           _context6.t0 = _context6["catch"](1);
           console.error("Error in Product edit:", _context6.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error'); // Render an error page if there's an error
 
         case 18:
         case "end":
@@ -394,7 +388,7 @@ var productupdate = function productupdate(req, res) {
           _context7.prev = 21;
           _context7.t0 = _context7["catch"](0);
           console.error("Error updating product:", _context7.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error'); // Render an error page if there's an error
 
         case 25:
         case "end":
@@ -433,7 +427,7 @@ var productImageDelete = function productImageDelete(req, res) {
           _context8.prev = 10;
           _context8.t0 = _context8["catch"](0);
           console.error("Error updating product:", _context8.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error'); // Render an error page if there's an error
 
         case 14:
         case "end":
@@ -441,7 +435,7 @@ var productImageDelete = function productImageDelete(req, res) {
       }
     }
   }, null, null, [[0, 10]]);
-}; // =====User Side===========
+}; // =====User Side========
 
 
 var product = function product(req, res) {
@@ -545,7 +539,7 @@ var productdetail = function productdetail(req, res) {
           _context10.prev = 22;
           _context10.t0 = _context10["catch"](0);
           console.error("Error in productdetail:", _context10.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error'); // Render an error page if there's an error
 
         case 26:
         case "end":

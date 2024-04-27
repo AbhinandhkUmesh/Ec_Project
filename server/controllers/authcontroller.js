@@ -37,7 +37,8 @@ router.get('/google/callback',
         
       } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+        res.render('error'); // Render an error page if there's an error
+
       }
   });
 

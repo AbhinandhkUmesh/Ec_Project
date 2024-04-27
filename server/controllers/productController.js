@@ -33,7 +33,8 @@ const adminProduct = async (req, res) => {
         console.log("Products displayed :", products);
     } catch (error) {
         console.error("Error occurred:", error);
-        res.status(500).send("Error occurred");
+        res.render('error'); // Render an error page if there's an error
+
     }
 };
 
@@ -51,7 +52,8 @@ const getproductPage = async (req, res) => {
         res.json(products);
     } catch (error) {
         console.log("Error fetching products:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.render('error'); // Render an error page if there's an error
+
     }
 };
 
@@ -72,7 +74,8 @@ const NewProduct = async (req, res) => {
 
     } catch (error) {
         console.error("Error while redirecting the page to add product: ", +error);
-        res.status(500).send("Error occurred");
+        res.render('error'); // Render an error page if there's an error
+
     }
 }
 
@@ -93,7 +96,8 @@ const AddProduct = async (req, res) => {
         // // Check if files were uploaded
         if (!req.files || !req.files.length) {
             console.log("No files were uploaded.")
-            return res.status(400).send("No files were uploaded.");
+            res.render('error'); // Render an error page if there's an error
+
 
         }
 
@@ -140,7 +144,8 @@ const AddProduct = async (req, res) => {
 
     } catch (error) {
         console.error("Error occurred:", error);
-        res.status(500).send("Error occurred");
+        res.render('error'); // Render an error page if there's an error
+
     }
 }
 
@@ -179,7 +184,8 @@ const ProductStatus = async (req, res) => {
         res.redirect('/admin/productmanagement');
     } catch (error) {
         console.error("Error updating user status:", error);
-        res.status(500).send("Internal Server Error");
+        res.render('error'); // Render an error page if there's an error
+
     }
 };
 
@@ -202,7 +208,7 @@ const productEdit = async (req, res) => {
         });
     } catch (error) {
         console.error("Error in Product edit:", error);
-        res.status(500).send("Internal Server Error");
+        res.render('error'); // Render an error page if there's an error
     }
 };
 
@@ -254,7 +260,8 @@ const productupdate = async (req, res) => {
 
     } catch (error) {
         console.error("Error updating product:", error);
-        res.status(500).send("Internal Server Error");
+        res.render('error'); // Render an error page if there's an error
+
     }
 }
 
@@ -273,13 +280,14 @@ const productImageDelete = async (req, res) => {
         res.redirect(`/admin/productEdit/${productID}`);
     }catch (error) {
             console.error("Error updating product:", error);
-            res.status(500).send("Internal Server Error");
+            res.render('error'); // Render an error page if there's an error
+
         }
 }
 
 
 
-// =====User Side===========
+// =====User Side========
 
 const product = async (req, res) => {
     try {
@@ -329,7 +337,8 @@ const productdetail = async (req, res) => {
         });
     } catch (error) {
         console.error("Error in productdetail:", error);
-        res.status(500).send("Internal Server Error");
+        res.render('error'); // Render an error page if there's an error
+        
     }
 };
 

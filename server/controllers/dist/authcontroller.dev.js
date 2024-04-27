@@ -67,7 +67,7 @@ router.get('/google/callback', passport.authenticate('google', {
           _context.prev = 22;
           _context.t0 = _context["catch"](7);
           console.error(_context.t0);
-          res.status(500).send('Internal Server Error');
+          res.render('error'); // Render an error page if there's an error
 
         case 26:
         case "end":

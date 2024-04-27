@@ -53,7 +53,7 @@ var index = function index(req, res) {
           _context.prev = 11;
           _context.t0 = _context["catch"](0);
           console.log("Error rendering index page: " + _context.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error');
 
         case 15:
         case "end":
@@ -75,7 +75,7 @@ var login = function login(req, res) {
     }
   } catch (error) {
     console.log("Error rendering user login page: " + error);
-    res.status(500).send("Internal Server Error");
+    res.render('error');
   }
 };
 
@@ -88,7 +88,7 @@ var signupPage = function signupPage(req, res) {
     console.log("User signup");
   } catch (error) {
     console.log("Error rendering user signup page: " + error);
-    res.status(500).send("Internal Server Error signup");
+    res.render('error');
   }
 };
 
@@ -187,7 +187,7 @@ var signUp = function signUp(req, res) {
           _context2.prev = 33;
           _context2.t0 = _context2["catch"](0);
           console.log("Error in signUp: ", _context2.t0);
-          return _context2.abrupt("return", res.status(500).send("Internal Server Error"));
+          res.render('error');
 
         case 37:
         case "end":
@@ -267,7 +267,7 @@ var authOTP = function authOTP(req, res) {
           _context3.prev = 25;
           _context3.t0 = _context3["catch"](0);
           console.log("Error while authenticating OTP: " + _context3.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error');
 
         case 29:
         case "end":
@@ -300,18 +300,16 @@ var resendOTP = function resendOTP(req, res) {
 
           res.redirect("/otp");
           console.log("USER RESEND OTP PAGE");
-          _context4.next = 20;
+          _context4.next = 19;
           break;
 
         case 15:
           _context4.prev = 15;
           _context4.t0 = _context4["catch"](0);
           console.log("Error while resending OTP :" + _context4.t0);
-          req.session.otpError = "Error resending OTP"; // Set OTP error
+          res.render('error');
 
-          res.redirect("/otp");
-
-        case 20:
+        case 19:
         case "end":
           return _context4.stop();
       }
@@ -329,7 +327,7 @@ var otpPage = function otpPage(req, res) {
     });
   } catch (error) {
     console.log("Error rendering user otp page: " + error);
-    res.status(500).send("Internal Server Error on otp");
+    res.render('error');
   }
 };
 
@@ -403,7 +401,7 @@ var checkUserIn = function checkUserIn(req, res) {
           _context5.t0 = _context5["catch"](0);
           console.log("Error validating user:", _context5.t0);
           req.session.error = "Internal Server Error. Please try again later.";
-          return _context5.abrupt("return", res.status(500).redirect("/login"));
+          res.render('error');
 
         case 39:
         case "end":
@@ -442,7 +440,7 @@ var redirectUser = function redirectUser(req, res) {
           _context6.prev = 10;
           _context6.t0 = _context6["catch"](0);
           console.log("Error redirecting user: " + _context6.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error');
 
         case 14:
         case "end":
@@ -460,7 +458,7 @@ var changePassword = function changePassword(req, res) {
     });
   } catch (error) {
     console.log("Error during user forgot password:", error);
-    res.status(500).send("Internal Server Error");
+    res.render('error');
   }
 };
 
@@ -553,7 +551,7 @@ var changeVerify = function changeVerify(req, res) {
           _context7.prev = 33;
           _context7.t0 = _context7["catch"](0);
           console.log("Error during user forgot password:", _context7.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error');
 
         case 37:
         case "end":
@@ -579,7 +577,7 @@ var logout = function logout(req, res) {
     });
   } catch (error) {
     console.log("Error during user signout:", error);
-    res.status(500).send("Internal Server Error");
+    res.render('error');
   }
 };
 
@@ -605,7 +603,6 @@ var userDetails = function userDetails(req, res) {
 
         case 7:
           addressData = _context8.sent;
-          console.log("|||||||||||", userProfile);
 
           if (req.session.isUser) {
             res.render('userDetails', {
@@ -614,26 +611,25 @@ var userDetails = function userDetails(req, res) {
               isUser: req.session.isUser,
               Username: req.session.Username
             });
-            console.log("================99999999", userProfile.image);
           } else {
             res.redirect('/login');
           }
 
-          _context8.next = 16;
+          _context8.next = 15;
           break;
 
-        case 12:
-          _context8.prev = 12;
+        case 11:
+          _context8.prev = 11;
           _context8.t0 = _context8["catch"](0);
           console.log("Error redirecting UserPage: " + _context8.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error');
 
-        case 16:
+        case 15:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[0, 12]]);
+  }, null, null, [[0, 11]]);
 };
 
 var userUpdate = function userUpdate(req, res) {
@@ -722,7 +718,7 @@ var userUpdate = function userUpdate(req, res) {
           _context9.prev = 23;
           _context9.t0 = _context9["catch"](0);
           console.error("Error updating user:", _context9.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error');
 
         case 27:
         case "end":
@@ -760,7 +756,7 @@ var userImageDelete = function userImageDelete(req, res) {
           _context10.prev = 9;
           _context10.t0 = _context10["catch"](0);
           console.error("Error updating user:", _context10.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error');
 
         case 13:
         case "end":

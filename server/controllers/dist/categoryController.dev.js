@@ -46,15 +46,16 @@ var showCategory = function showCategory(req, res) {
             currentPage: page,
             totalPages: totalPages
           });
-          _context.next = 18;
+          _context.next = 19;
           break;
 
         case 15:
           _context.prev = 15;
           _context.t0 = _context["catch"](0);
           console.log("Admin Dashboard error: " + _context.t0);
+          res.render('error'); // Render an error page if there's an error
 
-        case 18:
+        case 19:
         case "end":
           return _context.stop();
       }
@@ -90,9 +91,7 @@ var getCategoryPage = function getCategoryPage(req, res) {
           _context2.prev = 10;
           _context2.t0 = _context2["catch"](0);
           console.log("Error fetching users:", _context2.t0);
-          res.status(500).json({
-            error: "Internal Server Error"
-          });
+          res.render('error'); // Render an error page if there's an error
 
         case 14:
         case "end":
@@ -116,7 +115,7 @@ var addCategoryPage = function addCategoryPage(req, res) {
             console.log("ADMIN WILL ADD CATEGORY");
           } catch (error) {
             console.error("Error while redirecting the page to add product: ", +error);
-            res.status(500).send("Error occurred");
+            res.render('error'); // Render an error page if there's an error
           }
 
         case 1:
@@ -179,15 +178,16 @@ var addCategory = function addCategory(req, res) {
           console.log("Error in addCategory: category is not provided!");
 
         case 19:
-          _context4.next = 24;
+          _context4.next = 25;
           break;
 
         case 21:
           _context4.prev = 21;
           _context4.t0 = _context4["catch"](0);
           console.log("Error while Admin showing user data: " + _context4.t0);
+          res.render('error'); // Render an error page if there's an error
 
-        case 24:
+        case 25:
         case "end":
           return _context4.stop();
       }
@@ -222,7 +222,7 @@ var categoryEdit = function categoryEdit(req, res) {
           _context5.prev = 8;
           _context5.t0 = _context5["catch"](0);
           console.error("Error in category edit:", _context5.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error'); // Render an error page if there's an error
 
         case 12:
         case "end":
@@ -278,7 +278,7 @@ var categoryUpdate = function categoryUpdate(req, res) {
           _context6.prev = 15;
           _context6.t0 = _context6["catch"](0);
           console.error("Error updating product:", _context6.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error'); // Render an error page if there's an error
 
         case 19:
         case "end":
@@ -346,7 +346,7 @@ var categoryStatus = function categoryStatus(req, res) {
           _context7.prev = 21;
           _context7.t0 = _context7["catch"](0);
           console.error("Error updating user status:", _context7.t0);
-          res.status(500).send("Internal Server Error");
+          res.render('error'); // Render an error page if there's an error
 
         case 25:
         case "end":

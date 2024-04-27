@@ -12,6 +12,8 @@ var productController = require("../controllers/productController");
 
 var authController = require("../controllers/authcontroller");
 
+var cartController = require("../controllers/CartController");
+
 var multer = require("../middleware/multer"); // const session = require('express-session');
 // const bodyParser = require("body-parser");
 
@@ -34,4 +36,5 @@ router.post("/changePassword", userCheck.isUser, userController.changeVerify); /
 
 router.get("/product", productController.product);
 router.get("/product-detail/:id", productController.productdetail);
+router.get("/shopingcart", cartController.cartpage);
 module.exports = router;

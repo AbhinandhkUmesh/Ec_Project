@@ -35,6 +35,7 @@ const showCategory = async (req, res) => {
 
     } catch (error) {
         console.log("Admin Dashboard error: " + error);
+        res.render('error'); // Render an error page if there's an error
     }
 }
 
@@ -47,7 +48,8 @@ const getCategoryPage = async (req, res) => {
       res.json(category);
     } catch (error) {
       console.log("Error fetching users:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.render('error'); // Render an error page if there's an error
+
     }
   };
 
@@ -62,7 +64,8 @@ const addCategoryPage = async (req, res) => {
 
     } catch (error) {
         console.error("Error while redirecting the page to add product: ", +error);
-        res.status(500).send("Error occurred");
+        res.render('error'); // Render an error page if there's an error
+
     }
 }
 const addCategory = async (req, res) => {
@@ -104,6 +107,8 @@ const addCategory = async (req, res) => {
         }
     } catch (error) {
         console.log("Error while Admin showing user data: " + error);
+        res.render('error'); // Render an error page if there's an error
+
     }
 }
 
@@ -121,7 +126,8 @@ const categoryEdit = async (req, res) => {
 
     } catch (error) {
         console.error("Error in category edit:", error);
-        res.status(500).send("Internal Server Error");
+        res.render('error'); // Render an error page if there's an error
+
     }
 }
 
@@ -149,7 +155,8 @@ const categoryUpdate = async (req,res) => {
 
 } catch (error) {
     console.error("Error updating product:", error);
-    res.status(500).send("Internal Server Error");
+    res.render('error'); // Render an error page if there's an error
+
 }
 }
 
@@ -188,7 +195,8 @@ const categoryStatus = async (req, res) => {
         res.redirect('/admin/categorylist');
     } catch (error) {
         console.error("Error updating user status:", error);
-        res.status(500).send("Internal Server Error");
+        res.render('error'); // Render an error page if there's an error
+
     }
 };
 

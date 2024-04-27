@@ -24,8 +24,7 @@ const index = async (req, res) => {
         }
     } catch (error) {
         console.log("Error rendering index page: " + error);
-        res.status(500).send("Internal Server Error");
-    }
+        res.render('error');     }
 };
 
 const login = (req, res) => {
@@ -41,8 +40,7 @@ const login = (req, res) => {
         }
     } catch (error) {
         console.log("Error rendering user login page: " + error);
-        res.status(500).send("Internal Server Error");
-    }
+        res.render('error');     }
 };
 
 const signupPage = (req, res) => {
@@ -55,8 +53,7 @@ const signupPage = (req, res) => {
         console.log("User signup");
     } catch (error) {
         console.log("Error rendering user signup page: " + error);
-        res.status(500).send("Internal Server Error signup");
-    }
+        res.render('error');     }
 };
 const signUp = async (req, res) => {
     try {
@@ -115,8 +112,7 @@ const signUp = async (req, res) => {
       
     } catch (err) {
         console.log("Error in signUp: ", err);
-        return res.status(500).send("Internal Server Error");
-    }
+        res.render('error');     }
 };
 
 const authOTP = async (req, res) => {
@@ -157,8 +153,7 @@ const authOTP = async (req, res) => {
         }
     } catch (err) {
         console.log("Error while authenticating OTP: " + err);
-        res.status(500).send("Internal Server Error");
-    }
+        res.render('error');     }
 };
 
 const resendOTP = async (req, res) => {
@@ -175,8 +170,7 @@ const resendOTP = async (req, res) => {
         console.log("USER RESEND OTP PAGE");
     } catch (error) {
         console.log("Error while resending OTP :" + error);
-        req.session.otpError = "Error resending OTP"; // Set OTP error
-        res.redirect("/otp");
+        res.render('error'); 
     }
 };
 
@@ -190,8 +184,7 @@ const otpPage = (req, res) => {
         });
     } catch (error) {
         console.log("Error rendering user otp page: " + error);
-        res.status(500).send("Internal Server Error on otp");
-    }
+        res.render('error');     }
 };
 
 
@@ -230,8 +223,7 @@ const checkUserIn = async (req, res) => {
     } catch (error) {
         console.log("Error validating user:", error);
         req.session.error = "Internal Server Error. Please try again later.";
-        return res.status(500).redirect("/login");
-    }
+        res.render('error');     }
 };
 
 
@@ -247,8 +239,7 @@ const redirectUser = async (req, res) => {
         });
     } catch (error) {
         console.log("Error redirecting user: " + error);
-        res.status(500).send("Internal Server Error");
-    }
+        res.render('error');     }
 };
 
 
@@ -260,8 +251,7 @@ const changePassword = (req, res) => {
         });
     } catch (error) {
         console.log("Error during user forgot password:", error);
-        res.status(500).send("Internal Server Error");
-    }
+        res.render('error');     }
 };
 
 const changeVerify = async (req, res) => {
@@ -310,8 +300,7 @@ const changeVerify = async (req, res) => {
         res.redirect('/login?error=Password Changed');
     } catch (error) {
         console.log("Error during user forgot password:", error);
-        res.status(500).send("Internal Server Error");
-    }
+        res.render('error');     }
 };
 
 const logout = (req, res) => {
@@ -329,8 +318,7 @@ const logout = (req, res) => {
         });
     } catch (error) {
         console.log("Error during user signout:", error);
-        res.status(500).send("Internal Server Error");
-    }
+        res.render('error');     }
 };
 
 
@@ -344,7 +332,7 @@ const userDetails = async (req, res) => {
         const addressData = await addressModel.findOne({
             email: userEmail
         });
-        console.log("|||||||||||",userProfile)
+     
         if (req.session.isUser) {
             res.render('userDetails', {
                 userProfile,
@@ -352,7 +340,7 @@ const userDetails = async (req, res) => {
                 isUser: req.session.isUser,
                 Username: req.session.Username,
             });
-            console.log("================99999999",userProfile.image)
+
         } else {
             res.redirect('/login');
         }
@@ -360,8 +348,7 @@ const userDetails = async (req, res) => {
 
     } catch (error) {
         console.log("Error redirecting UserPage: " + error);
-        res.status(500).send("Internal Server Error");
-    }
+        res.render('error');     }
 };
 
 const userUpdate = async (req, res) => {
@@ -424,7 +411,7 @@ const userUpdate = async (req, res) => {
         res.redirect("/userdetails");
     } catch (error) {
         console.error("Error updating user:", error);
-        res.status(500).send("Internal Server Error");
+        res.render('error'); 
     }
 };
 
@@ -445,7 +432,7 @@ const userImageDelete = async (req, res) => {
         res.redirect(`/userdetails`);
     }catch (error) {
             console.error("Error updating user:", error);
-            res.status(500).send("Internal Server Error");
+            res.render('error'); 
         }
 }
 
