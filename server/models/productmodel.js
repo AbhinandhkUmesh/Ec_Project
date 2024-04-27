@@ -13,6 +13,9 @@ const product = new mongoose.Schema({
         required: true,
       
     },
+    properties:{
+        type: Array,
+    },
     rate: {
         type: Number,
         required: true,

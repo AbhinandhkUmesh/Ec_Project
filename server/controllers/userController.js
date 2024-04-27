@@ -4,6 +4,7 @@ const otpSend = require("../middleware/otp");
 const { isUser } = require('../middleware/usermiddleware');
 const productModel = require('../models/productmodel');
 const categoryModel = require('../models/categorymodel')
+const addressModel = require('../models/addressmodel')
 
 const index = async (req, res) => {
     try {
@@ -340,10 +341,14 @@ const userDetails = async (req, res) => {
         const userProfile = await userModel.findOne({
             email: userEmail
         });
+        const addressData = await addressModel.findOne({
+            email: userEmail
+        });
         console.log("|||||||||||",userProfile)
         if (req.session.isUser) {
             res.render('userDetails', {
                 userProfile,
+                addressData,
                 isUser: req.session.isUser,
                 Username: req.session.Username,
             });
@@ -363,11 +368,23 @@ const userUpdate = async (req, res) => {
     try {
         const userID = req.params.id;
         const updateData = req.body;
-
+        const data = await userModel.find({userID})
         // Get the filename from uploaded files
-        const image = req.files[0].filename;
-        console.log(req.files,"file:", image);
-        // Update user data in the database
+        if(req.files[0] ==data.image){
+          
+            const dataUpload = await userModel.updateOne({
+                _id: userID
+            }, {
+                $set: {
+                    Username: updateData.Username,
+                    email: updateData.email,
+                    phone: updateData.phone,
+                    
+                }
+            });
+        }
+      else{
+        const image = req.files[0].filename; 
         const dataUpload = await userModel.updateOne({
             _id: userID
         }, {
@@ -378,9 +395,31 @@ const userUpdate = async (req, res) => {
                 image: image
             }
         });
+      }
+        // Update user data in the database
+        
 
+        const addressData = await addressModel.updateOne(
+            {
+                email: req.session.email,
+                // Assuming email is unique, so this will match the specific document
+            },
+            {
+                $set: {
+                    streetAddress: updateData.streetAddress,
+                    city: updateData.city,
+                    state: updateData.state,
+                    postalCode: updateData.postalCode,
+                    country: updateData.country
+                }
+            },
+            {
+                upsert: true // Perform an upsert operation
+            }
+        );
+        console.log(addressData)
         // Check the result of the database update
-        console.log("Data Upload Result:", dataUpload);
+
       
         res.redirect("/userdetails");
     } catch (error) {
@@ -388,6 +427,8 @@ const userUpdate = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
+
 
 const userImageDelete = async (req, res) => {
     try {

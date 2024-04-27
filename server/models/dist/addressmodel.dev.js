@@ -3,6 +3,10 @@
 var mongoose = require('mongoose');
 
 var addressSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    require: true
+  },
   streetAddress: {
     type: String,
     description: "The street address including house/apartment number"

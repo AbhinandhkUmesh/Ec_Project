@@ -12,6 +12,9 @@ var product = new mongoose.Schema({
     ref: 'category',
     required: true
   },
+  properties: {
+    type: Array
+  },
   rate: {
     type: Number,
     required: true

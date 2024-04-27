@@ -13,6 +13,8 @@ var productModel = require('../models/productmodel');
 
 var categoryModel = require('../models/categorymodel');
 
+var addressModel = require('../models/addressmodel');
+
 var index = function index(req, res) {
   var category, products;
   return regeneratorRuntime.async(function index$(_context) {
@@ -582,7 +584,7 @@ var logout = function logout(req, res) {
 };
 
 var userDetails = function userDetails(req, res) {
-  var userEmail, userProfile;
+  var userEmail, userProfile, addressData;
   return regeneratorRuntime.async(function userDetails$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
@@ -596,11 +598,19 @@ var userDetails = function userDetails(req, res) {
 
         case 4:
           userProfile = _context8.sent;
+          _context8.next = 7;
+          return regeneratorRuntime.awrap(addressModel.findOne({
+            email: userEmail
+          }));
+
+        case 7:
+          addressData = _context8.sent;
           console.log("|||||||||||", userProfile);
 
           if (req.session.isUser) {
             res.render('userDetails', {
               userProfile: userProfile,
+              addressData: addressData,
               isUser: req.session.isUser,
               Username: req.session.Username
             });
@@ -609,37 +619,65 @@ var userDetails = function userDetails(req, res) {
             res.redirect('/login');
           }
 
-          _context8.next = 13;
+          _context8.next = 16;
           break;
 
-        case 9:
-          _context8.prev = 9;
+        case 12:
+          _context8.prev = 12;
           _context8.t0 = _context8["catch"](0);
           console.log("Error redirecting UserPage: " + _context8.t0);
           res.status(500).send("Internal Server Error");
 
-        case 13:
+        case 16:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[0, 9]]);
+  }, null, null, [[0, 12]]);
 };
 
 var userUpdate = function userUpdate(req, res) {
-  var userID, updateData, image, dataUpload;
+  var userID, updateData, data, dataUpload, image, _dataUpload, addressData;
+
   return regeneratorRuntime.async(function userUpdate$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
         case 0:
           _context9.prev = 0;
           userID = req.params.id;
-          updateData = req.body; // Get the filename from uploaded files
+          updateData = req.body;
+          _context9.next = 5;
+          return regeneratorRuntime.awrap(userModel.find({
+            userID: userID
+          }));
 
+        case 5:
+          data = _context9.sent;
+
+          if (!(req.files[0] == data.image)) {
+            _context9.next = 12;
+            break;
+          }
+
+          _context9.next = 9;
+          return regeneratorRuntime.awrap(userModel.updateOne({
+            _id: userID
+          }, {
+            $set: {
+              Username: updateData.Username,
+              email: updateData.email,
+              phone: updateData.phone
+            }
+          }));
+
+        case 9:
+          dataUpload = _context9.sent;
+          _context9.next = 16;
+          break;
+
+        case 12:
           image = req.files[0].filename;
-          console.log(req.files, "file:", image); // Update user data in the database
-
-          _context9.next = 7;
+          _context9.next = 15;
           return regeneratorRuntime.awrap(userModel.updateOne({
             _id: userID
           }, {
@@ -651,26 +689,47 @@ var userUpdate = function userUpdate(req, res) {
             }
           }));
 
-        case 7:
-          dataUpload = _context9.sent;
-          // Check the result of the database update
-          console.log("Data Upload Result:", dataUpload);
+        case 15:
+          _dataUpload = _context9.sent;
+
+        case 16:
+          _context9.next = 18;
+          return regeneratorRuntime.awrap(addressModel.updateOne({
+            email: req.session.email // Assuming email is unique, so this will match the specific document
+
+          }, {
+            $set: {
+              streetAddress: updateData.streetAddress,
+              city: updateData.city,
+              state: updateData.state,
+              postalCode: updateData.postalCode,
+              country: updateData.country
+            }
+          }, {
+            upsert: true // Perform an upsert operation
+
+          }));
+
+        case 18:
+          addressData = _context9.sent;
+          console.log(addressData); // Check the result of the database update
+
           res.redirect("/userdetails");
-          _context9.next = 16;
+          _context9.next = 27;
           break;
 
-        case 12:
-          _context9.prev = 12;
+        case 23:
+          _context9.prev = 23;
           _context9.t0 = _context9["catch"](0);
           console.error("Error updating user:", _context9.t0);
           res.status(500).send("Internal Server Error");
 
-        case 16:
+        case 27:
         case "end":
           return _context9.stop();
       }
     }
-  }, null, null, [[0, 12]]);
+  }, null, null, [[0, 23]]);
 };
 
 var userImageDelete = function userImageDelete(req, res) {

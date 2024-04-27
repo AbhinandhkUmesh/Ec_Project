@@ -28,11 +28,9 @@ const userSchema = new mongoose.Schema({
     },
     phone:{
         type:Number,
-
     },
     address:{
         type: mongoose.Schema.Types.ObjectId,
-
     },
     status:{
         type:Boolean,

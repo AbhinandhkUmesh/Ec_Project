@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 
 
 const addressSchema = new mongoose.Schema({
+    email:{
+      type:String,
+      require:true
+    },
     streetAddress: {
         type: String,
         description: "The street address including house/apartment number"
