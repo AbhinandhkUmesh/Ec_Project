@@ -1,6 +1,5 @@
 
 
-
 const cartpage = async (req, res) => {
     try {
         res.render('shoppingCart', {

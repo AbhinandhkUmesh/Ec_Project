@@ -291,7 +291,7 @@ const productImageDelete = async (req, res) => {
 
 const product = async (req, res) => {
     try {
-        let products = await productModel.find({})
+        let products = await productModel.find({status:true})
         const category = await categoryModel.find({})
         res.render('product', {
             isUser: req.session.isUser,

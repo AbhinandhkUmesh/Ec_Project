@@ -12,9 +12,20 @@ var product = new mongoose.Schema({
     ref: 'category',
     required: true
   },
-  properties: {
-    type: Array
-  },
+  properties: [{
+    type: String,
+    model: [{
+      type: String,
+      colour: [{
+        name: String,
+        image: String
+      }],
+      size: [{
+        val: String,
+        price: Number
+      }]
+    }]
+  }],
   rate: {
     type: Number,
     required: true

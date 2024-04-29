@@ -32,24 +32,30 @@
                 </div>
                 <div class="container">
                     <div class="row justify-content-center mt-5">
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6"> -->
                             <div class="card-body">
                                 <form method="post" action="/admin/categoryUpdate/<%= category._id %>">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Category</label>
-                                        <input type="text" class="form-control" id="name" name="category"
-                                        value="<%= category.category%>">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="name" class="form-label">Category</label>
+                                                <input type="text" class="form-control" id="name" name="category" value="<%= category.category %>">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="offer" class="form-label">Offer</label>
+                                                <input type="number" class="form-control" id="offer" name="offer" value="<%= category.offer %>">
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="offer" class="form-label">Offer</label>
-                                        <input type="number" class="form-control" id="offer" name="offer"
-                                        value="<%= category.offer%>">
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
-                                  
-                                    <button type="submit" class="btn btn-primary">Update</button>
                                 </form>
+                                
                             </div>
-                        </div>
+                        <!-- </div> -->
                     </div>
                 </div>
 

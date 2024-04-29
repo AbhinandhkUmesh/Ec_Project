@@ -9,7 +9,7 @@ const addressModel = require('../models/addressmodel')
 const index = async (req, res) => {
     try {
         const category = await categoryModel.find({})
-        let products = await productModel.find({})
+        let products = await productModel.find({status:true})
         console.log("=====",products)
         if (req.session.isUser) {
             res.redirect('/home');
@@ -457,8 +457,4 @@ module.exports = {
     logout,
     signUp,
     resendOTP,
-
-
-  
-
 };

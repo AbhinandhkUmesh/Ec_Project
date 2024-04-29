@@ -446,7 +446,9 @@ var product = function product(req, res) {
         case 0:
           _context9.prev = 0;
           _context9.next = 3;
-          return regeneratorRuntime.awrap(productModel.find({}));
+          return regeneratorRuntime.awrap(productModel.find({
+            status: true
+          }));
 
         case 3:
           products = _context9.sent;

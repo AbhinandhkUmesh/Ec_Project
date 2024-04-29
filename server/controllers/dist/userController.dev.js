@@ -28,7 +28,9 @@ var index = function index(req, res) {
         case 3:
           category = _context.sent;
           _context.next = 6;
-          return regeneratorRuntime.awrap(productModel.find({}));
+          return regeneratorRuntime.awrap(productModel.find({
+            status: true
+          }));
 
         case 6:
           products = _context.sent;

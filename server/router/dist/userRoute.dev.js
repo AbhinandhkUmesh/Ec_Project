@@ -35,6 +35,6 @@ router.get("/changePassword", userCheck.isUser, userController.changePassword);
 router.post("/changePassword", userCheck.isUser, userController.changeVerify); // router.post("/changeOtpPage", userController.changeOtpPage);
 
 router.get("/product", productController.product);
-router.get("/product-detail/:id", productController.productdetail);
-router.get("/shopingcart", cartController.cartpage);
+router.get("/product-detail/:id", productController.productdetail); // router.get("/shopingcart", cartController.cartpage);
+
 module.exports = router;
