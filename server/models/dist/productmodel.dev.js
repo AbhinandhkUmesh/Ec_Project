@@ -2,6 +2,9 @@
 
 var mongoose = require('mongoose');
 
+var _require = require('os'),
+    type = _require.type;
+
 var product = new mongoose.Schema({
   name: {
     type: String,
@@ -13,18 +16,18 @@ var product = new mongoose.Schema({
     required: true
   },
   properties: [{
-    type: String,
-    model: [{
-      type: String,
-      colour: [{
-        name: String,
-        image: String
-      }],
-      size: [{
-        val: String,
-        price: Number
-      }]
-    }]
+    color: {
+      type: String
+    },
+    size: {
+      type: String
+    },
+    price: {
+      type: Number
+    },
+    stockQuantity: {
+      type: Number
+    }
   }],
   rate: {
     type: Number,
@@ -32,11 +35,6 @@ var product = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
-    trim: true
-  },
-  stock: {
-    type: Number,
     required: true,
     trim: true
   },

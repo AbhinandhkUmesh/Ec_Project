@@ -17,7 +17,10 @@ const adminProduct = async (req, res) => {
         const totalPages = Math.ceil(totalProducts / limit); // Calculate total pages
 
         const products = await productModel.find({})
-            .sort({ _id: -1, name: -1 })
+            .sort({
+                _id: -1,
+                name: -1
+            })
             .skip(skip)
             .limit(limit)
             .populate('category'); // Find all products and sort by _id in descending order
@@ -30,7 +33,7 @@ const adminProduct = async (req, res) => {
             currentPage: page,
             totalPages: totalPages // Pass totalPages to the view
         });
-        console.log("Products displayed :", products);
+        // console.log("Products displayed :", products);
     } catch (error) {
         console.error("Error occurred:", error);
         res.render('error'); // Render an error page if there's an error
@@ -47,7 +50,9 @@ const getproductPage = async (req, res) => {
         const products = await productModel.find({})
             .skip(skip)
             .limit(limit)
-            .sort({ name: -1 });
+            .sort({
+                name: -1
+            });
 
         res.json(products);
     } catch (error) {
@@ -68,7 +73,7 @@ const NewProduct = async (req, res) => {
         res.render('PdAddForm', {
             Username: req.session.Username,
             category,
-            error:req.query.error,
+            error: req.query.error,
         })
         console.log("ADMIN WILL ADD PRODUCT");
 
@@ -79,6 +84,7 @@ const NewProduct = async (req, res) => {
     }
 }
 
+
 const AddProduct = async (req, res) => {
     try {
         console.log("Check 1 Adding product")
@@ -87,31 +93,28 @@ const AddProduct = async (req, res) => {
             category,
             rate,
             description,
-            stock,
             offer,
             discountAmount,
-            catOffer
+            catOffer,
+            properties
         } = req.body;
-        console.log(req.body)
-        // // Check if files were uploaded
+
+        console.log("Received Body:", req.body.properties);
+
+        // Handle file uploads
         if (!req.files || !req.files.length) {
             console.log("No files were uploaded.")
-            res.render('error'); // Render an error page if there's an error
-
-
+            return res.render('error'); // Render an error page if there's an error
         }
 
-        console.log("Name: " + name +
-            " Category: " + category +
-            " rate: " + rate)
-
-        const files = req.files
-        const images = []
-        files.forEach((files) => {
-            const image = files.filename;
-
-            images.push(image)
+        // Process uploaded files
+        const files = req.files;
+        const images = [];
+        files.forEach((file) => {
+            const image = file.filename;
+            images.push(image);
         });
+
         // Check if product already exists
         const existingProduct = await productModel.findOne({
             name
@@ -120,32 +123,31 @@ const AddProduct = async (req, res) => {
         if (existingProduct) {
             return res.redirect('/admin/NewProduct?error=Product already exists, please update');
         }
-        console.log(category, "cAT FID")
+ 
+        // Parse properties from form
 
-
-        // // Create new product instance
+        // Create new product instance
         const newProduct = new productModel({
             name,
             category,
             rate,
             description,
-            stock,
-            image: images, // Assuming 'images' is the field in your schema to store 
+            image: images,
             offer,
             discountAmount,
-            catOffer
+            catOffer,
+            properties// Save properties as an array of objects
         });
 
-        // // Save the new product
+        // Save the new product
         await newProduct.save();
 
-        console.log("Check 4 added Product:", newProduct)
+        console.log("Check 4 added Product:", newProduct);
         return res.redirect(`/admin/productmanagement?error=success`);
 
     } catch (error) {
         console.error("Error occurred:", error);
-        res.render('error'); // Render an error page if there's an error
-
+        return res.render('error'); // Render an error page if there's an error
     }
 }
 
@@ -219,8 +221,6 @@ const productupdate = async (req, res) => {
         const productID = req.params.id
         const updateData = req.body
         console.log(req.body);
-        console.log("=++++++++", productID);
-        console.log("=++++====++++", updateData);
         const files = req.files
         const images = []
         files.forEach((files) => {
@@ -228,7 +228,7 @@ const productupdate = async (req, res) => {
 
             images.push(image)
         });
-        console.log("=++++++----++", images)
+        console.log("=//////////////++", req.body.properties)
         const dataUpload = await productModel.updateOne({
             _id: productID
         }, {
@@ -240,7 +240,8 @@ const productupdate = async (req, res) => {
                 stock: updateData.stock,
                 offer: updateData.offer,
                 discountAmount: updateData.discountAmount,
-                catOffer: updateData.catOffer
+                catOffer: updateData.catOffer,
+                properties:updateData.properties
             }
         })
 
@@ -267,8 +268,10 @@ const productupdate = async (req, res) => {
 
 const productImageDelete = async (req, res) => {
     try {
+        console.log("dfbvsdbbsfb")
         const productID = req.params.id
         const imagePath = req.query.index
+        console.log(imagePath)
         const imageDelete = await productModel.updateOne({
             _id: productID
         }, {
@@ -278,11 +281,11 @@ const productImageDelete = async (req, res) => {
         })
         console.log(imageDelete)
         res.redirect(`/admin/productEdit/${productID}`);
-    }catch (error) {
-            console.error("Error updating product:", error);
-            res.render('error'); // Render an error page if there's an error
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.render('error'); // Render an error page if there's an error
 
-        }
+    }
 }
 
 
@@ -291,18 +294,20 @@ const productImageDelete = async (req, res) => {
 
 const product = async (req, res) => {
     try {
-        let products = await productModel.find({status:true})
+        let products = await productModel.find({
+            status: true
+        })
         const category = await categoryModel.find({})
         res.render('product', {
             isUser: req.session.isUser,
             products,
             category
-            
+
         })
     } catch (error) {
-        
+
     }
-   
+
 }
 
 const productdetail = async (req, res) => {
@@ -310,7 +315,10 @@ const productdetail = async (req, res) => {
         const productId = req.params.id;
         console.log("Product ID:", productId);
 
-        const productData = await productModel.findOne({ _id: productId, status: true });
+        const productData = await productModel.findOne({
+            _id: productId,
+            status: true
+        });
         if (!productData) {
             // Product not found or unavailable
             return res.status(404).send("Product not found or unavailable.");
@@ -326,7 +334,10 @@ const productdetail = async (req, res) => {
 
         console.log("Category Data:", categoryData);
 
-        const relatedProduct = await productModel.find({ category: productData.category, status: true }).limit(4);
+        const relatedProduct = await productModel.find({
+            category: productData.category,
+            status: true
+        }).limit(4);
         console.log("Related Products:", relatedProduct);
 
         res.render('productDetail', {
@@ -338,7 +349,7 @@ const productdetail = async (req, res) => {
     } catch (error) {
         console.error("Error in productdetail:", error);
         res.render('error'); // Render an error page if there's an error
-        
+
     }
 };
 

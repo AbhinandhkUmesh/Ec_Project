@@ -1,0 +1,17 @@
+/* Add this CSS to your stylesheet */
+.properties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); /* Adjust column width as needed */
+    gap: 5px; /* Adjust gap between grid items */
+}
+
+.property-item {
+    display: flex;
+    flex-direction:row;
+}
+
+.property-item label,
+.property-item select,
+.property-item input {
+    margin-bottom: 5px; /* Adjust vertical spacing between elements */
+}

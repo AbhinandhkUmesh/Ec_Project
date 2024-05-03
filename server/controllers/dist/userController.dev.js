@@ -107,12 +107,13 @@ var signUp = function signUp(req, res) {
 
           _password = req.body.password;
           conformPassword = req.body.password;
+          req.session.email = email;
           uppercaseRegex = /[A-Z]/;
           lowercaseRegex = /[a-z]/;
           numberRegex = /[0-9]/;
           specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/; // Check if email or username already exists
 
-          _context2.next = 11;
+          _context2.next = 12;
           return regeneratorRuntime.awrap(userModel.findOne({
             $or: [{
               email: email
@@ -121,46 +122,46 @@ var signUp = function signUp(req, res) {
             }]
           }));
 
-        case 11:
+        case 12:
           alreadyExist = _context2.sent;
 
           if (!alreadyExist) {
-            _context2.next = 19;
+            _context2.next = 20;
             break;
           }
 
           if (!(alreadyExist.email === email)) {
-            _context2.next = 17;
+            _context2.next = 18;
             break;
           }
 
           return _context2.abrupt("return", res.redirect('/signup?error=Email Already Exists'));
 
-        case 17:
+        case 18:
           if (!(alreadyExist.Username === Username)) {
-            _context2.next = 19;
+            _context2.next = 20;
             break;
           }
 
           return _context2.abrupt("return", res.redirect('/signup?error=Username Already Exists'));
 
-        case 19:
+        case 20:
           if (!(conformPassword !== _password)) {
-            _context2.next = 21;
+            _context2.next = 22;
             break;
           }
 
           return _context2.abrupt("return", res.redirect('/signup?error=Conform your password'));
 
-        case 21:
+        case 22:
           if (!(_password.length < 6 || !uppercaseRegex.test(_password) || !lowercaseRegex.test(_password) || !numberRegex.test(_password) || !specialCharRegex.test(_password))) {
-            _context2.next = 23;
+            _context2.next = 24;
             break;
           }
 
           return _context2.abrupt("return", res.redirect('/signup?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.'));
 
-        case 23:
+        case 24:
           // Set user details in session
           req.session.userDetails = {
             email: email,
@@ -169,10 +170,10 @@ var signUp = function signUp(req, res) {
           }; // Assuming otpSend.sendmail(email) is an asynchronous function
 
           console.log("Sending OTP to:", email);
-          _context2.next = 27;
+          _context2.next = 28;
           return regeneratorRuntime.awrap(otpSend.sendmail(email));
 
-        case 27:
+        case 28:
           otpData = _context2.sent;
           console.log("OTP sent:", otpData); // Store OTP in session
 
@@ -185,18 +186,18 @@ var signUp = function signUp(req, res) {
             isUser: req.session.isUser
           }));
 
-        case 33:
-          _context2.prev = 33;
+        case 34:
+          _context2.prev = 34;
           _context2.t0 = _context2["catch"](0);
           console.log("Error in signUp: ", _context2.t0);
           res.render('error');
 
-        case 37:
+        case 38:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 33]]);
+  }, null, null, [[0, 34]]);
 };
 
 var authOTP = function authOTP(req, res) {
@@ -239,7 +240,7 @@ var authOTP = function authOTP(req, res) {
           registeredUser = new userModel({
             Username: req.session.userDetails.Username,
             password: hashedPassword,
-            email: req.session.userDetails.email,
+            email: req.session.email,
             status: true,
             isAdmin: 0
           });
@@ -256,7 +257,7 @@ var authOTP = function authOTP(req, res) {
 
         case 22:
           res.render("otppage", {
-            email: req.session.userDetails.email,
+            email: req.session.email,
             error: "Invalid OTP entered",
             isUser: req.session.isUser
           });
@@ -286,13 +287,12 @@ var resendOTP = function resendOTP(req, res) {
       switch (_context4.prev = _context4.next) {
         case 0:
           _context4.prev = 0;
-          console.log("Session User Detail:", req.session.userDetails);
-          email = req.session.userDetails.email;
+          email = req.session.email;
           console.log("=====Resending OTP to email:" + email);
-          _context4.next = 6;
+          _context4.next = 5;
           return regeneratorRuntime.awrap(otpSend.sendmail(email));
 
-        case 6:
+        case 5:
           otpRData = _context4.sent;
           console.log("===== otpResendData is ========" + otpRData);
           req.session.OTP = otpRData;
@@ -302,21 +302,21 @@ var resendOTP = function resendOTP(req, res) {
 
           res.redirect("/otp");
           console.log("USER RESEND OTP PAGE");
-          _context4.next = 19;
+          _context4.next = 18;
           break;
 
-        case 15:
-          _context4.prev = 15;
+        case 14:
+          _context4.prev = 14;
           _context4.t0 = _context4["catch"](0);
           console.log("Error while resending OTP :" + _context4.t0);
           res.render('error');
 
-        case 19:
+        case 18:
         case "end":
           return _context4.stop();
       }
     }
-  }, null, null, [[0, 15]]);
+  }, null, null, [[0, 14]]);
 };
 
 var otpPage = function otpPage(req, res) {
@@ -452,9 +452,9 @@ var redirectUser = function redirectUser(req, res) {
   }, null, null, [[0, 10]]);
 };
 
-var changePassword = function changePassword(req, res) {
+var forgotPassword = function forgotPassword(req, res) {
   try {
-    res.render('changepassword', {
+    res.render('ForgotPassword', {
       isUser: req.session.isUser,
       error: req.query.error
     });
@@ -464,13 +464,272 @@ var changePassword = function changePassword(req, res) {
   }
 };
 
-var changeVerify = function changeVerify(req, res) {
-  var email, newPassword, oldPassword, uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, userProfile, verifyOldPassword, verifyNewPassword, hashedPassword;
-  return regeneratorRuntime.async(function changeVerify$(_context7) {
+var forgotpasswordOtp = function forgotpasswordOtp(req, res) {
+  var email, UserNotExist, otpData;
+  return regeneratorRuntime.async(function forgotpasswordOtp$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
           _context7.prev = 0;
+          email = req.body.email;
+          console.log(email);
+          _context7.next = 5;
+          return regeneratorRuntime.awrap(userModel.findOne({
+            email: email
+          }));
+
+        case 5:
+          UserNotExist = _context7.sent;
+
+          if (UserNotExist) {
+            _context7.next = 8;
+            break;
+          }
+
+          return _context7.abrupt("return", res.redirect('/signup?error=Email Not Exists'));
+
+        case 8:
+          _context7.next = 10;
+          return regeneratorRuntime.awrap(otpSend.sendmail(email));
+
+        case 10:
+          otpData = _context7.sent;
+          req.session.email = email;
+          req.session.OTP = otpData;
+          res.redirect('/forgotOtpPage');
+          _context7.next = 20;
+          break;
+
+        case 16:
+          _context7.prev = 16;
+          _context7.t0 = _context7["catch"](0);
+          console.log("Error during user forgot password:", _context7.t0);
+          res.render('error');
+
+        case 20:
+        case "end":
+          return _context7.stop();
+      }
+    }
+  }, null, null, [[0, 16]]);
+};
+
+var forgotOtpPage = function forgotOtpPage(req, res) {
+  return regeneratorRuntime.async(function forgotOtpPage$(_context8) {
+    while (1) {
+      switch (_context8.prev = _context8.next) {
+        case 0:
+          try {
+            console.log(req.session.email);
+            console.log(req.session.OTP);
+            res.render('ForgotOtpPage', {
+              email: req.session.email,
+              isUser: req.session.isUser,
+              error: req.query.error
+            });
+          } catch (error) {
+            console.log("Error during user forgot password:", error);
+            res.render('error');
+          }
+
+        case 1:
+        case "end":
+          return _context8.stop();
+      }
+    }
+  });
+};
+
+var forgotPassVerifyOtp = function forgotPassVerifyOtp(req, res) {
+  var otpdata, otp;
+  return regeneratorRuntime.async(function forgotPassVerifyOtp$(_context9) {
+    while (1) {
+      switch (_context9.prev = _context9.next) {
+        case 0:
+          try {
+            otpdata = req.session.OTP;
+            otp = req.body.otp;
+            console.log(otpdata, "=======", otp);
+
+            if (otpdata === otp) {
+              res.redirect('/newpasswordPage');
+            } else {
+              res.render("ForgotOtpPage", {
+                email: req.session.email,
+                error: "Invalid OTP entered",
+                isUser: req.session.isUser
+              });
+            }
+          } catch (error) {
+            console.log("Error during user forgot password:", error);
+            res.render('error');
+          }
+
+        case 1:
+        case "end":
+          return _context9.stop();
+      }
+    }
+  });
+};
+
+var newpasswordPage = function newpasswordPage(req, res) {
+  return regeneratorRuntime.async(function newpasswordPage$(_context10) {
+    while (1) {
+      switch (_context10.prev = _context10.next) {
+        case 0:
+          try {
+            res.render('newpassword', {
+              email: req.session.email,
+              isUser: req.session.isUser,
+              error: req.query.error
+            });
+          } catch (error) {
+            console.log("Error during user forgot password:", error);
+            res.render('error');
+          }
+
+        case 1:
+        case "end":
+          return _context10.stop();
+      }
+    }
+  });
+};
+
+var ForgotresendOTP = function ForgotresendOTP(req, res) {
+  var email, otpRData;
+  return regeneratorRuntime.async(function ForgotresendOTP$(_context11) {
+    while (1) {
+      switch (_context11.prev = _context11.next) {
+        case 0:
+          _context11.prev = 0;
+          email = req.session.email;
+          console.log("=====Resending OTP to email:" + email);
+          _context11.next = 5;
+          return regeneratorRuntime.awrap(otpSend.sendmail(email));
+
+        case 5:
+          otpRData = _context11.sent;
+          console.log("===== otpResendData is ========" + otpRData);
+          req.session.OTP = otpRData;
+          req.session.otpTimestamp = Date.now(); // Update the timestamp
+
+          req.session.otpError = null; // Reset OTP error
+
+          res.redirect("/forgotOtpPage");
+          console.log("USER RESEND OTP PAGE");
+          _context11.next = 18;
+          break;
+
+        case 14:
+          _context11.prev = 14;
+          _context11.t0 = _context11["catch"](0);
+          console.log("Error while resending OTP :" + _context11.t0);
+          res.render('error');
+
+        case 18:
+        case "end":
+          return _context11.stop();
+      }
+    }
+  }, null, null, [[0, 14]]);
+};
+
+var newPassCreate = function newPassCreate(req, res) {
+  var email, _password2, conformPassword, uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, hashedPassword, updatedUserpassword;
+
+  return regeneratorRuntime.async(function newPassCreate$(_context12) {
+    while (1) {
+      switch (_context12.prev = _context12.next) {
+        case 0:
+          _context12.prev = 0;
+          email = req.session.email;
+          _password2 = req.body.password;
+          conformPassword = req.body.conformPassword;
+          console.log(_password2, "=========", conformPassword);
+          uppercaseRegex = /[A-Z]/;
+          lowercaseRegex = /[a-z]/;
+          numberRegex = /[0-9]/;
+          specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+
+          if (_password2 !== conformPassword) {
+            res.redirect('/newpasswordPage?error = Conform password is wrong');
+          }
+
+          if (!(_password2.length < 6 || !uppercaseRegex.test(_password2) || !lowercaseRegex.test(_password2) || !numberRegex.test(_password2) || !specialCharRegex.test(_password2))) {
+            _context12.next = 12;
+            break;
+          }
+
+          return _context12.abrupt("return", res.redirect('/newpasswordPage?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.'));
+
+        case 12:
+          _context12.next = 14;
+          return regeneratorRuntime.awrap(bcrypt.hash(_password2, 10));
+
+        case 14:
+          hashedPassword = _context12.sent;
+          _context12.next = 17;
+          return regeneratorRuntime.awrap(userModel.updateOne({
+            email: email
+          }, {
+            $set: {
+              password: hashedPassword
+            }
+          }));
+
+        case 17:
+          updatedUserpassword = _context12.sent;
+          console.log("++++++", updatedUserpassword);
+          res.redirect('/login');
+          _context12.next = 26;
+          break;
+
+        case 22:
+          _context12.prev = 22;
+          _context12.t0 = _context12["catch"](0);
+          console.log("Error during user forgot password:", _context12.t0);
+          res.render('error');
+
+        case 26:
+        case "end":
+          return _context12.stop();
+      }
+    }
+  }, null, null, [[0, 22]]);
+};
+
+var changePassword = function changePassword(req, res) {
+  return regeneratorRuntime.async(function changePassword$(_context13) {
+    while (1) {
+      switch (_context13.prev = _context13.next) {
+        case 0:
+          try {
+            res.render('changepassword', {
+              isUser: req.session.isUser,
+              error: req.query.error
+            });
+          } catch (error) {
+            console.log("Error during user forgot password:", error);
+            res.render('error');
+          }
+
+        case 1:
+        case "end":
+          return _context13.stop();
+      }
+    }
+  });
+};
+
+var changeVerify = function changeVerify(req, res) {
+  var email, newPassword, oldPassword, uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, userProfile, verifyOldPassword, verifyNewPassword, hashedPassword;
+  return regeneratorRuntime.async(function changeVerify$(_context14) {
+    while (1) {
+      switch (_context14.prev = _context14.next) {
+        case 0:
+          _context14.prev = 0;
           email = req.session.email;
           newPassword = req.body.newPassword;
           oldPassword = req.body.oldPassword;
@@ -479,63 +738,63 @@ var changeVerify = function changeVerify(req, res) {
           numberRegex = /[0-9]/;
           specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/; // Check if email or username already exists
 
-          _context7.next = 10;
+          _context14.next = 10;
           return regeneratorRuntime.awrap(userModel.findOne({
             email: email
           }));
 
         case 10:
-          userProfile = _context7.sent;
+          userProfile = _context14.sent;
 
           if (!(!userProfile.password === newPassword)) {
-            _context7.next = 13;
+            _context14.next = 13;
             break;
           }
 
-          return _context7.abrupt("return", res.redirect('/forgotPassword?error= Please Sign in User not found'));
+          return _context14.abrupt("return", res.redirect('/forgotPassword?error= Please Sign in User not found'));
 
         case 13:
-          _context7.next = 15;
+          _context14.next = 15;
           return regeneratorRuntime.awrap(bcrypt.compare(oldPassword, userProfile.password));
 
         case 15:
-          verifyOldPassword = _context7.sent;
-          _context7.next = 18;
+          verifyOldPassword = _context14.sent;
+          _context14.next = 18;
           return regeneratorRuntime.awrap(bcrypt.compare(newPassword, userProfile.password));
 
         case 18:
-          verifyNewPassword = _context7.sent;
+          verifyNewPassword = _context14.sent;
 
           if (verifyOldPassword) {
-            _context7.next = 21;
+            _context14.next = 21;
             break;
           }
 
-          return _context7.abrupt("return", res.redirect('/changePassword?error= Oldpassword is wrong'));
+          return _context14.abrupt("return", res.redirect('/changePassword?error= Old password is wrong'));
 
         case 21:
           if (verifyNewPassword) {
-            _context7.next = 23;
+            _context14.next = 23;
             break;
           }
 
-          return _context7.abrupt("return", res.redirect('/changePassword?error= Old password and new Password  is same '));
+          return _context14.abrupt("return", res.redirect('/changePassword?error= Old password and new Password  is same '));
 
         case 23:
           if (!(newPassword.length < 6 || !uppercaseRegex.test(password) || !lowercaseRegex.test(password) || !numberRegex.test(password) || !specialCharRegex.test(password))) {
-            _context7.next = 25;
+            _context14.next = 25;
             break;
           }
 
-          return _context7.abrupt("return", res.redirect('/changePassword?error=Password must be at least 6 characters,one uppercase letter, one lowercase letter, one number, and one special character.'));
+          return _context14.abrupt("return", res.redirect('/changePassword?error=Password must be at least 6 characters,one uppercase letter, one lowercase letter, one number, and one special character.'));
 
         case 25:
-          _context7.next = 27;
+          _context14.next = 27;
           return regeneratorRuntime.awrap(bcrypt.hash(newPassword.toString(), 10));
 
         case 27:
-          hashedPassword = _context7.sent;
-          _context7.next = 30;
+          hashedPassword = _context14.sent;
+          _context14.next = 30;
           return regeneratorRuntime.awrap(userModel.updateOne({
             email: email
           }, {
@@ -546,18 +805,18 @@ var changeVerify = function changeVerify(req, res) {
 
         case 30:
           res.redirect('/login?error=Password Changed');
-          _context7.next = 37;
+          _context14.next = 37;
           break;
 
         case 33:
-          _context7.prev = 33;
-          _context7.t0 = _context7["catch"](0);
-          console.log("Error during user forgot password:", _context7.t0);
+          _context14.prev = 33;
+          _context14.t0 = _context14["catch"](0);
+          console.log("Error during user forgot password:", _context14.t0);
           res.render('error');
 
         case 37:
         case "end":
-          return _context7.stop();
+          return _context14.stop();
       }
     }
   }, null, null, [[0, 33]]);
@@ -585,26 +844,26 @@ var logout = function logout(req, res) {
 
 var userDetails = function userDetails(req, res) {
   var userEmail, userProfile, addressData;
-  return regeneratorRuntime.async(function userDetails$(_context8) {
+  return regeneratorRuntime.async(function userDetails$(_context15) {
     while (1) {
-      switch (_context8.prev = _context8.next) {
+      switch (_context15.prev = _context15.next) {
         case 0:
-          _context8.prev = 0;
+          _context15.prev = 0;
           userEmail = req.session.email;
-          _context8.next = 4;
+          _context15.next = 4;
           return regeneratorRuntime.awrap(userModel.findOne({
             email: userEmail
           }));
 
         case 4:
-          userProfile = _context8.sent;
-          _context8.next = 7;
+          userProfile = _context15.sent;
+          _context15.next = 7;
           return regeneratorRuntime.awrap(addressModel.findOne({
             email: userEmail
           }));
 
         case 7:
-          addressData = _context8.sent;
+          addressData = _context15.sent;
 
           if (req.session.isUser) {
             res.render('userDetails', {
@@ -617,18 +876,18 @@ var userDetails = function userDetails(req, res) {
             res.redirect('/login');
           }
 
-          _context8.next = 15;
+          _context15.next = 15;
           break;
 
         case 11:
-          _context8.prev = 11;
-          _context8.t0 = _context8["catch"](0);
-          console.log("Error redirecting UserPage: " + _context8.t0);
+          _context15.prev = 11;
+          _context15.t0 = _context15["catch"](0);
+          console.log("Error redirecting UserPage: " + _context15.t0);
           res.render('error');
 
         case 15:
         case "end":
-          return _context8.stop();
+          return _context15.stop();
       }
     }
   }, null, null, [[0, 11]]);
@@ -637,27 +896,27 @@ var userDetails = function userDetails(req, res) {
 var userUpdate = function userUpdate(req, res) {
   var userID, updateData, data, dataUpload, image, _dataUpload, addressData;
 
-  return regeneratorRuntime.async(function userUpdate$(_context9) {
+  return regeneratorRuntime.async(function userUpdate$(_context16) {
     while (1) {
-      switch (_context9.prev = _context9.next) {
+      switch (_context16.prev = _context16.next) {
         case 0:
-          _context9.prev = 0;
+          _context16.prev = 0;
           userID = req.params.id;
           updateData = req.body;
-          _context9.next = 5;
+          _context16.next = 5;
           return regeneratorRuntime.awrap(userModel.find({
             userID: userID
           }));
 
         case 5:
-          data = _context9.sent;
+          data = _context16.sent;
 
           if (!(req.files[0] == data.image)) {
-            _context9.next = 12;
+            _context16.next = 12;
             break;
           }
 
-          _context9.next = 9;
+          _context16.next = 9;
           return regeneratorRuntime.awrap(userModel.updateOne({
             _id: userID
           }, {
@@ -669,13 +928,13 @@ var userUpdate = function userUpdate(req, res) {
           }));
 
         case 9:
-          dataUpload = _context9.sent;
-          _context9.next = 16;
+          dataUpload = _context16.sent;
+          _context16.next = 16;
           break;
 
         case 12:
           image = req.files[0].filename;
-          _context9.next = 15;
+          _context16.next = 15;
           return regeneratorRuntime.awrap(userModel.updateOne({
             _id: userID
           }, {
@@ -688,10 +947,10 @@ var userUpdate = function userUpdate(req, res) {
           }));
 
         case 15:
-          _dataUpload = _context9.sent;
+          _dataUpload = _context16.sent;
 
         case 16:
-          _context9.next = 18;
+          _context16.next = 18;
           return regeneratorRuntime.awrap(addressModel.updateOne({
             email: req.session.email // Assuming email is unique, so this will match the specific document
 
@@ -709,22 +968,22 @@ var userUpdate = function userUpdate(req, res) {
           }));
 
         case 18:
-          addressData = _context9.sent;
+          addressData = _context16.sent;
           console.log(addressData); // Check the result of the database update
 
           res.redirect("/userdetails");
-          _context9.next = 27;
+          _context16.next = 27;
           break;
 
         case 23:
-          _context9.prev = 23;
-          _context9.t0 = _context9["catch"](0);
-          console.error("Error updating user:", _context9.t0);
+          _context16.prev = 23;
+          _context16.t0 = _context16["catch"](0);
+          console.error("Error updating user:", _context16.t0);
           res.render('error');
 
         case 27:
         case "end":
-          return _context9.stop();
+          return _context16.stop();
       }
     }
   }, null, null, [[0, 23]]);
@@ -732,13 +991,13 @@ var userUpdate = function userUpdate(req, res) {
 
 var userImageDelete = function userImageDelete(req, res) {
   var userID, imageDelete;
-  return regeneratorRuntime.async(function userImageDelete$(_context10) {
+  return regeneratorRuntime.async(function userImageDelete$(_context17) {
     while (1) {
-      switch (_context10.prev = _context10.next) {
+      switch (_context17.prev = _context17.next) {
         case 0:
-          _context10.prev = 0;
+          _context17.prev = 0;
           userID = req.params.id;
-          _context10.next = 4;
+          _context17.next = 4;
           return regeneratorRuntime.awrap(userModel.updateOne({
             _id: userID
           }, {
@@ -748,21 +1007,21 @@ var userImageDelete = function userImageDelete(req, res) {
           }));
 
         case 4:
-          imageDelete = _context10.sent;
+          imageDelete = _context17.sent;
           console.log(imageDelete);
           res.redirect("/userdetails");
-          _context10.next = 13;
+          _context17.next = 13;
           break;
 
         case 9:
-          _context10.prev = 9;
-          _context10.t0 = _context10["catch"](0);
-          console.error("Error updating user:", _context10.t0);
+          _context17.prev = 9;
+          _context17.t0 = _context17["catch"](0);
+          console.error("Error updating user:", _context17.t0);
           res.render('error');
 
         case 13:
         case "end":
-          return _context10.stop();
+          return _context17.stop();
       }
     }
   }, null, null, [[0, 9]]);
@@ -776,6 +1035,13 @@ module.exports = {
   otpPage: otpPage,
   checkUserIn: checkUserIn,
   redirectUser: redirectUser,
+  forgotPassword: forgotPassword,
+  forgotpasswordOtp: forgotpasswordOtp,
+  forgotPassVerifyOtp: forgotPassVerifyOtp,
+  forgotOtpPage: forgotOtpPage,
+  newPassCreate: newPassCreate,
+  ForgotresendOTP: ForgotresendOTP,
+  newpasswordPage: newpasswordPage,
   userDetails: userDetails,
   userUpdate: userUpdate,
   userImageDelete: userImageDelete,

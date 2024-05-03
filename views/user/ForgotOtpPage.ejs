@@ -35,11 +35,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <form action="/verifyOTP" method="post">
+                                <form action="/forgotPassVerifyOtp" method="post">
                                     <div class="row gy-3 overflow-hidden">
                                         <div class="col-12">
                                             <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" name="otp" id="otp"
+                                                <input type="otp" class="form-control" name="otp" id="otp"
                                                     placeholder="OTP" required>
                                                 <label for="otp" class="form-label">OTP</label>
                                             </div>
@@ -142,7 +142,7 @@
 				// Simulate OTP resend logic
 				// Replace this with your actual OTP resend logic   
 	
-				window.location.href = "/regResOTP/<%=email %>"
+				window.location.href = "/ForResOTP/<%=email %>"
 	
 				// Disable the resend button and start the countdown
 				document.getElementById('resendButton').disabled = true;

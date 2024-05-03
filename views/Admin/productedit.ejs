@@ -9,7 +9,9 @@
     <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
 
     <title>AnB Store</title>
-  
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
 
@@ -41,74 +43,201 @@
                 </div>
                 <div class="container">
                     <div class="row justify-content-center mt-5">
-                       
-                            <div class="card-body">
-                                <form method="post" action="/admin/ProductUpdate/<%= product._id %>" enctype="multipart/form-data">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="name" class="form-label">Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="<%= product.name %>">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="category" class="form-label">Category</label>
-                                                <select class="form-control" id="productCategory" name="category" required>
-                                                    <% for(let a of category) { %>
-                                                        <option value="<%=a._id%>" <%= a._id.toString() === product.category.toString() ? 'selected' : '' %>><%=a.category%></option>
-                                                    <% } %>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="rate" class="form-label">Rate</label>
-                                                <input type="number" class="form-control" id="rate" name="rate" value="<%= product.rate %>">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="description" class="form-label">Description</label>
-                                                <textarea class="form-control" id="description" name="description" style="height: 150px;"><%= product.description %></textarea>
 
-                                            </div>
+                        <div class="card-body">
+                            <form method="post" action="/admin/ProductUpdate/<%= product._id %>"
+                                enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Name</label>
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                value="<%= product.name %>">
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label for="image" class="form-label">Image</label>
-                                                <% for (let i = 0; i < product.image.length; i++) { %>
-                                                    <br>
-                                                    <img src="/images/<%= product.image[i] %>" style="height: 60px; width: auto;">
-                                                    <a class="btn btn-outline-danger" href="/admin/productImageDelete/<%= product._id %>?index=<%= i %>">Delete</a>
+                                        <div class="mb-3">
+                                            <label for="category" class="form-label">Category</label>
+                                            <select class="form-control" id="productCategory" name="category" required>
+                                                <% for(let a of category) { %>
+                                                    <option value="<%=a._id%>"
+                                                        <%=a._id.toString()===product.category.toString() ? 'selected'
+                                                        : '' %>><%=a.category%>
+                                                    </option>
+                                                    <% } %>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="rate" class="form-label">Rate</label>
+                                            <input type="number" class="form-control" id="rate" name="rate"
+                                                value="<%= product.rate %>">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea class="form-control" id="description" name="description"
+                                                style="height: 150px;"><%= product.description %></textarea>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="image" class="form-label">Image</label>
+                                            <% for (let i=0; i < product.image.length; i++) { %>
+                                                <br>
+                                                <img src="/images/<%= product.image[i] %>"
+                                                    style="height: 60px; width: auto;">
+                                                <a class="btn btn-outline-danger"
+                                                    href="/admin/productImageDelete/<%= product._id %>?index=<%= product.image[i] %>">Delete</a>
                                                 <% } %>
-                                                <div id="imagePreview" class="mt-3"></div>
-                                                <input type="file" class="form-control" id="image" name="image" multiple>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="stock" class="form-label">Stock</label>
-                                                <input type="number" class="form-control" id="stock" name="stock" placeholder="Enter Product Stock" value="<%= product.stock %>">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="offer" class="form-label">Offer</label>
-                                                <input type="number" class="form-control" id="offer" name="offer" value="<%= product.offer %>">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="discountAmount" class="form-label">Discount Amount</label>
-                                                <input type="number" class="form-control" id="discountAmount" name="discountAmount" value="<%= product.discountAmount %>">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="catOffer" class="form-label">Category Offer</label>
-                                                <input type="number" class="form-control" id="catOffer" name="catOffer" value="<%= product.catOffer %>">
-                                            </div>
+                                                    <div id="imagePreview" class="mt-3"></div>
+                                                    <input type="file" class="form-control" id="image" name="image"
+                                                        multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="stock" class="form-label">Stock</label>
+                                            <input type="number" class="form-control" id="stock" name="stock"
+                                                placeholder="Enter Product Stock" value="<%= product.stock %>">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="offer" class="form-label">Offer</label>
+                                            <input type="number" class="form-control" id="offer" name="offer"
+                                                value="<%= product.offer %>">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="discountAmount" class="form-label">Discount Amount</label>
+                                            <input type="number" class="form-control" id="discountAmount"
+                                                name="discountAmount" value="<%= product.discountAmount %>">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="catOffer" class="form-label">Category Offer</label>
+                                            <input type="number" class="form-control" id="catOffer" name="catOffer"
+                                                value="<%= product.catOffer %>">
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="properties">Properties:</label><br>
+                                        <div id="properties" class="properties-grid">
+                                            <% product.properties.forEach((property, index)=> { %>
+                                                <div id="property<%= index %>">
+                                                    <% if (property) { %>
+                                                        <label for="color<%= index %>">Color:</label>
+                                                        <select class="form-control" id="color<%= index %>"
+                                                            name="properties[<%= index %>][color]" required>
+                                                            <option value="red" <%=property.color==='red' ? 'selected'
+                                                                : '' %>
+                                                                >Red
+                                                            </option>
+                                                            <option value="blue" <%=property.color==='blue' ? 'selected'
+                                                                : '' %>
+                                                                >Blue</option>
+                                                            <option value="green" <%=property.color==='green'
+                                                                ? 'selected' : '' %>
+                                                                >Green</option>
+                                                            <option value="black" <%=property.color==='black'
+                                                                ? 'selected' : '' %>
+                                                                >Black</option>
+                                                        </select>
+
+                                                        <label for="size<%= index %>">Size:</label>
+                                                        <select class="form-control" id="size<%= index %>"
+                                                            name="properties[<%= index %>][size]" required>
+                                                            <option value="small" <%=property.size==='small'
+                                                                ? 'selected' : '' %>
+                                                                >Small</option>
+                                                            <option value="medium" <%=property.size==='medium'
+                                                                ? 'selected' : '' %>
+                                                                >Medium</option>
+                                                            <option value="large" <%=property.size==='large'
+                                                                ? 'selected' : '' %>
+                                                                >Large</option>
+                                                            <option value="extra-large" <%=property.size==='extra-large'
+                                                                ? 'selected' : '' %>>Extra Large</option>
+                                                        </select>
+
+                                                        <label for="price<%= index %>">Price:</label>
+                                                        <input class="form-control" type="number" id="price<%= index %>"
+                                                            name="properties[<%= index %>][price]"
+                                                            value="<%= property.price %>" required>
+
+                                                        <label for="stockQuantity<%= index %>">Stock Quantity:</label>
+                                                        <input class="form-control" type="number"
+                                                            id="stockQuantity<%= index %>"
+                                                            name="properties[<%= index %>][stockQuantity]"
+                                                            value="<%= property.stockQuantity %>" required>
+
+                                                        <button type="button" class="btn btn-primary"
+                                                            onclick="removeProperty(<%= index %>)">Remove</button>
+                                                        <% } %>
+                                                </div><br>
+                                                <% }) %>
+                                        </div>
+                                        <button type="button" onclick="addProperty()" class="btn btn-primary">Add
+                                            Property</button><br><br>
+
+                                        <div class="mb-3">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
                                     </div>
-                                </form>
-                                
-                            </div>
-                       
+                                </div>
+
+                            </form>
+
+                        </div>
+
                     </div>
                 </div>
 
             </div>
         </section>
+
+
+
+        <script>
+            // Initialize propertyCount based on the existing number of properties
+            let propertyCount = <%= product.properties.length %>;
+
+            function addProperty() {
+                const propertiesDiv = document.getElementById('properties');
+                const propertyTemplate = `
+            
+                    <div id="property${propertyCount}">
+                        <label for="color${propertyCount}">Color:</label>
+                        <select class="form-control" id="color${propertyCount}" name="properties[${propertyCount}][color]" required>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="black">Black</option>
+                        </select>
+        
+                        <label for="size${propertyCount}">Size:</label>
+                        <select class="form-control" id="size${propertyCount}" name="properties[${propertyCount}][size]" required>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                            <option value="extra-large">Extra Large</option>
+                        </select>
+        
+                        <label for="price${propertyCount}">Price:</label>
+                        <input class="form-control" type="number" id="price${propertyCount}" name="properties[${propertyCount}][price]" required>
+        
+                        <label for="stockQuantity${propertyCount}">Stock Quantity:</label>
+                        <input class="form-control" type="number" id="stockQuantity${propertyCount}" name="properties[${propertyCount}][stockQuantity]" required>
+        
+                        <button type="button" class="btn btn-primary" onclick="removeProperty(${propertyCount})">Remove</button>
+                    </div><br>
+               
+                `;
+                propertiesDiv.insertAdjacentHTML('beforeend', propertyTemplate);
+                propertyCount++;
+            }
+
+            function removeProperty(propertyId) {
+                const propertyDiv = document.getElementById(`property${propertyId}`);
+                propertyDiv.remove();
+            }
+        </script>
+
         <script>
             document.getElementById('image').addEventListener('change', function (event) {
                 const files = event.target.files;
@@ -137,7 +266,10 @@
 
 
 
-
+        <script src="https://unpkg.com/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 

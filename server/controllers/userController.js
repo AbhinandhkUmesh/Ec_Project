@@ -1,7 +1,9 @@
 const userModel = require('../models/usermodel');
 const bcrypt = require('bcrypt');
 const otpSend = require("../middleware/otp");
-const { isUser } = require('../middleware/usermiddleware');
+const {
+    isUser
+} = require('../middleware/usermiddleware');
 const productModel = require('../models/productmodel');
 const categoryModel = require('../models/categorymodel')
 const addressModel = require('../models/addressmodel')
@@ -9,14 +11,16 @@ const addressModel = require('../models/addressmodel')
 const index = async (req, res) => {
     try {
         const category = await categoryModel.find({})
-        let products = await productModel.find({status:true})
-        console.log("=====",products)
+        let products = await productModel.find({
+            status: true
+        })
+        console.log("=====", products)
         if (req.session.isUser) {
             res.redirect('/home');
         } else {
-            res.render('home',{
-                isUser:req.session.isUser,
-                error:req.session.error,
+            res.render('home', {
+                isUser: req.session.isUser,
+                error: req.session.error,
                 category,
                 products
             });
@@ -24,7 +28,8 @@ const index = async (req, res) => {
         }
     } catch (error) {
         console.log("Error rendering index page: " + error);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
 const login = (req, res) => {
@@ -35,25 +40,27 @@ const login = (req, res) => {
         } else {
             res.render('userlogin', {
                 isUser: req.session.isUser,
-                error:req.query.error
+                error: req.query.error
             });
         }
     } catch (error) {
         console.log("Error rendering user login page: " + error);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
 const signupPage = (req, res) => {
     try {
-       
+
         res.render("signup", {
             isUser: req.session.isUser,
-            error:req.query.error
+            error: req.query.error
         });
         console.log("User signup");
     } catch (error) {
         console.log("Error rendering user signup page: " + error);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 const signUp = async (req, res) => {
     try {
@@ -62,6 +69,8 @@ const signUp = async (req, res) => {
         const password = req.body.password;
         const conformPassword = req.body.password;
 
+        req.session.email = email
+
         const uppercaseRegex = /[A-Z]/;
         const lowercaseRegex = /[a-z]/;
         const numberRegex = /[0-9]/;
@@ -69,7 +78,11 @@ const signUp = async (req, res) => {
 
         // Check if email or username already exists
         const alreadyExist = await userModel.findOne({
-            $or: [{ email: email }, { Username: Username }]
+            $or: [{
+                email: email
+            }, {
+                Username: Username
+            }]
         });
 
         if (alreadyExist) {
@@ -78,11 +91,11 @@ const signUp = async (req, res) => {
             } else if (alreadyExist.Username === Username) {
                 return res.redirect('/signup?error=Username Already Exists');
             }
-        } 
-        if(conformPassword !== password){
+        }
+        if (conformPassword !== password) {
             return res.redirect('/signup?error=Conform your password');
         }
-        
+
         if (password.length < 6 ||
             !uppercaseRegex.test(password) ||
             !lowercaseRegex.test(password) ||
@@ -90,15 +103,19 @@ const signUp = async (req, res) => {
             !specialCharRegex.test(password)) {
             return res.redirect('/signup?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
         }
-        
+
         // Set user details in session
-        req.session.userDetails = { email, Username, password };
+        req.session.userDetails = {
+            email,
+            Username,
+            password
+        };
 
         // Assuming otpSend.sendmail(email) is an asynchronous function
         console.log("Sending OTP to:", email);
         const otpData = await otpSend.sendmail(email);
         console.log("OTP sent:", otpData);
-        
+
         // Store OTP in session
         req.session.OTP = otpData;
 
@@ -109,16 +126,17 @@ const signUp = async (req, res) => {
             error: req.query.error,
             isUser: req.session.isUser,
         });
-      
+
     } catch (err) {
         console.log("Error in signUp: ", err);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
 const authOTP = async (req, res) => {
     try {
         const otp = req.body.otp;
-        const storedOTP =  req.session.OTP;
+        const storedOTP = req.session.OTP;
         console.log(otp, "=====1st test=====", storedOTP); // Retrieve the OTP stored in the session
         if (otp === storedOTP) { // Compare the entered OTP with the stored one
             console.log("=====2nd test=====");
@@ -136,7 +154,7 @@ const authOTP = async (req, res) => {
             const registeredUser = new userModel({
                 Username: req.session.userDetails.Username,
                 password: hashedPassword,
-                email: req.session.userDetails.email,
+                email: req.session.email,
                 status: true,
                 isAdmin: 0,
             });
@@ -146,20 +164,20 @@ const authOTP = async (req, res) => {
             res.redirect("/login");
         } else {
             res.render("otppage", {
-                email: req.session.userDetails.email,
+                email: req.session.email,
                 error: "Invalid OTP entered",
                 isUser: req.session.isUser
             });
         }
     } catch (err) {
         console.log("Error while authenticating OTP: " + err);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
 const resendOTP = async (req, res) => {
     try {
-        console.log("Session User Detail:", req.session.userDetails);
-        const email = req.session.userDetails.email;
+        const email = req.session.email;
         console.log("=====Resending OTP to email:" + email);
         const otpRData = await otpSend.sendmail(email);
         console.log("===== otpResendData is ========" + otpRData);
@@ -170,7 +188,7 @@ const resendOTP = async (req, res) => {
         console.log("USER RESEND OTP PAGE");
     } catch (error) {
         console.log("Error while resending OTP :" + error);
-        res.render('error'); 
+        res.render('error');
     }
 };
 
@@ -184,7 +202,8 @@ const otpPage = (req, res) => {
         });
     } catch (error) {
         console.log("Error rendering user otp page: " + error);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
 
@@ -192,7 +211,9 @@ const checkUserIn = async (req, res) => {
     try {
         console.log("check 1");
         const email = req.body.email;
-        const userProfile = await userModel.findOne({ email: email });
+        const userProfile = await userModel.findOne({
+            email: email
+        });
         console.log(email, "check 2", userProfile);
 
         if (!userProfile) {
@@ -206,7 +227,7 @@ const checkUserIn = async (req, res) => {
         console.log(req.body.password);
         console.log(userProfile.password);
 
-        
+
         const checkPass = await bcrypt.compare(req.body.password, userProfile.password);
         console.log(checkPass)
         if (checkPass) {
@@ -223,7 +244,8 @@ const checkUserIn = async (req, res) => {
     } catch (error) {
         console.log("Error validating user:", error);
         req.session.error = "Internal Server Error. Please try again later.";
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
 
@@ -239,20 +261,164 @@ const redirectUser = async (req, res) => {
         });
     } catch (error) {
         console.log("Error redirecting user: " + error);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
-
-const changePassword = (req, res) => {
+const forgotPassword = (req, res) => {
     try {
-        res.render('changepassword', {
+        res.render('ForgotPassword', {
             isUser: req.session.isUser,
-            error:req.query.error
+            error: req.query.error
         });
     } catch (error) {
         console.log("Error during user forgot password:", error);
-        res.render('error');     }
+        res.render('error');
+    }
 };
+
+const forgotpasswordOtp = async (req, res) => {
+    try {
+        const email = req.body.email;
+        console.log(email)
+        const UserNotExist = await userModel.findOne({
+            email: email
+        })
+        if (!UserNotExist) {
+            return res.redirect('/signup?error=Email Not Exists');
+        }
+        const otpData = await otpSend.sendmail(email);
+
+        req.session.email = email
+        req.session.OTP = otpData
+        
+        res.redirect('/forgotOtpPage')
+    } catch (error) {
+        console.log("Error during user forgot password:", error);
+        res.render('error');
+    }
+};
+
+const forgotOtpPage = async (req, res) => {
+    try {
+        console.log(req.session.email)
+        console.log(req.session.OTP)
+        res.render('ForgotOtpPage', {
+            email: req.session.email,
+            isUser: req.session.isUser,
+            error: req.query.error
+        });
+    } catch (error) {
+        console.log("Error during user forgot password:", error);
+        res.render('error');
+    }
+};
+
+const forgotPassVerifyOtp = async (req, res) => {
+    try {
+        const otpdata = req.session.OTP
+        const otp = req.body.otp
+        console.log(otpdata, "=======", otp)
+        if (otpdata === otp) {
+           res.redirect('/newpasswordPage')
+        } else {
+            res.render("ForgotOtpPage", {
+                email: req.session.email,
+                error: "Invalid OTP entered",
+                isUser: req.session.isUser
+            });
+        }
+    } catch (error) {
+        console.log("Error during user forgot password:", error);
+        res.render('error');
+    }
+};
+
+const newpasswordPage = async (req,res) => {
+    try {
+        res.render('newpassword', {
+            email: req.session.email,
+            isUser: req.session.isUser,
+            error: req.query.error
+        });
+    } catch (error) {
+        console.log("Error during user forgot password:", error);
+        res.render('error');
+    }
+}
+
+
+const ForgotresendOTP = async (req, res) => {
+    try {
+        const email = req.session.email;
+        console.log("=====Resending OTP to email:" + email);
+        const otpRData = await otpSend.sendmail(email);
+        console.log("===== otpResendData is ========" + otpRData);
+        req.session.OTP = otpRData;
+        req.session.otpTimestamp = Date.now(); // Update the timestamp
+        req.session.otpError = null; // Reset OTP error
+        res.redirect("/forgotOtpPage");
+        console.log("USER RESEND OTP PAGE");
+    } catch (error) {
+        console.log("Error while resending OTP :" + error);
+        res.render('error');
+    }
+};
+
+const newPassCreate = async (req, res) => {
+    try {
+        const email = req.session.email;
+        const password = req.body.password
+        const conformPassword = req.body.conformPassword
+
+
+        console.log(password,"=========",conformPassword)
+        const uppercaseRegex = /[A-Z]/;
+        const lowercaseRegex = /[a-z]/;
+        const numberRegex = /[0-9]/;
+        const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+
+        if (password !== conformPassword) {
+            res.redirect('/newpasswordPage?error = Conform password is wrong')
+        }
+
+        if (password.length < 6 ||
+            !uppercaseRegex.test(password) ||
+            !lowercaseRegex.test(password) ||
+            !numberRegex.test(password) ||
+            !specialCharRegex.test(password)) {
+            return res.redirect('/newpasswordPage?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const updatedUserpassword = await userModel.updateOne({
+            email: email
+        }, {
+            $set: {
+                password: hashedPassword
+            }
+        })
+        console.log("++++++",updatedUserpassword)
+        res.redirect('/login')
+    } catch (error) {
+        console.log("Error during user forgot password:", error);
+        res.render('error');
+    }
+};
+
+const changePassword = async (req, res) => {
+    try {
+        res.render('changepassword', {
+            isUser: req.session.isUser,
+            error: req.query.error
+        });
+    } catch (error) {
+        console.log("Error during user forgot password:", error);
+        res.render('error');
+    }
+};
+
 
 const changeVerify = async (req, res) => {
     try {
@@ -266,20 +432,20 @@ const changeVerify = async (req, res) => {
         const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
         // Check if email or username already exists
         const userProfile = await userModel.findOne({
-           email: email
+            email: email
         });
 
 
         if (!userProfile.password === newPassword) {
             return res.redirect('/forgotPassword?error= Please Sign in User not found');
         }
-        
+
 
         const verifyOldPassword = await bcrypt.compare(oldPassword, userProfile.password);
         const verifyNewPassword = await bcrypt.compare(newPassword, userProfile.password);
 
         if (!verifyOldPassword) {
-            return res.redirect('/changePassword?error= Oldpassword is wrong');
+            return res.redirect('/changePassword?error= Old password is wrong');
         }
         if (!verifyNewPassword) {
             return res.redirect('/changePassword?error= Old password and new Password  is same ');
@@ -294,19 +460,24 @@ const changeVerify = async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(newPassword.toString(), 10);
 
-        await userModel.updateOne({ email: email},{$set:{
-            password:hashedPassword,
-        }})
+        await userModel.updateOne({
+            email: email
+        }, {
+            $set: {
+                password: hashedPassword,
+            }
+        })
         res.redirect('/login?error=Password Changed');
     } catch (error) {
         console.log("Error during user forgot password:", error);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
 const logout = (req, res) => {
     try {
 
-        if(req.session.timeoutTimer){
+        if (req.session.timeoutTimer) {
             clearTimeout(req.session.timeoutTimer)
         }
         req.session.destroy(err => {
@@ -318,7 +489,8 @@ const logout = (req, res) => {
         });
     } catch (error) {
         console.log("Error during user signout:", error);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
 
@@ -332,7 +504,7 @@ const userDetails = async (req, res) => {
         const addressData = await addressModel.findOne({
             email: userEmail
         });
-     
+
         if (req.session.isUser) {
             res.render('userDetails', {
                 userProfile,
@@ -348,17 +520,20 @@ const userDetails = async (req, res) => {
 
     } catch (error) {
         console.log("Error redirecting UserPage: " + error);
-        res.render('error');     }
+        res.render('error');
+    }
 };
 
 const userUpdate = async (req, res) => {
     try {
         const userID = req.params.id;
         const updateData = req.body;
-        const data = await userModel.find({userID})
+        const data = await userModel.find({
+            userID
+        })
         // Get the filename from uploaded files
-        if(req.files[0] ==data.image){
-          
+        if (req.files[0] == data.image) {
+
             const dataUpload = await userModel.updateOne({
                 _id: userID
             }, {
@@ -366,52 +541,47 @@ const userUpdate = async (req, res) => {
                     Username: updateData.Username,
                     email: updateData.email,
                     phone: updateData.phone,
-                    
+
+                }
+            });
+        } else {
+            const image = req.files[0].filename;
+            const dataUpload = await userModel.updateOne({
+                _id: userID
+            }, {
+                $set: {
+                    Username: updateData.Username,
+                    email: updateData.email,
+                    phone: updateData.phone,
+                    image: image
                 }
             });
         }
-      else{
-        const image = req.files[0].filename; 
-        const dataUpload = await userModel.updateOne({
-            _id: userID
+        // Update user data in the database
+
+
+        const addressData = await addressModel.updateOne({
+            email: req.session.email,
+            // Assuming email is unique, so this will match the specific document
         }, {
             $set: {
-                Username: updateData.Username,
-                email: updateData.email,
-                phone: updateData.phone,
-                image: image
+                streetAddress: updateData.streetAddress,
+                city: updateData.city,
+                state: updateData.state,
+                postalCode: updateData.postalCode,
+                country: updateData.country
             }
+        }, {
+            upsert: true // Perform an upsert operation
         });
-      }
-        // Update user data in the database
-        
-
-        const addressData = await addressModel.updateOne(
-            {
-                email: req.session.email,
-                // Assuming email is unique, so this will match the specific document
-            },
-            {
-                $set: {
-                    streetAddress: updateData.streetAddress,
-                    city: updateData.city,
-                    state: updateData.state,
-                    postalCode: updateData.postalCode,
-                    country: updateData.country
-                }
-            },
-            {
-                upsert: true // Perform an upsert operation
-            }
-        );
         console.log(addressData)
         // Check the result of the database update
 
-      
+
         res.redirect("/userdetails");
     } catch (error) {
         console.error("Error updating user:", error);
-        res.render('error'); 
+        res.render('error');
     }
 };
 
@@ -420,20 +590,20 @@ const userUpdate = async (req, res) => {
 const userImageDelete = async (req, res) => {
     try {
         const userID = req.params.id
-        
+
         const imageDelete = await userModel.updateOne({
             _id: userID
         }, {
             $set: {
-                image:""
+                image: ""
             }
         })
         console.log(imageDelete)
         res.redirect(`/userdetails`);
-    }catch (error) {
-            console.error("Error updating user:", error);
-            res.render('error'); 
-        }
+    } catch (error) {
+        console.error("Error updating user:", error);
+        res.render('error');
+    }
 }
 
 
@@ -445,6 +615,14 @@ module.exports = {
     otpPage,
     checkUserIn,
     redirectUser,
+
+    forgotPassword,
+    forgotpasswordOtp,
+    forgotPassVerifyOtp,
+    forgotOtpPage,
+    newPassCreate,
+    ForgotresendOTP,
+    newpasswordPage,
 
     userDetails,
     userUpdate,

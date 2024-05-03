@@ -45,23 +45,23 @@ var adminProduct = function adminProduct(req, res) {
             currentPage: page,
             totalPages: totalPages // Pass totalPages to the view
 
-          });
-          console.log("Products displayed :", products);
-          _context.next = 19;
+          }); // console.log("Products displayed :", products);
+
+          _context.next = 18;
           break;
 
-        case 15:
-          _context.prev = 15;
+        case 14:
+          _context.prev = 14;
           _context.t0 = _context["catch"](0);
           console.error("Error occurred:", _context.t0);
           res.render('error'); // Render an error page if there's an error
 
-        case 19:
+        case 18:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 15]]);
+  }, null, null, [[0, 14]]);
 };
 
 var getproductPage = function getproductPage(req, res) {
@@ -138,7 +138,7 @@ var NewProduct = function NewProduct(req, res) {
 };
 
 var AddProduct = function AddProduct(req, res) {
-  var _req$body, name, category, rate, description, stock, offer, discountAmount, catOffer, files, images, existingProduct, newProduct;
+  var _req$body, name, category, rate, description, offer, discountAmount, catOffer, properties, files, images, existingProduct, newProduct;
 
   return regeneratorRuntime.async(function AddProduct$(_context4) {
     while (1) {
@@ -146,52 +146,56 @@ var AddProduct = function AddProduct(req, res) {
         case 0:
           _context4.prev = 0;
           console.log("Check 1 Adding product");
-          _req$body = req.body, name = _req$body.name, category = _req$body.category, rate = _req$body.rate, description = _req$body.description, stock = _req$body.stock, offer = _req$body.offer, discountAmount = _req$body.discountAmount, catOffer = _req$body.catOffer;
-          console.log(req.body); // // Check if files were uploaded
+          _req$body = req.body, name = _req$body.name, category = _req$body.category, rate = _req$body.rate, description = _req$body.description, offer = _req$body.offer, discountAmount = _req$body.discountAmount, catOffer = _req$body.catOffer, properties = _req$body.properties;
+          console.log("Received Body:", req.body.properties); // Handle file uploads
 
-          if (!req.files || !req.files.length) {
-            console.log("No files were uploaded.");
-            res.render('error'); // Render an error page if there's an error
+          if (!(!req.files || !req.files.length)) {
+            _context4.next = 7;
+            break;
           }
 
-          console.log("Name: " + name + " Category: " + category + " rate: " + rate);
+          console.log("No files were uploaded.");
+          return _context4.abrupt("return", res.render('error'));
+
+        case 7:
+          // Process uploaded files
           files = req.files;
           images = [];
-          files.forEach(function (files) {
-            var image = files.filename;
+          files.forEach(function (file) {
+            var image = file.filename;
             images.push(image);
           }); // Check if product already exists
 
-          _context4.next = 11;
+          _context4.next = 12;
           return regeneratorRuntime.awrap(productModel.findOne({
             name: name
           }));
 
-        case 11:
+        case 12:
           existingProduct = _context4.sent;
 
           if (!existingProduct) {
-            _context4.next = 14;
+            _context4.next = 15;
             break;
           }
 
           return _context4.abrupt("return", res.redirect('/admin/NewProduct?error=Product already exists, please update'));
 
-        case 14:
-          console.log(category, "cAT FID"); // // Create new product instance
-
+        case 15:
+          // Parse properties from form
+          // Create new product instance
           newProduct = new productModel({
             name: name,
             category: category,
             rate: rate,
             description: description,
-            stock: stock,
             image: images,
-            // Assuming 'images' is the field in your schema to store 
             offer: offer,
             discountAmount: discountAmount,
-            catOffer: catOffer
-          }); // // Save the new product
+            catOffer: catOffer,
+            properties: properties // Save properties as an array of objects
+
+          }); // Save the new product
 
           _context4.next = 18;
           return regeneratorRuntime.awrap(newProduct.save());
@@ -204,7 +208,7 @@ var AddProduct = function AddProduct(req, res) {
           _context4.prev = 22;
           _context4.t0 = _context4["catch"](0);
           console.error("Error occurred:", _context4.t0);
-          res.render('error'); // Render an error page if there's an error
+          return _context4.abrupt("return", res.render('error'));
 
         case 26:
         case "end":
@@ -338,16 +342,14 @@ var productupdate = function productupdate(req, res) {
           productID = req.params.id;
           updateData = req.body;
           console.log(req.body);
-          console.log("=++++++++", productID);
-          console.log("=++++====++++", updateData);
           files = req.files;
           images = [];
           files.forEach(function (files) {
             var image = files.filename;
             images.push(image);
           });
-          console.log("=++++++----++", images);
-          _context7.next = 12;
+          console.log("=//////////////++", req.body.properties);
+          _context7.next = 10;
           return regeneratorRuntime.awrap(productModel.updateOne({
             _id: productID
           }, {
@@ -359,13 +361,14 @@ var productupdate = function productupdate(req, res) {
               stock: updateData.stock,
               offer: updateData.offer,
               discountAmount: updateData.discountAmount,
-              catOffer: updateData.catOffer
+              catOffer: updateData.catOffer,
+              properties: updateData.properties
             }
           }));
 
-        case 12:
+        case 10:
           dataUpload = _context7.sent;
-          _context7.next = 15;
+          _context7.next = 13;
           return regeneratorRuntime.awrap(productModel.updateOne({
             _id: productID
           }, {
@@ -376,26 +379,26 @@ var productupdate = function productupdate(req, res) {
             }
           }));
 
-        case 15:
+        case 13:
           imageUpload = _context7.sent;
           console.log(dataUpload, "----===++===---");
           console.log(imageUpload, "----======---");
           res.redirect("/admin/productmanagement");
-          _context7.next = 25;
+          _context7.next = 23;
           break;
 
-        case 21:
-          _context7.prev = 21;
+        case 19:
+          _context7.prev = 19;
           _context7.t0 = _context7["catch"](0);
           console.error("Error updating product:", _context7.t0);
           res.render('error'); // Render an error page if there's an error
 
-        case 25:
+        case 23:
         case "end":
           return _context7.stop();
       }
     }
-  }, null, null, [[0, 21]]);
+  }, null, null, [[0, 19]]);
 };
 
 var productImageDelete = function productImageDelete(req, res) {
@@ -405,9 +408,11 @@ var productImageDelete = function productImageDelete(req, res) {
       switch (_context8.prev = _context8.next) {
         case 0:
           _context8.prev = 0;
+          console.log("dfbvsdbbsfb");
           productID = req.params.id;
           imagePath = req.query.index;
-          _context8.next = 5;
+          console.log(imagePath);
+          _context8.next = 7;
           return regeneratorRuntime.awrap(productModel.updateOne({
             _id: productID
           }, {
@@ -416,25 +421,25 @@ var productImageDelete = function productImageDelete(req, res) {
             }
           }));
 
-        case 5:
+        case 7:
           imageDelete = _context8.sent;
           console.log(imageDelete);
           res.redirect("/admin/productEdit/".concat(productID));
-          _context8.next = 14;
+          _context8.next = 16;
           break;
 
-        case 10:
-          _context8.prev = 10;
+        case 12:
+          _context8.prev = 12;
           _context8.t0 = _context8["catch"](0);
           console.error("Error updating product:", _context8.t0);
           res.render('error'); // Render an error page if there's an error
 
-        case 14:
+        case 16:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[0, 10]]);
+  }, null, null, [[0, 12]]);
 }; // =====User Side========
 
 
