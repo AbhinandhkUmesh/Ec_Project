@@ -15,6 +15,7 @@ require("dotenv").config();
 // Middleware
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
+
 app.use(express.static('public'))
 app.use(express.static('upload'))
 

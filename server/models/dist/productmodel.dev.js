@@ -5,6 +5,8 @@ var mongoose = require('mongoose');
 var _require = require('os'),
     type = _require.type;
 
+var wishlist = require('./wishlistmodel');
+
 var product = new mongoose.Schema({
   name: {
     type: String,
@@ -43,7 +45,7 @@ var product = new mongoose.Schema({
     required: true,
     trim: true
   },
-  hide: {
+  wishlist: {
     type: Boolean,
     "default": false // Provide a default value
 

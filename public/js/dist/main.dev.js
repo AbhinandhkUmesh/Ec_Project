@@ -239,3 +239,154 @@
     $('.js-modal1').removeClass('show-modal1');
   });
 })(jQuery);
+
+function addToWishlist(productId) {
+  var response;
+  return regeneratorRuntime.async(function addToWishlist$(_context) {
+    while (1) {
+      switch (_context.prev = _context.next) {
+        case 0:
+          _context.prev = 0;
+          _context.next = 3;
+          return regeneratorRuntime.awrap(fetch("/addwishlist/".concat(productId), {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }));
+
+        case 3:
+          response = _context.sent;
+
+          if (response.ok) {
+            _context.next = 6;
+            break;
+          }
+
+          throw new Error('Failed to add product to wishlist');
+
+        case 6:
+          toggleWishlistButton(productId, true);
+          displaySuccessMessage('Added', 'Product added to wishlist!');
+          _context.next = 14;
+          break;
+
+        case 10:
+          _context.prev = 10;
+          _context.t0 = _context["catch"](0);
+          console.error('Error adding product to wishlist:', _context.t0);
+          displayErrorMessage('Error', 'Failed to add product to wishlist');
+
+        case 14:
+        case "end":
+          return _context.stop();
+      }
+    }
+  }, null, null, [[0, 10]]);
+}
+
+function removeFromWishlist(productId) {
+  var response;
+  return regeneratorRuntime.async(function removeFromWishlist$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return regeneratorRuntime.awrap(fetch("/removewishlist/".concat(productId), {
+            method: 'PUT'
+          }));
+
+        case 3:
+          response = _context2.sent;
+
+          if (response.ok) {
+            _context2.next = 6;
+            break;
+          }
+
+          throw new Error('Failed to remove product from wishlist');
+
+        case 6:
+          toggleWishlistButton(productId, false);
+          displayRemoveMessage('Removed', 'Product removed from wishlist!');
+          _context2.next = 14;
+          break;
+
+        case 10:
+          _context2.prev = 10;
+          _context2.t0 = _context2["catch"](0);
+          console.error('Error removing product from wishlist:', _context2.t0);
+          displayErrorMessage('Error', 'Failed to remove product from wishlist');
+
+        case 14:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, null, null, [[0, 10]]);
+}
+
+function toggleWishlistButton(productId, isInWishlist) {
+  var addButton = document.querySelector("button.add-from-wishlist[data-product-id=\"".concat(productId, "\"]"));
+  var removeButton = document.querySelector("button.remove-to-wishlist[data-product-id=\"".concat(productId, "\"]"));
+
+  if (addButton && removeButton) {
+    addButton.style.display = isInWishlist ? 'none' : 'block';
+    removeButton.style.display = isInWishlist ? 'block' : 'none';
+  }
+}
+
+function displaySuccessMessage(title, message) {
+  swal({
+    title: title,
+    text: message,
+    icon: 'success'
+  });
+}
+
+function displayRemoveMessage(title, message) {
+  swal({
+    title: title,
+    text: message,
+    icon: 'error'
+  });
+}
+
+function displayErrorMessage(title, message) {
+  swal({
+    title: title,
+    text: message,
+    icon: 'error'
+  });
+} // async function updateWishlistSidebar() {
+//     try {
+//         const response = await fetch('/getwishlist'); // Modify URL if needed
+//         const data = await response.json();
+//         const wishlistContainer = document.getElementById('wishlist-items-container');
+//         if (wishlistContainer) {
+//             wishlistContainer.innerHTML = generateWishlistHTML(data.wishlist);
+//         }
+//     } catch (error) {
+//         console.error('Error updating wishlist sidebar:', error);
+//     }
+// }
+// function generateWishlistHTML(wishlist) {
+//     if (!wishlist || wishlist.length === 0) {
+//         return '<p>Your wishlist is empty</p>';
+//     }
+//     const itemsHTML = wishlist.map(item => {
+//         return `
+//             <div class="wishlist-item">
+//                 <img src="/images/${item.image}" alt="Product Image">
+//                 <p>${item.name}</p>
+//                 <span>$${item.rate}</span>
+//             </div>
+//         `;
+//     }).join('');
+//     return itemsHTML;
+// }
+// // Example: Call updateWishlistSidebar() when the page loads
+// window.addEventListener('DOMContentLoaded', () => {
+//     updateWishlistSidebar();
+// });

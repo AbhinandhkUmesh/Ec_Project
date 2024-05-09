@@ -10,14 +10,18 @@ var userCheck = require("../middleware/usermiddleware");
 
 var productController = require("../controllers/productController");
 
-var authController = require("../controllers/authcontroller");
-
 var cartController = require("../controllers/CartController");
 
-var multer = require("../middleware/multer"); // const session = require('express-session');
+var multer = require("../middleware/multer");
+
+var wishlistMiddleware = require('../middleware/wishlistMiddleware'); // router.use(wishlistMiddleware.fetchWishlistData);
+
+
+var wishlistController = require("../controllers/wishlistController"); // const session = require('express-session');
 // const bodyParser = require("body-parser");
 
 
+router.use(wishlistMiddleware.fetchWishlist);
 router.get('/', userController.index);
 router.get("/login", userController.login);
 router.get("/signup", userController.signupPage);
@@ -42,6 +46,8 @@ router.get("/changePassword", userCheck.isUser, userController.changePassword);
 router.post("/changePassword", userCheck.isUser, userController.changeVerify); // router.post("/changeOtpPage", userController.changeOtpPage);
 
 router.get("/product", productController.product);
-router.get("/product-detail/:id", productController.productdetail); // router.get("/shopingcart", cartController.cartpage);
-
+router.get("/product-detail/:id", productController.productdetail);
+router.put('/addwishlist/:productId', wishlistController.addToWishlist);
+router.put('/removewishlist/:productId', wishlistController.removeFromWishlist);
+router.get("/shopingcart", cartController.cartpage);
 module.exports = router;

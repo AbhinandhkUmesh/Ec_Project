@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { type } = require('os');
+const wishlist = require('./wishlistmodel');
 
 
 const product = new mongoose.Schema({
@@ -46,7 +47,7 @@ const product = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  hide: {
+  wishlist: {
     type: Boolean,
     default: false // Provide a default value
   },

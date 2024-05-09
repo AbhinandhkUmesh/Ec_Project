@@ -1,13 +1,15 @@
 const userModel = require('../models/usermodel');
 const bcrypt = require('bcrypt');
+const Wishlist = require('../models/wishlistmodel');
 const otpSend = require("../middleware/otp");
 const {
     isUser
 } = require('../middleware/usermiddleware');
 const productModel = require('../models/productmodel');
 const categoryModel = require('../models/categorymodel')
-const addressModel = require('../models/addressmodel')
-
+const addressModel = require('../models/addressmodel');
+const wishlist = require('../models/wishlistmodel');
+const { ObjectId } = require('mongoose').Types;
 const index = async (req, res) => {
     try {
         const category = await categoryModel.find({})
@@ -17,14 +19,16 @@ const index = async (req, res) => {
         console.log("=====", products)
         if (req.session.isUser) {
             res.redirect('/home');
+            
         } else {
             res.render('home', {
                 isUser: req.session.isUser,
                 error: req.session.error,
+                wishlist: res.locals.wishlist,
                 category,
                 products
             });
-            console.log("index Page");
+           
         }
     } catch (error) {
         console.log("Error rendering index page: " + error);
@@ -40,7 +44,8 @@ const login = (req, res) => {
         } else {
             res.render('userlogin', {
                 isUser: req.session.isUser,
-                error: req.query.error
+                error: req.query.error,
+                wishlist: res.locals.wishlist,
             });
         }
     } catch (error) {
@@ -54,7 +59,8 @@ const signupPage = (req, res) => {
 
         res.render("signup", {
             isUser: req.session.isUser,
-            error: req.query.error
+            error: req.query.error,
+            wishlist: res.locals.wishlist,
         });
         console.log("User signup");
     } catch (error) {
@@ -234,6 +240,8 @@ const checkUserIn = async (req, res) => {
             console.log("Password checked");
             req.session.isUser = true;
             req.session.Username = userProfile.Username;
+            req.session.userDetails = userProfile
+            req.session.userId = userProfile._id
             req.session.email = email;
             return res.redirect("/home");
         } else {
@@ -253,11 +261,16 @@ const checkUserIn = async (req, res) => {
 const redirectUser = async (req, res) => {
     try {
         const category = await categoryModel.find({})
-        let products = await productModel.find({})
+        const products = await productModel.find({})
+        const userId = req.session.userId
+        
+        const wishlistProduct =  await wishlist.findOne({user:userId}).populate('product')
+        console.log(wishlistProduct.product)
         res.render("home", {
             isUser: req.session.isUser,
-            products,
-            category
+            products: products,
+            category: category,
+            wishlist: res.locals.wishlist,
         });
     } catch (error) {
         console.log("Error redirecting user: " + error);

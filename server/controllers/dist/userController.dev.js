@@ -4,6 +4,8 @@ var userModel = require('../models/usermodel');
 
 var bcrypt = require('bcrypt');
 
+var Wishlist = require('../models/wishlistmodel');
+
 var otpSend = require("../middleware/otp");
 
 var _require = require('../middleware/usermiddleware'),
@@ -14,6 +16,10 @@ var productModel = require('../models/productmodel');
 var categoryModel = require('../models/categorymodel');
 
 var addressModel = require('../models/addressmodel');
+
+var wishlist = require('../models/wishlistmodel');
+
+var ObjectId = require('mongoose').Types.ObjectId;
 
 var index = function index(req, res) {
   var category, products;
@@ -42,10 +48,10 @@ var index = function index(req, res) {
             res.render('home', {
               isUser: req.session.isUser,
               error: req.session.error,
+              wishlist: res.locals.wishlist,
               category: category,
               products: products
             });
-            console.log("index Page");
           }
 
           _context.next = 15;
@@ -72,7 +78,8 @@ var login = function login(req, res) {
     } else {
       res.render('userlogin', {
         isUser: req.session.isUser,
-        error: req.query.error
+        error: req.query.error,
+        wishlist: res.locals.wishlist
       });
     }
   } catch (error) {
@@ -85,7 +92,8 @@ var signupPage = function signupPage(req, res) {
   try {
     res.render("signup", {
       isUser: req.session.isUser,
-      error: req.query.error
+      error: req.query.error,
+      wishlist: res.locals.wishlist
     });
     console.log("User signup");
   } catch (error) {
@@ -379,42 +387,44 @@ var checkUserIn = function checkUserIn(req, res) {
           console.log(checkPass);
 
           if (!checkPass) {
-            _context5.next = 29;
+            _context5.next = 31;
             break;
           }
 
           console.log("Password checked");
           req.session.isUser = true;
           req.session.Username = userProfile.Username;
+          req.session.userDetails = userProfile;
+          req.session.userId = userProfile._id;
           req.session.email = email;
           return _context5.abrupt("return", res.redirect("/home"));
 
-        case 29:
+        case 31:
           console.log("Incorrect password");
           req.session.error = "Incorrect password. Please try again.";
           return _context5.abrupt("return", res.redirect("/login?error=Incorrect password"));
 
-        case 32:
-          _context5.next = 39;
+        case 34:
+          _context5.next = 41;
           break;
 
-        case 34:
-          _context5.prev = 34;
+        case 36:
+          _context5.prev = 36;
           _context5.t0 = _context5["catch"](0);
           console.log("Error validating user:", _context5.t0);
           req.session.error = "Internal Server Error. Please try again later.";
           res.render('error');
 
-        case 39:
+        case 41:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[0, 34]]);
+  }, null, null, [[0, 36]]);
 };
 
 var redirectUser = function redirectUser(req, res) {
-  var category, products;
+  var category, products, userId, wishlistProduct;
   return regeneratorRuntime.async(function redirectUser$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
@@ -430,26 +440,36 @@ var redirectUser = function redirectUser(req, res) {
 
         case 6:
           products = _context6.sent;
+          userId = req.session.userId;
+          _context6.next = 10;
+          return regeneratorRuntime.awrap(wishlist.findOne({
+            user: userId
+          }).populate('product'));
+
+        case 10:
+          wishlistProduct = _context6.sent;
+          console.log(wishlistProduct.product);
           res.render("home", {
             isUser: req.session.isUser,
             products: products,
-            category: category
+            category: category,
+            wishlist: res.locals.wishlist
           });
-          _context6.next = 14;
+          _context6.next = 19;
           break;
 
-        case 10:
-          _context6.prev = 10;
+        case 15:
+          _context6.prev = 15;
           _context6.t0 = _context6["catch"](0);
           console.log("Error redirecting user: " + _context6.t0);
           res.render('error');
 
-        case 14:
+        case 19:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 10]]);
+  }, null, null, [[0, 15]]);
 };
 
 var forgotPassword = function forgotPassword(req, res) {

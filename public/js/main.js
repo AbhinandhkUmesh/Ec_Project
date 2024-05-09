@@ -262,3 +262,113 @@
 
 
 })(jQuery);
+
+async function addToWishlist(productId) {
+    try {
+        const response = await fetch(`/addwishlist/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to add product to wishlist');
+        }
+
+        toggleWishlistButton(productId, true);
+        displaySuccessMessage('Added', 'Product added to wishlist!');
+    } catch (error) {
+        console.error('Error adding product to wishlist:', error);
+        displayErrorMessage('Error', 'Failed to add product to wishlist');
+    }
+}
+
+async function removeFromWishlist(productId) {
+    try {
+        const response = await fetch(`/removewishlist/${productId}`, {
+            method: 'PUT',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to remove product from wishlist');
+        }
+
+        toggleWishlistButton(productId, false);
+        displayRemoveMessage('Removed', 'Product removed from wishlist!');
+    } catch (error) {
+        console.error('Error removing product from wishlist:', error);
+        displayErrorMessage('Error', 'Failed to remove product from wishlist');
+    }
+}
+
+function toggleWishlistButton(productId, isInWishlist) {
+    const addButton = document.querySelector(`button.add-from-wishlist[data-product-id="${productId}"]`);
+    const removeButton = document.querySelector(`button.remove-to-wishlist[data-product-id="${productId}"]`);
+
+    if (addButton && removeButton) {
+        addButton.style.display = isInWishlist ? 'none' : 'block';
+        removeButton.style.display = isInWishlist ? 'block' : 'none';
+    }
+}
+
+function displaySuccessMessage(title, message) {
+    swal({
+        title: title,
+        text: message,
+        icon: 'success',
+    });
+}
+function displayRemoveMessage(title, message) {
+    swal({
+        title: title,
+        text: message,
+        icon: 'error',
+    });
+}
+function displayErrorMessage(title, message) {
+    swal({
+        title: title,
+        text: message,
+        icon: 'error',
+    });
+}
+
+
+
+    // async function updateWishlistSidebar() {
+    //     try {
+    //         const response = await fetch('/getwishlist'); // Modify URL if needed
+    //         const data = await response.json();
+    //         const wishlistContainer = document.getElementById('wishlist-items-container');
+    //         if (wishlistContainer) {
+    //             wishlistContainer.innerHTML = generateWishlistHTML(data.wishlist);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error updating wishlist sidebar:', error);
+    //     }
+    // }
+
+    // function generateWishlistHTML(wishlist) {
+    //     if (!wishlist || wishlist.length === 0) {
+    //         return '<p>Your wishlist is empty</p>';
+    //     }
+
+    //     const itemsHTML = wishlist.map(item => {
+    //         return `
+    //             <div class="wishlist-item">
+    //                 <img src="/images/${item.image}" alt="Product Image">
+    //                 <p>${item.name}</p>
+    //                 <span>$${item.rate}</span>
+    //             </div>
+    //         `;
+    //     }).join('');
+
+    //     return itemsHTML;
+    // }
+
+    // // Example: Call updateWishlistSidebar() when the page loads
+    // window.addEventListener('DOMContentLoaded', () => {
+    //     updateWishlistSidebar();
+    // });
+

@@ -1024,7 +1024,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 }
 
 /*---------------------------------------------*/
-.header-cart-item-txt {
+.header-wishlist-item-txt {
   width: calc(100% - 80px);
 }
 
@@ -2062,33 +2062,36 @@ input.num-product::-webkit-inner-spin-button {
 }
 
 /*---------------------------------------------*/
+/* Adjust widths for child elements */
 .block2-txt-child1 {
-  width: calc(100% - 30px);
+  width: calc(100% - 40px); /* Adjusted width to accommodate icons */
 }
 
 .block2-txt-child2 {
-  width: 30px;
+  width: 40px; /* Set width for icon container */
 }
 
+/* Adjust opacity transitions for icons */
 .btn-addwish-b2 .icon-heart2 {
-  opacity: 0;
+  opacity: 0; /* Hidden by default */
 }
 
 .btn-addwish-b2:hover .icon-heart2 {
-  opacity: 1;
+  opacity: 1; /* Visible on hover */
 }
 
 .btn-addwish-b2:hover .icon-heart1 {
-  opacity: 0;
+  opacity: 0; /* Hidden on hover */
 }
 
 .js-addedwish-b2 .icon-heart2 {
-  opacity: 1;
+  opacity: 1; /* Visible when in wishlist */
 }
 
 .js-addedwish-b2 .icon-heart1 {
-  opacity: 0;
+  opacity: 0; /* Hidden when in wishlist */
 }
+
 
 /*---------------------------------------------*/
 .label-new {
