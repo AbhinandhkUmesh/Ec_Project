@@ -138,30 +138,33 @@ var addToCart = function addToCart(req, res) {
           console.log("=========", newItem);
 
         case 32:
+          cart.cartTotal = cart.items.reduce(function (total, item) {
+            return total + item.productTotal;
+          }, 0);
           console.log("=========;;;;;", cart);
-          _context2.next = 35;
+          _context2.next = 36;
           return regeneratorRuntime.awrap(cart.save());
 
-        case 35:
+        case 36:
           res.status(200).json({
             message: 'Item added to cart successfully',
             cart: cart
           });
-          _context2.next = 42;
+          _context2.next = 43;
           break;
 
-        case 38:
-          _context2.prev = 38;
+        case 39:
+          _context2.prev = 39;
           _context2.t0 = _context2["catch"](0);
           console.log("Error in add to cart", _context2.t0);
           res.render('error');
 
-        case 42:
+        case 43:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 38]]);
+  }, null, null, [[0, 39]]);
 };
 
 var updateCartItem = function updateCartItem(req, res) {
@@ -246,66 +249,74 @@ var updateCartItem = function updateCartItem(req, res) {
 };
 
 var deleteCartItem = function deleteCartItem(req, res) {
-  var productId, cart, itemIndex;
+  var productId, userId, cart, itemIndex;
   return regeneratorRuntime.async(function deleteCartItem$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
+          _context4.prev = 0;
           productId = req.params.productId;
-          _context4.prev = 1;
-          _context4.next = 4;
-          return regeneratorRuntime.awrap(cart.findOne({
-            userId: req.user._id
+          userId = req.user._id;
+          _context4.next = 5;
+          return regeneratorRuntime.awrap(cartModel.findOne({
+            userId: userId
           }));
 
-        case 4:
+        case 5:
           cart = _context4.sent;
-          // Find the item in the cart
-          itemIndex = cart.items.findIndex(function (item) {
-            return item.productId.toString() === productId;
-          });
 
-          if (!(itemIndex === -1)) {
+          if (cart) {
             _context4.next = 8;
             break;
           }
 
           return _context4.abrupt("return", res.status(404).json({
-            message: 'Item not found in cart'
+            message: 'Cart not found'
           }));
 
         case 8:
-          // Remove the item from the cart
-          cart.items.splice(itemIndex, 1); // Recalculate the cart total
+          itemIndex = cart.items.findIndex(function (item) {
+            return item.productId.toString() === productId;
+          });
 
-          cart.Cart_total = cart.items.reduce(function (acc, item) {
-            return acc + item.productTotal;
-          }, 0); // Save the updated cart
+          if (!(itemIndex === -1)) {
+            _context4.next = 11;
+            break;
+          }
 
-          _context4.next = 12;
+          return _context4.abrupt("return", res.status(404).json({
+            message: 'Product not found in cart'
+          }));
+
+        case 11:
+          cart.items.splice(itemIndex, 1);
+          cart.cartTotal = cart.items.reduce(function (total, item) {
+            return total + item.productTotal;
+          }, 0);
+          _context4.next = 15;
           return regeneratorRuntime.awrap(cart.save());
 
-        case 12:
+        case 15:
           res.json({
-            cartTotal: cart.Cart_total
+            cartTotal: cart.cartTotal
           });
-          _context4.next = 18;
+          _context4.next = 22;
           break;
 
-        case 15:
-          _context4.prev = 15;
-          _context4.t0 = _context4["catch"](1);
+        case 18:
+          _context4.prev = 18;
+          _context4.t0 = _context4["catch"](0);
+          console.error('Error deleting cart item:', _context4.t0);
           res.status(500).json({
-            message: 'Server error',
-            error: _context4.t0
+            message: 'Server error'
           });
 
-        case 18:
+        case 22:
         case "end":
           return _context4.stop();
       }
     }
-  }, null, null, [[1, 15]]);
+  }, null, null, [[0, 18]]);
 };
 
 module.exports = {

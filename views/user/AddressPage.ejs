@@ -1,144 +1,104 @@
-<!-- Profile 1 - Bootstrap Brain Component -->
 <%- include('./partials/navbar.ejs') %>
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <section class="bg-light py-3 py-md-5 py-xl-8">
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 
-
-        <div class="container mt-5">
-            <div class="row gy-4 gy-lg-0">
-                <div class="col-12 col-lg-4 col-xl-3">
-                    <div class="row gy-4">
-                        <div class="col-12">
-                            <div class="card widget-card border-light shadow-sm">
-
-                                <div class="card-body d-flex align-items-center">
-
-                                    <div class="text-center ">
-                                        <% if (!userProfile.image) { %>
-                                            <img src="/images/NoImage.png" class="img-fluid rounded-circle"
-                                                style="width: 80px;height: 80px;" alt="Profile">
-                                            <% } else { %>
-                                                <img src="/images/<%= userProfile.image%>"
-                                                    class="img-fluid rounded-circle" style="width: 80px;height: 80px;"
-                                                    alt="Profile">
-                                                <% } %>
-                                    </div>
-                                    <div class="text-center m-l-10">
-                                        <p>Hello,</p>
-                                        <h5 class="text-center">
-                                            <%= userProfile.Username%>
-                                        </h5>
-                                    </div>
+<section class="bg-light py-3 py-md-5 py-xl-8">
+    <div class="container mt-5">
+        <div class="row gy-4 gy-lg-0">
+            <div class="col-12 col-lg-4 col-xl-3">
+                <div class="row gy-4">
+                    <div class="col-12">
+                        <div class="card widget-card border-light shadow-sm">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="text-center">
+                                    <% if (!userProfile.image) { %>
+                                        <img src="/images/NoImage.png" class="img-fluid rounded-circle" style="width: 80px;height: 80px;" alt="Profile">
+                                    <% } else { %>
+                                        <img src="/images/<%= userProfile.image %>" class="img-fluid rounded-circle" style="width: 80px;height: 80px;" alt="Profile">
+                                    <% } %>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="card widget-card border-light shadow-sm">
-                                <div class="card-body darktheme">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="/userDetails">Profile</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="/address">Address</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="/Order">Order</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#">Settings</a>
-                                        </li>
-                                    </ul>
+                                <div class="text-center m-l-10">
+                                    <p>Hello,</p>
+                                    <h5 class="text-center">
+                                        <%= userProfile.Username %>
+                                    </h5>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-12 col-lg-8 col-xl-9">
-                    <div class="card widget-card border-light shadow-sm">
-                        <div class="card-body p-4">
-                            <div class="mb-5">
-                                <h4>Address</h4>
+                    <div class="col-12">
+                        <div class="card widget-card border-light shadow-sm">
+                            <div class="card-body darktheme">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/userDetails">Profile</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/address">Address</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/Order">Order</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Settings</a>
+                                    </li>
+                                </ul>
                             </div>
-                            
-                            <ul class="nav nav-tabs" id="profileTab" role="tablist">
-                                
-                              
-                                    <div class="container">
-                                        <div class="row justify-content-center">
-                                            <div class="row">
-
-                                                <div class="col-md-12">
-                                                    <div id="addressContainer">
-                                                        <% if (!addressData) { %>
-                                                            <div class="row justify-content-center mt-3 mb-5">
-                                                                <div class="col-6 text-center">
-                                                                    <a href="/addressAdd" class="btn btn-primary">Add Address</a>
-                                                                </div>
-                                                            </div>
-                                                            <% }else { %>
-                                                                
-                                                                <% } %>
-                                                    </div>
-                                                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8 col-xl-9">
+                <div class="card widget-card border-light shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="mb-5">
+                            <h4>Address</h4>
+                        </div>
+                        
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-md-12">
+                                    <div id="addressContainer">
+                                        <% if (addressData.length === 0) { %>
+                                            <div class="row justify-content-center mt-3 mb-5">
+                                                <div class="col-6 text-center">
+                                                    <a href="/addressAdd" class="btn btn-primary">Add Address</a>
                                                 </div>
                                             </div>
-                                            <!-- Save Changes Button -->
-                                           
-                                        </div>
-                    
+                                        <% } else { %>
+                                            <div class="row">
+                                                <% addressData.forEach(address => { %>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title"><%= address.fullName %></h5>
+                                                                <p class="card-text">
+                                                                    <%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.postalCode %>
+                                                                </p>
+                                                                <a href="/addressEdit/<%= address._id %>" class="btn btn-outline-secondary">Edit</a>
+                                                                <a href="/addressDelete/<%= address._id %>" class="btn btn-danger">Delete</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <% }) %>
+                                            </div>
+                                            <div class="col-12 text-center mt-3">
+                                                <a href="/addressAdd" class="btn btn-primary">Add Address</a>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-        </div>
+    </div>
+</section>
 
-    </section>
-
-    <%- include('./partials/footer.ejs') %>
-        <script src="https://unpkg.com/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                // Add Address button click event
-                $('#addAddressBtn').click(function () {
-                    addAddressField(); // Call function to add new address fields
-                });
-
-                function addAddressField() {
-                    // Create new set of input fields
-                    var newAddressField = `
-            <div class="col-12">
-              <label for="inputAddress" class="form-label">City</label>
-              <input type="text" class="form-control" name="city">
-            </div>
-            <!-- Similar fields for State and Postal Code -->
-          `;
-
-                    // Append new fields to the address container
-                    $('#addressContainer').append(newAddressField);
-                }
-            });
-        </script>
-        <script>
-            $(document).ready(function () {
-                // Handle file input change event
-                $('#imageUpload').change(function () {
-                    const file = this.files[0]; // Get the selected file
-                    if (file) {
-                        const reader = new FileReader(); // Create a FileReader object
-                        reader.onload = function (e) {
-                            // Set the preview image source to the uploaded image
-                            $('#previewImage').attr('src', e.target.result);
-                        }
-                        reader.readAsDataURL(file); // Read the file as a data URL
-                    }
-                });
-            });
-        </script>
+<%- include('./partials/footer.ejs') %>
+<script src="https://unpkg.com/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

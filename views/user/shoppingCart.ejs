@@ -1,123 +1,85 @@
-
 <body class="animsition">
-	
 	<!-- Header -->
-
 	<%- include('./partials/navbar.ejs') %>
 
-	<!-- Shoping Cart -->
+	<!-- Shopping Cart -->
 	<form class="bg0 p-t-75 p-b-85">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
 					<div class="m-l-25 m-r--38 m-lr-0-xl">
 						<div class="wrap-table-shopping-cart">
-						<% if (cart) { %>
-							<table class="table-shopping-cart">
-								<tr class="table_head">
-							
-									<th class="column-1">Product</th>
-									<th class="column-2">Name</th>
-								
-									<th class="column-3">Price</th>
-									<th class="column-4">Quantity</th>
-									<th class="column-5">Total</th>
-								</tr>
-								<% for (let i = 0; i < cart.items.length; i++) { %>
-                                    <tr class="table_row">
-
-                                        <td class="column-1">
-											
-                                            <div class="how-itemcart1 delete-button">			
-													<img src="/images/<%= cart.items[i].productId.image[0] %>" alt="Product Image">
-                                            </div>
-                                        </td>
-                                        <td class="column-2"><%= cart.items[i].productId.name %></td>
-                                   
-                                        <td class="column-3">$ <%= cart.items[i].productId.rate %></td>
-                                        <td class="column-4">
-                                            <div class="wrap-num-product flex-w m-l-auto m-r-0">
-                                                <!-- Decrease quantity button -->
-                                                <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                                    <i class="fs-16 zmdi zmdi-minus"></i>
-                                                </div>
-                                                <!-- Quantity input field -->
-                                                <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product<%= i %>" value="<%= cart.items[i].quantity %>" data-product-id="<%= cart.items[i].productId._id %>" data-index="<%= i %>">
-                                                <!-- Increase quantity button -->
-                                                <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                                    <i class="fs-16 zmdi zmdi-plus"></i>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="column-5 product-total" data-index="<%= i %>">$ <%= cart.items[i].productTotal %></td>
-                                    </tr>
-                                <% } %>
-								
-
-								
-							</table>
-						<% } else { %>
-
-							<table class="table-shopping-cart">
-								<h1>Empty Cart</h1>
-							</table>
+							<% if (cart.items && cart.items.length > 0) { %>
+								<table class="table-shopping-cart">
+									<tr class="table_head">
+										<th class="column-1">Product</th>
+										<th class="column-2">Name</th>
+										<th class="column-3">Price</th>
+										<th class="column-4">Quantity</th>
+										<th class="column-5">Total</th>
+										<th class="column-6">Remove</th>
+									</tr>
+									<% cart.items.forEach((item, i) => { %>
+										<tr class="table_row">
+											<td class="column-1">
+												<div class="how-itemcart1">
+													<img src="/images/<%= item.productId.image[0] %>" alt="Product Image">
+												</div>
+											</td>
+											<td class="column-2"><%= item.productId.name %></td>
+											<td class="column-3">$ <%= item.productId.rate %></td>
+											<td class="column-4">
+												<div class="wrap-num-product flex-w m-l-auto m-r-0">
+													<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+														<i class="fs-16 zmdi zmdi-minus"></i>
+													</div>
+													<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product<%= i %>" value="<%= item.quantity %>" data-product-id="<%= item.productId._id %>" data-index="<%= i %>">
+													<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+														<i class="fs-16 zmdi zmdi-plus"></i>
+													</div>
+												</div>
+											</td>
+											<td class="column-5 product-total" data-index="<%= i %>">$ <%= item.productTotal %></td>
+											<td class="column-6">
+												<button type="button" class="delete-button btn btn-danger" data-product-id="<%= item.productId._id %>">Remove</button>
+											</td>
+										</tr>
+									<% }); %>
+								</table>
+							<% } else { %>
+								<div class="text-center m-t-100">
+									<h2>Your Cart is Empty</h2>
+									<p>It looks like you haven't added anything to your cart yet.</p>
+									<a href="/product" class="btn btn-primary">Go to Shop</a>
+								</div>
 							<% } %>
 						</div>
-
-						<!-- <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
-							<div class="flex-w flex-m m-r-20 m-tb-5">
-								<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5" type="text" name="coupon" placeholder="Coupon Code">
-									
-								<div class="flex-c-m stext-101 cl2 size-118 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-5">
-									Apply coupon
-								</div>
-							</div>
-
-							<div class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
-								Update Cart
-							</div>
-						</div> -->
 					</div>
 				</div>
 
-				<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
-					<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
-						<h4 class="mtext-109 cl2 p-b-30">
-							Cart Totals
-						</h4>
-
-						
-						
-
-						<div class="flex-w flex-t p-t-27 p-b-33">
-							<div class="size-208">
-								<span class="mtext-101 cl2">
-									Total:
-								</span>
-							</div>
-
-							<% if (cart) { %>
+				<% if (cart.items && cart.items.length > 0) { %>
+					<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+						<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+							<h4 class="mtext-109 cl2 p-b-30">Cart Totals</h4>
+							<div class="flex-w flex-t p-t-27 p-b-33">
+								<div class="size-208">
+									<span class="mtext-101 cl2">Total:</span>
+								</div>
 								<div class="size-209">
-									<span class="mtext-110 cl2 cart-total">
-										<%=cart.cartTotal  %>
-									</span>
+									<span class="mtext-110 cl2 cart-total">$ <%= cart.cartTotal %></span>
 								</div>
-								<% } %>
+							</div>
+							<a href="/proceedToCheckout" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">Proceed to Checkout</a>
 						</div>
-
-						<a href="/proceedToCheckout" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
-							Proceed to Checkout
-						</a>
 					</div>
-				</div>
+				<% } %>
 			</div>
 		</div>
 	</form>
-		
-	
-		<!-- Footer -->
-	
-		<%- include('./partials/footer.ejs') %>
+
+	<!-- Footer -->
+	<%- include('./partials/footer.ejs') %>
+
 	<!-- Back to top -->
 	<div class="btn-back-to-top" id="myBtn">
 		<span class="symbol-btn-back-to-top">
@@ -126,8 +88,7 @@
 	</div>
 
 	<script>
-			document.addEventListener('DOMContentLoaded', () => {
-			// Event listeners for the quantity buttons
+		document.addEventListener('DOMContentLoaded', () => {
 			const quantityInputs = document.querySelectorAll('.num-product');
 			quantityInputs.forEach(input => {
 				input.addEventListener('change', updateQuantity);
@@ -154,9 +115,9 @@
 			});
 
 			const deleteButtons = document.querySelectorAll('.delete-button');
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', deleteProduct);
-            });
+			deleteButtons.forEach(button => {
+				button.addEventListener('click', deleteProduct);
+			});
 		});
 
 		async function updateQuantity(event) {
@@ -165,25 +126,19 @@
 			const productId = input.getAttribute('data-product-id');
 			const index = input.getAttribute('data-index');
 
-			console.log("++++++++++++++++>>",input,newQuantity,productId,index);
 			try {
 				const response = await fetch(`/updateCartItem/${productId}`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					body: JSON.stringify({
-						quantity: newQuantity
-					})
+					body: JSON.stringify({ quantity: newQuantity })
 				});
 
 				const data = await response.json();
 				if (response.ok) {
-					// Update the product total in the UI
 					const productTotalElement = document.querySelector(`.product-total[data-index="${index}"]`);
 					productTotalElement.textContent = `$ ${data.productTotal}`;
-
-					// Update the cart total in the UI
 					document.querySelector('.cart-total').textContent = `$ ${data.cartTotal}`;
 				} else {
 					console.error(data.message);
@@ -193,32 +148,26 @@
 			}
 		}
 
+		async function deleteProduct(event) {
+			const button = event.target;
+			const productId = button.getAttribute('data-product-id');
 
+			try {
+				const response = await fetch(`/deleteCartItem/${productId}`, {
+					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json' }
+				});
 
-        async function deleteProduct(event) {
-            const button = event.target;
-            const productId = button.getAttribute('data-product-id');
-            try {
-                const response = await fetch(`/deleteCartItem/${productId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    // Remove the product row from the UI
-                    button.closest('.table_row').remove();
-                    
-                    // Optionally, update the cart total in the UI
-                    document.querySelector('.cart-total').textContent = `$ ${data.cartTotal}`;
-                } else {
-                    console.error(data.message);
-                }
-            } catch (error) {
-                console.error('Error deleting product:', error);
-            }
-        }
+				const data = await response.json();
+				if (response.ok) {
+					button.closest('.table_row').remove();
+					document.querySelector('.cart-total').textContent = `$ ${data.cartTotal}`;
+				} else {
+					console.error(data.message);
+				}
+			} catch (error) {
+				console.error('Error deleting product:', error);
+			}
+		}
 	</script>
-	
+</body>

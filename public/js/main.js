@@ -383,3 +383,4 @@ async function updateWishlistSidebar() {
     // Add logic here to fetch updated wishlist data and update UI
     // For testing, you can log messages or perform dummy UI updates
 }
+

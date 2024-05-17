@@ -1,32 +1,26 @@
 const addressModel = require('../models/addressmodel');
 const userModel = require('../models/usermodel');
 
+
 const addressPage = async (req, res) => {
     try {
         const email = req.session.email;
-        const userProfile = await userModel.findOne({
-            email: email
-        });
+        const userProfile = await userModel.findOne({ email: email });
 
-        const addressData = await addressModel.findOne({
-            userID: req.session.userID
-        });
+        const addressData = await addressModel.find({ userID: req.session.userID });
 
         if (req.session.isUser) {
-            res.render('AddressPage', {
+            res.render('addressPage', {
                 userProfile,
                 addressData,
                 isUser: req.session.isUser,
                 Username: req.session.Username,
             });
-
         } else {
             res.redirect('/login');
         }
-
-
     } catch (error) {
-        console.log("Error redirecting UserPage: " + error);
+        console.log("Error rendering AddressPage: " + error);
         res.render('error');
     }
 };

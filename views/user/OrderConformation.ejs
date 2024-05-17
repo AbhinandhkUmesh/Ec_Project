@@ -1,11 +1,62 @@
+<head>
+    <style>
+        .order-confirmation-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f2f2f2; /* Optional: light background for the whole page */
+        }
+
+        .order-confirmation-box {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .order-details h2 {
+            margin-bottom: 20px;
+        }
+
+        .order-details ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .order-details p {
+            margin: 10px 0;
+        }
+
+        .btn-success {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
 <body class="animsition">
 
     <!-- Header -->
     <%- include('./partials/navbar.ejs') %>
 
     <!-- CheckOut Page -->
-    <div style="margin-top: 70px; margin-bottom: 20px;">
-        <div class="container">
+    <div class="order-confirmation-container">
+        <div class="order-confirmation-box">
             <h1>Order Confirmation</h1>
             <div class="order-details">
                 <h2>Your Order</h2>
@@ -18,9 +69,7 @@
                 </ul>
                 <p>Your order will be shipped soon.</p>
             </div>
-            <div>
-                <a href="/" class="btn btn-success">Continue Shopping</a>
-            </div>
+            <a href="/" class="btn btn-success">Continue Shopping</a>
         </div>
     </div>
 

@@ -20,7 +20,7 @@ var addressPage = function addressPage(req, res) {
         case 4:
           userProfile = _context.sent;
           _context.next = 7;
-          return regeneratorRuntime.awrap(addressModel.findOne({
+          return regeneratorRuntime.awrap(addressModel.find({
             userID: req.session.userID
           }));
 
@@ -28,7 +28,7 @@ var addressPage = function addressPage(req, res) {
           addressData = _context.sent;
 
           if (req.session.isUser) {
-            res.render('AddressPage', {
+            res.render('addressPage', {
               userProfile: userProfile,
               addressData: addressData,
               isUser: req.session.isUser,
@@ -44,7 +44,7 @@ var addressPage = function addressPage(req, res) {
         case 11:
           _context.prev = 11;
           _context.t0 = _context["catch"](0);
-          console.log("Error redirecting UserPage: " + _context.t0);
+          console.log("Error rendering AddressPage: " + _context.t0);
           res.render('error');
 
         case 15:

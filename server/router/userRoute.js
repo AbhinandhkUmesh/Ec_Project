@@ -6,7 +6,7 @@ const productController = require("../controllers/productController")
 const cartController = require("../controllers/CartController")
 const checkOutController = require("../controllers/checkOutController")
 const AddressController = require("../controllers/AddressController")
-
+const orderController = require("../controllers/orderController")
 var multer = require("../middleware/multer");
 const wishlistMiddleware = require('../middleware/wishlistMiddleware')
 
@@ -72,5 +72,8 @@ router.get('/proceedToCheckout',userCheck.isUser,  checkOutController.checkOutPa
 
 router.get('/OrderConformation?',userCheck.isUser,  checkOutController.OrderConformation);
 router.post('/placeOrder',userCheck.isUser,  checkOutController.placeOrder);
+
+router.get('/Order',userCheck.isUser,  orderController.orders);
+
 
 module.exports = router;

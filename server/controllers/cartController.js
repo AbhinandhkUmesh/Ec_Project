@@ -93,7 +93,7 @@ const addToCart = async (req, res) => {
             console.log("=========", newItem);
         }
 
-
+        cart.cartTotal = cart.items.reduce((total, item) => total + item.productTotal, 0);
 
         console.log("=========;;;;;", cart);
         await cart.save();
@@ -132,7 +132,7 @@ const updateCartItem = async (req, res) => {
 
         const item = cart.items.find(item =>
             item.productId.toString() === productId
-          
+
         );
         // if (!item) {
         //     return res.status(404).json({
@@ -170,31 +170,41 @@ const updateCartItem = async (req, res) => {
 };
 
 const deleteCartItem = async (req, res) => {
-    const { productId } = req.params;
 
     try {
-        // Find the cart (assume there's a method to get the current user's cart)
-        let cart = await cart.findOne({ userId: req.user._id });
+        const {
+            productId
+        } = req.params;
+        const userId = req.user._id;
 
-        // Find the item in the cart
-        const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
-
-        if (itemIndex === -1) {
-            return res.status(404).json({ message: 'Item not found in cart' });
+        let cart = await cartModel.findOne({
+            userId
+        });
+        if (!cart) {
+            return res.status(404).json({
+                message: 'Cart not found'
+            });
         }
 
-        // Remove the item from the cart
+        const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+        if (itemIndex === -1) {
+            return res.status(404).json({
+                message: 'Product not found in cart'
+            });
+        }
+
         cart.items.splice(itemIndex, 1);
+        cart.cartTotal = cart.items.reduce((total, item) => total + item.productTotal, 0);
 
-        // Recalculate the cart total
-        cart.Cart_total = cart.items.reduce((acc, item) => acc + item.productTotal, 0);
-
-        // Save the updated cart
         await cart.save();
-
-        res.json({ cartTotal: cart.Cart_total });
+        res.json({
+            cartTotal: cart.cartTotal
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        console.error('Error deleting cart item:', error);
+        res.status(500).json({
+            message: 'Server error'
+        });
     }
 };
 

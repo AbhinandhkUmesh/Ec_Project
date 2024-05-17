@@ -16,6 +16,8 @@ var checkOutController = require("../controllers/checkOutController");
 
 var AddressController = require("../controllers/AddressController");
 
+var orderController = require("../controllers/orderController");
+
 var multer = require("../middleware/multer");
 
 var wishlistMiddleware = require('../middleware/wishlistMiddleware'); // router.use(wishlistMiddleware.fetchWishlistData);
@@ -64,4 +66,5 @@ router["delete"]('/deleteCartItem/:productId', userCheck.isUser, cartController.
 router.get('/proceedToCheckout', userCheck.isUser, checkOutController.checkOutPage);
 router.get('/OrderConformation?', userCheck.isUser, checkOutController.OrderConformation);
 router.post('/placeOrder', userCheck.isUser, checkOutController.placeOrder);
+router.get('/Order', userCheck.isUser, orderController.orders);
 module.exports = router;
