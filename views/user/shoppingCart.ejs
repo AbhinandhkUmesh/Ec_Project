@@ -12,66 +12,59 @@
 				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
 					<div class="m-l-25 m-r--38 m-lr-0-xl">
 						<div class="wrap-table-shopping-cart">
+						<% if (cart) { %>
 							<table class="table-shopping-cart">
 								<tr class="table_head">
+							
 									<th class="column-1">Product</th>
-									<th class="column-2"></th>
+									<th class="column-2">Name</th>
+								
 									<th class="column-3">Price</th>
 									<th class="column-4">Quantity</th>
 									<th class="column-5">Total</th>
 								</tr>
+								<% for (let i = 0; i < cart.items.length; i++) { %>
+                                    <tr class="table_row">
 
-								<tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="images/item-cart-04.jpg" alt="IMG">
-										</div>
-									</td>
-									<td class="column-2">Fresh Strawberries</td>
-									<td class="column-3">$ 36.00</td>
-									<td class="column-4">
-										<div class="wrap-num-product flex-w m-l-auto m-r-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-minus"></i>
-											</div>
+                                        <td class="column-1">
+											
+                                            <div class="how-itemcart1 delete-button">			
+													<img src="/images/<%= cart.items[i].productId.image[0] %>" alt="Product Image">
+                                            </div>
+                                        </td>
+                                        <td class="column-2"><%= cart.items[i].productId.name %></td>
+                                   
+                                        <td class="column-3">$ <%= cart.items[i].productId.rate %></td>
+                                        <td class="column-4">
+                                            <div class="wrap-num-product flex-w m-l-auto m-r-0">
+                                                <!-- Decrease quantity button -->
+                                                <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                                    <i class="fs-16 zmdi zmdi-minus"></i>
+                                                </div>
+                                                <!-- Quantity input field -->
+                                                <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product<%= i %>" value="<%= cart.items[i].quantity %>" data-product-id="<%= cart.items[i].productId._id %>" data-index="<%= i %>">
+                                                <!-- Increase quantity button -->
+                                                <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                                    <i class="fs-16 zmdi zmdi-plus"></i>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="column-5 product-total" data-index="<%= i %>">$ <%= cart.items[i].productTotal %></td>
+                                    </tr>
+                                <% } %>
+								
 
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="1">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
-										</div>
-									</td>
-									<td class="column-5">$ 36.00</td>
-								</tr>
-
-								<tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="images/item-cart-05.jpg" alt="IMG">
-										</div>
-									</td>
-									<td class="column-2">Lightweight Jacket</td>
-									<td class="column-3">$ 16.00</td>
-									<td class="column-4">
-										<div class="wrap-num-product flex-w m-l-auto m-r-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-minus"></i>
-											</div>
-
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product2" value="1">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
-										</div>
-									</td>
-									<td class="column-5">$ 16.00</td>
-								</tr>
+								
 							</table>
+						<% } else { %>
+
+							<table class="table-shopping-cart">
+								<h1>Empty Cart</h1>
+							</table>
+							<% } %>
 						</div>
 
-						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+						<!-- <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
 							<div class="flex-w flex-m m-r-20 m-tb-5">
 								<input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5" type="text" name="coupon" placeholder="Coupon Code">
 									
@@ -83,7 +76,7 @@
 							<div class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
 								Update Cart
 							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
 
@@ -93,63 +86,8 @@
 							Cart Totals
 						</h4>
 
-						<div class="flex-w flex-t bor12 p-b-13">
-							<div class="size-208">
-								<span class="stext-110 cl2">
-									Subtotal:
-								</span>
-							</div>
-
-							<div class="size-209">
-								<span class="mtext-110 cl2">
-									$79.65
-								</span>
-							</div>
-						</div>
-
-						<div class="flex-w flex-t bor12 p-t-15 p-b-30">
-							<div class="size-208 w-full-ssm">
-								<span class="stext-110 cl2">
-									Shipping:
-								</span>
-							</div>
-
-							<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
-								<p class="stext-111 cl6 p-t-2">
-									There are no shipping methods available. Please double check your address, or contact us if you need any help.
-								</p>
-								
-								<div class="p-t-15">
-									<span class="stext-112 cl8">
-										Calculate Shipping
-									</span>
-
-									<div class="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
-										<select class="js-select2" name="time">
-											<option>Select a country...</option>
-											<option>USA</option>
-											<option>UK</option>
-										</select>
-										<div class="dropDownSelect2"></div>
-									</div>
-
-									<div class="bor8 bg0 m-b-12">
-										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="state" placeholder="State /  country">
-									</div>
-
-									<div class="bor8 bg0 m-b-22">
-										<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode" placeholder="Postcode / Zip">
-									</div>
-									
-									<div class="flex-w">
-										<div class="flex-c-m stext-101 cl2 size-115 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer">
-											Update Totals
-										</div>
-									</div>
-										
-								</div>
-							</div>
-						</div>
+						
+						
 
 						<div class="flex-w flex-t p-t-27 p-b-33">
 							<div class="size-208">
@@ -158,16 +96,18 @@
 								</span>
 							</div>
 
-							<div class="size-209 p-t-1">
-								<span class="mtext-110 cl2">
-									$79.65
-								</span>
-							</div>
+							<% if (cart) { %>
+								<div class="size-209">
+									<span class="mtext-110 cl2 cart-total">
+										<%=cart.cartTotal  %>
+									</span>
+								</div>
+								<% } %>
 						</div>
 
-						<button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+						<a href="/proceedToCheckout" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
 							Proceed to Checkout
-						</button>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -185,3 +125,100 @@
 		</span>
 	</div>
 
+	<script>
+			document.addEventListener('DOMContentLoaded', () => {
+			// Event listeners for the quantity buttons
+			const quantityInputs = document.querySelectorAll('.num-product');
+			quantityInputs.forEach(input => {
+				input.addEventListener('change', updateQuantity);
+			});
+
+			const btnNumProductUp = document.querySelectorAll('.btn-num-product-up');
+			btnNumProductUp.forEach(button => {
+				button.addEventListener('click', () => {
+					const input = button.parentElement.querySelector('.num-product');
+					input.value = parseInt(input.value) + 1;
+					updateQuantity({ target: input });
+				});
+			});
+
+			const btnNumProductDown = document.querySelectorAll('.btn-num-product-down');
+			btnNumProductDown.forEach(button => {
+				button.addEventListener('click', () => {
+					const input = button.parentElement.querySelector('.num-product');
+					if (parseInt(input.value) > 1) {
+						input.value = parseInt(input.value) - 1;
+						updateQuantity({ target: input });
+					}
+				});
+			});
+
+			const deleteButtons = document.querySelectorAll('.delete-button');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', deleteProduct);
+            });
+		});
+
+		async function updateQuantity(event) {
+			const input = event.target;
+			const newQuantity = parseInt(input.value);
+			const productId = input.getAttribute('data-product-id');
+			const index = input.getAttribute('data-index');
+
+			console.log("++++++++++++++++>>",input,newQuantity,productId,index);
+			try {
+				const response = await fetch(`/updateCartItem/${productId}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						quantity: newQuantity
+					})
+				});
+
+				const data = await response.json();
+				if (response.ok) {
+					// Update the product total in the UI
+					const productTotalElement = document.querySelector(`.product-total[data-index="${index}"]`);
+					productTotalElement.textContent = `$ ${data.productTotal}`;
+
+					// Update the cart total in the UI
+					document.querySelector('.cart-total').textContent = `$ ${data.cartTotal}`;
+				} else {
+					console.error(data.message);
+				}
+			} catch (error) {
+				console.error('Error updating product quantity:', error);
+			}
+		}
+
+
+
+        async function deleteProduct(event) {
+            const button = event.target;
+            const productId = button.getAttribute('data-product-id');
+            try {
+                const response = await fetch(`/deleteCartItem/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    // Remove the product row from the UI
+                    button.closest('.table_row').remove();
+                    
+                    // Optionally, update the cart total in the UI
+                    document.querySelector('.cart-total').textContent = `$ ${data.cartTotal}`;
+                } else {
+                    console.error(data.message);
+                }
+            } catch (error) {
+                console.error('Error deleting product:', error);
+            }
+        }
+	</script>
+	

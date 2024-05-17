@@ -10,6 +10,7 @@ const categoryModel = require('../models/categorymodel')
 const addressModel = require('../models/addressmodel');
 const wishlist = require('../models/wishlistmodel');
 const { ObjectId } = require('mongoose').Types;
+
 const index = async (req, res) => {
     try {
         const category = await categoryModel.find({})
@@ -239,6 +240,8 @@ const checkUserIn = async (req, res) => {
         if (checkPass) {
             console.log("Password checked");
             req.session.isUser = true;
+            req.session.lastAccess = Date.now();
+            req.session.userId = userProfile._id;
             req.session.Username = userProfile.Username;
             req.session.userDetails = userProfile
             req.session.userId = userProfile._id
@@ -265,13 +268,16 @@ const redirectUser = async (req, res) => {
         const userId = req.session.userId
         
         const wishlistProduct =  await wishlist.findOne({user:userId}).populate('product')
-        console.log(wishlistProduct.product)
-        res.render("home", {
-            isUser: req.session.isUser,
-            products: products,
-            category: category,
-            wishlist: res.locals.wishlist,
-        });
+  
+     
+            res.render("home", {
+                isUser: req.session.isUser,
+                products: products,
+                category: category,
+                wishlist: res.locals.wishlist,
+            });
+      
+       
     } catch (error) {
         console.log("Error redirecting user: " + error);
         res.render('error');
@@ -571,25 +577,6 @@ const userUpdate = async (req, res) => {
             });
         }
         // Update user data in the database
-
-
-        const addressData = await addressModel.updateOne({
-            email: req.session.email,
-            // Assuming email is unique, so this will match the specific document
-        }, {
-            $set: {
-                streetAddress: updateData.streetAddress,
-                city: updateData.city,
-                state: updateData.state,
-                postalCode: updateData.postalCode,
-                country: updateData.country
-            }
-        }, {
-            upsert: true // Perform an upsert operation
-        });
-        console.log(addressData)
-        // Check the result of the database update
-
 
         res.redirect("/userdetails");
     } catch (error) {

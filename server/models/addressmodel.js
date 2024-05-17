@@ -1,12 +1,18 @@
-const mongoose = require('mongoose')
-
+const mongoose = require('mongoose');
 
 const addressSchema = new mongoose.Schema({
-    email:{
-      type:String,
-      require:true
-    },
-    streetAddress: {
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserData',
+    required: true 
+  },
+  addresses: [ 
+    {
+      name: { 
+        type: String,
+        
+      },
+      streetAddress: {
         type: String,
         description: "The street address including house/apartment number"
       },
@@ -24,11 +30,11 @@ const addressSchema = new mongoose.Schema({
       },
       country: {
         type: String,
-        description: "The country"  
+        description: "The country"
       }
- 
-
+    }
+  ]
 });
 
-const address = new mongoose.model('address', addressSchema)
-module.exports = address
+const Address = mongoose.model('Address', addressSchema);
+module.exports = Address;

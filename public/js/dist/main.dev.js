@@ -118,46 +118,14 @@
     e.stopPropagation();
   });
   /*==================================================================
-  [ Isotope ]*/
-
-  var $topeContainer = $('.isotope-grid');
-  var $filter = $('.filter-tope-group'); // filter items on button click
-
-  $filter.each(function () {
-    $filter.on('click', 'button', function () {
-      var filterValue = $(this).attr('data-filter');
-      $topeContainer.isotope({
-        filter: filterValue
-      });
-    });
-  }); // init Isotope
-
-  $(window).on('load', function () {
-    var $grid = $topeContainer.each(function () {
-      $(this).isotope({
-        itemSelector: '.isotope-item',
-        layoutMode: 'fitRows',
-        percentPosition: true,
-        animationEngine: 'best-available',
-        masonry: {
-          columnWidth: '.isotope-item'
-        }
-      });
-    });
-  });
-  var isotopeButton = $('.filter-tope-group button');
-  $(isotopeButton).each(function () {
-    $(this).on('click', function () {
-      for (var i = 0; i < isotopeButton.length; i++) {
-        $(isotopeButton[i]).removeClass('how-active1');
-      }
-
-      $(this).addClass('how-active1');
-    });
-  });
-  /*==================================================================
   [ Filter / Search product ]*/
 
+  $(document).ready(function () {
+    // Toggle filter panel visibility on button click
+    $('#filterToggleBtn').on('click', function () {
+      $('#filterPanel').toggle(); // Toggle visibility of the filter panel
+    });
+  });
   /*==================================================================
   [ wishlist ]*/
 
@@ -179,14 +147,6 @@
   /*==================================================================
   [ +/- num product ]*/
 
-  $('.btn-num-product-down').on('click', function () {
-    var numProduct = Number($(this).next().val());
-    if (numProduct > 0) $(this).next().val(numProduct - 1);
-  });
-  $('.btn-num-product-up').on('click', function () {
-    var numProduct = Number($(this).prev().val());
-    $(this).prev().val(numProduct + 1);
-  });
   /*==================================================================
   [ Rating ]*/
 
@@ -275,7 +235,7 @@ function addToWishlist(productId) {
           _context.prev = 10;
           _context.t0 = _context["catch"](0);
           console.error('Error adding product to wishlist:', _context.t0);
-          displayErrorMessage('Error', 'Failed to add product to wishlist');
+          displayErrorMessage('Error', 'Please Login');
 
         case 14:
         case "end":
@@ -317,7 +277,7 @@ function removeFromWishlist(productId) {
           _context2.prev = 10;
           _context2.t0 = _context2["catch"](0);
           console.error('Error removing product from wishlist:', _context2.t0);
-          displayErrorMessage('Error', 'Failed to remove product from wishlist');
+          displayErrorMessage('Error', 'Please Login');
 
         case 14:
         case "end":
@@ -359,34 +319,93 @@ function displayErrorMessage(title, message) {
     text: message,
     icon: 'error'
   });
-} // async function updateWishlistSidebar() {
-//     try {
-//         const response = await fetch('/getwishlist'); // Modify URL if needed
-//         const data = await response.json();
-//         const wishlistContainer = document.getElementById('wishlist-items-container');
-//         if (wishlistContainer) {
-//             wishlistContainer.innerHTML = generateWishlistHTML(data.wishlist);
-//         }
-//     } catch (error) {
-//         console.error('Error updating wishlist sidebar:', error);
-//     }
-// }
-// function generateWishlistHTML(wishlist) {
-//     if (!wishlist || wishlist.length === 0) {
-//         return '<p>Your wishlist is empty</p>';
-//     }
-//     const itemsHTML = wishlist.map(item => {
-//         return `
-//             <div class="wishlist-item">
-//                 <img src="/images/${item.image}" alt="Product Image">
-//                 <p>${item.name}</p>
-//                 <span>$${item.rate}</span>
-//             </div>
-//         `;
-//     }).join('');
-//     return itemsHTML;
-// }
-// // Example: Call updateWishlistSidebar() when the page loads
-// window.addEventListener('DOMContentLoaded', () => {
-//     updateWishlistSidebar();
-// });
+}
+
+function EmptyWishlistSidebar(title) {
+  Swal({
+    title: title,
+    showClass: {
+      popup: "\n        animate__animated\n        animate__fadeInUp\n        animate__faster\n      "
+    },
+    hideClass: {
+      popup: "\n        animate__animated\n        animate__fadeOutDown\n        animate__faster\n      "
+    }
+  });
+}
+
+function propertyNotSelected(title) {
+  Swal({
+    title: title,
+    showClass: {
+      popup: "\n            animate__animated\n            animate__fadeInUp\n            animate__faster\n          "
+    },
+    hideClass: {
+      popup: "\n            animate__animated\n            animate__fadeOutDown\n            animate__faster\n          "
+    }
+  });
+}
+
+function Login(title) {
+  Swal.fire({
+    title: title,
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!"
+  }).then(function (result) {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Deleted!",
+        text: "Your file has been deleted.",
+        icon: "success"
+      });
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  var updateWishlistBtn = document.getElementById('update-wishlist-btn');
+  updateWishlistBtn.addEventListener('click', function _callee() {
+    return regeneratorRuntime.async(function _callee$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            _context3.next = 3;
+            return regeneratorRuntime.awrap(updateWishlistSidebar());
+
+          case 3:
+            _context3.next = 8;
+            break;
+
+          case 5:
+            _context3.prev = 5;
+            _context3.t0 = _context3["catch"](0);
+            console.error('Error updating wishlist sidebar:', _context3.t0);
+
+          case 8:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, null, null, [[0, 5]]);
+  });
+});
+
+function updateWishlistSidebar() {
+  return regeneratorRuntime.async(function updateWishlistSidebar$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          console.log('Updating wishlist sidebar...'); // Add logic here to fetch updated wishlist data and update UI
+          // For testing, you can log messages or perform dummy UI updates
+
+        case 1:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  });
+}

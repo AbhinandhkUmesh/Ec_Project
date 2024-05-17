@@ -453,7 +453,7 @@ var product = function product(req, res) {
           _context9.next = 3;
           return regeneratorRuntime.awrap(productModel.find({
             status: true
-          }));
+          }).populate('category'));
 
         case 3:
           products = _context9.sent;
@@ -467,14 +467,18 @@ var product = function product(req, res) {
             products: products,
             category: category
           });
-          _context9.next = 12;
+          _context9.next = 14;
           break;
 
         case 10:
           _context9.prev = 10;
           _context9.t0 = _context9["catch"](0);
+          console.error('Error fetching products:', _context9.t0);
+          res.status(500).json({
+            message: 'Error fetching products.'
+          });
 
-        case 12:
+        case 14:
         case "end":
           return _context9.stop();
       }
@@ -482,78 +486,120 @@ var product = function product(req, res) {
   }, null, null, [[0, 10]]);
 };
 
-var productdetail = function productdetail(req, res) {
-  var productId, productData, categoryData, relatedProduct;
-  return regeneratorRuntime.async(function productdetail$(_context10) {
+var categoryProduct = function categoryProduct(req, res) {
+  var categoryId, products, category;
+  return regeneratorRuntime.async(function categoryProduct$(_context10) {
     while (1) {
       switch (_context10.prev = _context10.next) {
         case 0:
           _context10.prev = 0;
+          categoryId = req.params.categoryid;
+          _context10.next = 4;
+          return regeneratorRuntime.awrap(productModel.find({
+            status: true,
+            category: categoryId
+          }).populate('category'));
+
+        case 4:
+          products = _context10.sent;
+          _context10.next = 7;
+          return regeneratorRuntime.awrap(categoryModel.find({}));
+
+        case 7:
+          category = _context10.sent;
+          res.render('product', {
+            isUser: req.session.isUser,
+            products: products,
+            category: category
+          });
+          _context10.next = 15;
+          break;
+
+        case 11:
+          _context10.prev = 11;
+          _context10.t0 = _context10["catch"](0);
+          console.error('Error fetching products by category:', _context10.t0);
+          res.status(500).json({
+            message: 'Error fetching products by category.'
+          });
+
+        case 15:
+        case "end":
+          return _context10.stop();
+      }
+    }
+  }, null, null, [[0, 11]]);
+};
+
+var productdetail = function productdetail(req, res) {
+  var productId, productData, categoryData, relatedProduct;
+  return regeneratorRuntime.async(function productdetail$(_context11) {
+    while (1) {
+      switch (_context11.prev = _context11.next) {
+        case 0:
+          _context11.prev = 0;
           productId = req.params.id;
           console.log("Product ID:", productId);
-          _context10.next = 5;
+          _context11.next = 5;
           return regeneratorRuntime.awrap(productModel.findOne({
             _id: productId,
             status: true
           }));
 
         case 5:
-          productData = _context10.sent;
+          productData = _context11.sent;
 
           if (productData) {
-            _context10.next = 8;
+            _context11.next = 8;
             break;
           }
 
-          return _context10.abrupt("return", res.status(404).send("Product not found or unavailable."));
+          return _context11.abrupt("return", res.status(404).send("Product not found or unavailable."));
 
         case 8:
-          console.log("Product Data:", productData);
-          _context10.next = 11;
+          _context11.next = 10;
           return regeneratorRuntime.awrap(categoryModel.findById(productData.category));
 
-        case 11:
-          categoryData = _context10.sent;
+        case 10:
+          categoryData = _context11.sent;
 
           if (categoryData) {
-            _context10.next = 14;
+            _context11.next = 13;
             break;
           }
 
-          return _context10.abrupt("return", res.status(404).send("Category not found or unavailable."));
+          return _context11.abrupt("return", res.status(404).send("Category not found or unavailable."));
 
-        case 14:
-          console.log("Category Data:", categoryData);
-          _context10.next = 17;
+        case 13:
+          _context11.next = 15;
           return regeneratorRuntime.awrap(productModel.find({
             category: productData.category,
             status: true
           }).limit(4));
 
-        case 17:
-          relatedProduct = _context10.sent;
-          console.log("Related Products:", relatedProduct);
+        case 15:
+          relatedProduct = _context11.sent;
           res.render('productDetail', {
             isUser: req.session.isUser,
             products: productData,
             category: categoryData,
             relatedProduct: relatedProduct
           });
-          _context10.next = 26;
+          _context11.next = 23;
           break;
 
-        case 22:
-          _context10.prev = 22;
-          _context10.t0 = _context10["catch"](0);
-          console.error("Error in productdetail:", _context10.t0);
+        case 19:
+          _context11.prev = 19;
+          _context11.t0 = _context11["catch"](0);
+          console.error("Error in productdetail:", _context11.t0);
           res.render('error'); // Render an error page if there's an error
 
-        case 26:
+        case 23:
         case "end":
-          return _context10.stop();
+          return _context11.stop();
       }
     }
-  }, null, null, [[0, 22]]);
+  }, null, null, [[0, 19]]);
 };
 
 module.exports = {
@@ -568,5 +614,6 @@ module.exports = {
   productImageDelete: productImageDelete,
   // User
   product: product,
+  categoryProduct: categoryProduct,
   productdetail: productdetail
 };

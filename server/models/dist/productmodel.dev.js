@@ -24,9 +24,6 @@ var product = new mongoose.Schema({
     size: {
       type: String
     },
-    price: {
-      type: Number
-    },
     stockQuantity: {
       type: Number
     }

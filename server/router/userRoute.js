@@ -4,6 +4,9 @@ const userController = require("../controllers/userController");
 const userCheck = require("../middleware/usermiddleware");
 const productController = require("../controllers/productController")
 const cartController = require("../controllers/CartController")
+const checkOutController = require("../controllers/checkOutController")
+const AddressController = require("../controllers/AddressController")
+
 var multer = require("../middleware/multer");
 const wishlistMiddleware = require('../middleware/wishlistMiddleware')
 
@@ -40,21 +43,34 @@ router.get("/userDetails" , userCheck.isUser,userController.userDetails);
 router.post("/userUpdate/:id", userCheck.isUser, multer.array("image", 1), userController.userUpdate);
 router.get("/userImageDelete/:id", userCheck.isUser, multer.array("image", 1), userController.userImageDelete);
 
+router.get("/address",userCheck.isUser, AddressController.addressPage);
+router.get("/addressAdd",userCheck.isUser, AddressController.addressAddPage);
+router.post("/AddNewAddress",userCheck.isUser, AddressController.AddNewAddress);
 
 router.get("/changePassword",userCheck.isUser, userController.changePassword);
 router.post("/changePassword",userCheck.isUser,userController.changeVerify);
 // router.post("/changeOtpPage", userController.changeOtpPage);
 
-router.get("/product", productController.product);
+router.get("/product",userCheck.isUser, productController.product);
+router.get("/product/category/:categoryid",userCheck.isUser, productController.categoryProduct);
+
 router.get("/product-detail/:id", productController.productdetail);
 
-
-router.put('/addwishlist/:productId', wishlistController.addToWishlist);
-router.put('/removewishlist/:productId', wishlistController.removeFromWishlist);
-
+router.put('/addwishlist/:productId',userCheck.isUser, wishlistController.addToWishlist);
+router.put('/removewishlist/:productId',userCheck.isUser, wishlistController.removeFromWishlist);
 
 
-router.get("/shopingcart", cartController.cartpage);
 
+
+router.get("/shopingcart",userCheck.isUser, cartController.cartpage);
+router.post("/addToCart/:productId",userCheck.isUser, cartController.addToCart);
+router.post('/updateCartItem/:productId',userCheck.isUser, cartController.updateCartItem);
+router.delete('/deleteCartItem/:productId',userCheck.isUser,  cartController.deleteCartItem);
+
+
+router.get('/proceedToCheckout',userCheck.isUser,  checkOutController.checkOutPage);
+
+router.get('/OrderConformation?',userCheck.isUser,  checkOutController.OrderConformation);
+router.post('/placeOrder',userCheck.isUser,  checkOutController.placeOrder);
 
 module.exports = router;

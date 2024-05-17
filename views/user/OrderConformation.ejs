@@ -1,0 +1,29 @@
+<body class="animsition">
+
+    <!-- Header -->
+    <%- include('./partials/navbar.ejs') %>
+
+    <!-- CheckOut Page -->
+    <div style="margin-top: 70px; margin-bottom: 20px;">
+        <div class="container">
+            <h1>Order Confirmation</h1>
+            <div class="order-details">
+                <h2>Your Order</h2>
+                <p>Thank you for your order! Here are the details:</p>
+                <ul>
+                    <p>OrderID: <%= order.orderID %></p>
+                    <p>Products Count: <%= order.products.length %></p>
+                    <p>Total Amount: <%= order.totalOrderValue %></p>
+                    <p>Date: <%= order.date.toDateString() %></p>
+                </ul>
+                <p>Your order will be shipped soon.</p>
+            </div>
+            <div>
+                <a href="/" class="btn btn-success">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('./partials/footer.ejs') %>
+</body>

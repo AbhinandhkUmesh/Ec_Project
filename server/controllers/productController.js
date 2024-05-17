@@ -294,21 +294,35 @@ const productImageDelete = async (req, res) => {
 
 const product = async (req, res) => {
     try {
-        let products = await productModel.find({
-            status: true
-        })
-        const category = await categoryModel.find({})
+        let products = await productModel.find({ status: true }).populate('category');
+        const category = await categoryModel.find({});
         res.render('product', {
             isUser: req.session.isUser,
             products,
             category
-
-        })
+        });
     } catch (error) {
-
+        console.error('Error fetching products:', error);
+        res.status(500).json({ message: 'Error fetching products.' });
     }
+};
+ 
+const categoryProduct = async (req, res) => {
+    try {
+        const categoryId = req.params.categoryid;
+        let products = await productModel.find({ status: true, category: categoryId }).populate('category');
+        const category = await categoryModel.find({});
+        res.render('product', {
+            isUser: req.session.isUser,
+            products,
+            category
+        });
+    } catch (error) {
+        console.error('Error fetching products by category:', error);
+        res.status(500).json({ message: 'Error fetching products by category.' });
+    }
+};
 
-}
 
 const productdetail = async (req, res) => {
     try {
@@ -324,7 +338,6 @@ const productdetail = async (req, res) => {
             return res.status(404).send("Product not found or unavailable.");
         }
 
-        console.log("Product Data:", productData);
 
         const categoryData = await categoryModel.findById(productData.category);
         if (!categoryData) {
@@ -332,13 +345,13 @@ const productdetail = async (req, res) => {
             return res.status(404).send("Category not found or unavailable.");
         }
 
-        console.log("Category Data:", categoryData);
+        
 
         const relatedProduct = await productModel.find({
             category: productData.category,
             status: true
         }).limit(4);
-        console.log("Related Products:", relatedProduct);
+     
 
         res.render('productDetail', {
             isUser: req.session.isUser,
@@ -367,7 +380,9 @@ module.exports = {
 
     // User
     product,
-    productdetail
+    categoryProduct,
+    productdetail,
+
 
 
 };

@@ -47,47 +47,70 @@
 								₹<%= products.rate%>
 							</span>
 
-							<!--  -->
-							<div class="p-t-33">
-								<form action="/add-to-cart" method="POST">
+							<%=console.log(products._id)%>
+								<div class="p-t-33">
+
+									<!-- Color Selector using radio buttons -->
 									<div class="form-group mt-3">
-										<label>Select Color:</label><br>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="radio" name="color" id="colorRed"
-												value="Red">
-											<label class="form-check-label" for="colorRed">Red</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="radio" name="color" id="colorBlue"
-												value="Blue">
-											<label class="form-check-label" for="colorBlue">Blue</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="radio" name="color" id="colorGreen"
-												value="Green">
-											<label class="form-check-label" for="colorGreen">Green</label>
+										<label for="colorSelect">Select Color:</label><br>
+										<div class="color-selector">
+											<% if(products.properties.length> 0) { %>
+												<% const selectedColors={}; %>
+													<div class="color-option-wrapper">
+														<% for(let i=0; i < products.properties.length; i++) { %>
+															<% const color=products.properties[i].color; %>
+																<% if(!selectedColors[color]) { %>
+																	<div class="color-option-item">
+																		<input class="form-check-input" type="radio"
+																			name="color" id="color<%= i %>"
+																			value="<%= color %>" required>
+																		<label class="form-check-label"
+																			for="color<%= i %>">
+																			<span class="color-option"
+																				style="background-color:<%= color %>"></span>
+
+																		</label>
+																	</div>
+																	<% selectedColors[color]=true; %>
+																		<% } %>
+																			<% } %>
+													</div>
+													<% } else { %>
+														<p>No color options available</p>
+														<% } %>
 										</div>
 									</div>
+
 
 									<!-- Size Selector using radio buttons -->
 									<div class="form-group">
 										<label>Select Size:</label><br>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="radio" name="size" id="sizeSmall"
-												value="Small">
-											<label class="form-check-label" for="sizeSmall">Small</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="radio" name="size" id="sizeMedium"
-												value="Medium">
-											<label class="form-check-label" for="sizeMedium">Medium</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="radio" name="size" id="sizeLarge"
-												value="Large">
-											<label class="form-check-label" for="sizeLarge">Large</label>
+										<div class="size-selector">
+											<% if(products.properties.length> 0) { %>
+												<% const selectedSizes={}; %>
+													<div class="size-option-wrapper">
+														<% for(let i=0; i < products.properties.length; i++) { %>
+															<% const size=products.properties[i].size; %>
+																<% if(!selectedSizes[size]) { %>
+																	<div class="size-option-item">
+																		<input class="form-check-input" type="radio"
+																			name="size" id="size<%= i %>"
+																			value="<%= size %>">
+																		<label class="size-option" for="size<%= i %>">
+																			<%= size %>
+																		</label>
+																	</div>
+																	<% selectedSizes[size]=true; %>
+																		<% } %>
+																			<% } %>
+													</div>
+													<% } else { %>
+														<p>No size options available</p>
+														<% } %>
 										</div>
 									</div>
+
+
 									<div class="flex-w flex-r-m p-b-10">
 										<div class="size-204 flex-w flex-m respon6-next">
 											<div class="wrap-num-product flex-w m-r-20 m-tb-10">
@@ -96,22 +119,33 @@
 												</div>
 
 												<input class="mtext-104 cl3 txt-center num-product" type="number"
-													name="num-product" value="1">
+													name="quantity" value="1">
 
 												<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
 													<i class="fs-16 zmdi zmdi-plus"></i>
 												</div>
 											</div>
 
-											<button
-												class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+
+											<% if (isUser) { %>
+												<button
+												onclick="addToCart('<%= products._id %>', getColor(), getSize(), getQuantity())"
+												class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 js-addcart-detail">
 												Add to cart
 											</button>
-
+											<% } else {%>
+												<button
+												onclick="Login('Please Login to access this')"
+												class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04">
+												Add to cart
+											</button>
+												<% } %>
+												
+		
 										</div>
 									</div>
-								</form>
-							</div>
+
+								</div>
 
 
 
@@ -217,7 +251,7 @@
 											<!-- Review -->
 											<div class="flex-w flex-t p-b-68">
 												<div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-													<img src="images/avatar-01.jpg" alt="AVATAR">
+													<img src="/images/avatar-01.jpg" alt="AVATAR">
 												</div>
 
 												<div class="size-207">
@@ -374,5 +408,58 @@
 		<!-- Footer -->
 		<%- include('./partials/footer.ejs') %>
 
+		<script>
+			function getColor() {
+				// Logic to get selected color from radio buttons
+				const selectedColor = document.querySelector('input[name="color"]:checked');
+				return selectedColor ? selectedColor.value : null;
+			}
+		
+			function getSize() {
+				// Logic to get selected size from radio buttons
+				const selectedSize = document.querySelector('input[name="size"]:checked');
+				return selectedSize ? selectedSize.value : null;
+			}
+		
+			function getQuantity() {
+				// Get the quantity input value
+				const quantity = document.querySelector('input[name="quantity"]').value;
+				console.log(quantity);
+				return quantity;
+			}
+		
+			async function addToCart(productId, color, size, quantity) {
+				try {
+					if(!color &&  !size){
+						propertyNotSelected('Please select Color and Size');
+					}
+					const response = await fetch(`/addToCart/${productId}`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							color,
+							size,
+							quantity
+						})
+					});
+		
+					const data = await response.json();
+					if (response.ok) {
+						// Update product quantity and stock based on data returned from the server
+						displaySuccessMessage('Added', 'Product added to Cart!');
+						updateProductQuantityAndStock(productId, quantity);
+						console.log(data.message); // Log success message or handle as needed
+					} else {
+						console.error(data.message); // Log error message or handle as needed
+					}
+		
+				} catch (error) {
+					console.error('Error adding product to cart:', error);
+				}
+			}
+		</script>
+		
 
 	</body>

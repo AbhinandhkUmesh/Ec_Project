@@ -387,40 +387,42 @@ var checkUserIn = function checkUserIn(req, res) {
           console.log(checkPass);
 
           if (!checkPass) {
-            _context5.next = 31;
+            _context5.next = 33;
             break;
           }
 
           console.log("Password checked");
           req.session.isUser = true;
+          req.session.lastAccess = Date.now();
+          req.session.userId = userProfile._id;
           req.session.Username = userProfile.Username;
           req.session.userDetails = userProfile;
           req.session.userId = userProfile._id;
           req.session.email = email;
           return _context5.abrupt("return", res.redirect("/home"));
 
-        case 31:
+        case 33:
           console.log("Incorrect password");
           req.session.error = "Incorrect password. Please try again.";
           return _context5.abrupt("return", res.redirect("/login?error=Incorrect password"));
 
-        case 34:
-          _context5.next = 41;
+        case 36:
+          _context5.next = 43;
           break;
 
-        case 36:
-          _context5.prev = 36;
+        case 38:
+          _context5.prev = 38;
           _context5.t0 = _context5["catch"](0);
           console.log("Error validating user:", _context5.t0);
           req.session.error = "Internal Server Error. Please try again later.";
           res.render('error');
 
-        case 41:
+        case 43:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[0, 36]]);
+  }, null, null, [[0, 38]]);
 };
 
 var redirectUser = function redirectUser(req, res) {
@@ -448,28 +450,27 @@ var redirectUser = function redirectUser(req, res) {
 
         case 10:
           wishlistProduct = _context6.sent;
-          console.log(wishlistProduct.product);
           res.render("home", {
             isUser: req.session.isUser,
             products: products,
             category: category,
             wishlist: res.locals.wishlist
           });
-          _context6.next = 19;
+          _context6.next = 18;
           break;
 
-        case 15:
-          _context6.prev = 15;
+        case 14:
+          _context6.prev = 14;
           _context6.t0 = _context6["catch"](0);
           console.log("Error redirecting user: " + _context6.t0);
           res.render('error');
 
-        case 19:
+        case 18:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 15]]);
+  }, null, null, [[0, 14]]);
 };
 
 var forgotPassword = function forgotPassword(req, res) {
@@ -914,7 +915,7 @@ var userDetails = function userDetails(req, res) {
 };
 
 var userUpdate = function userUpdate(req, res) {
-  var userID, updateData, data, dataUpload, image, _dataUpload, addressData;
+  var userID, updateData, data, dataUpload, image, _dataUpload;
 
   return regeneratorRuntime.async(function userUpdate$(_context16) {
     while (1) {
@@ -970,43 +971,23 @@ var userUpdate = function userUpdate(req, res) {
           _dataUpload = _context16.sent;
 
         case 16:
-          _context16.next = 18;
-          return regeneratorRuntime.awrap(addressModel.updateOne({
-            email: req.session.email // Assuming email is unique, so this will match the specific document
-
-          }, {
-            $set: {
-              streetAddress: updateData.streetAddress,
-              city: updateData.city,
-              state: updateData.state,
-              postalCode: updateData.postalCode,
-              country: updateData.country
-            }
-          }, {
-            upsert: true // Perform an upsert operation
-
-          }));
-
-        case 18:
-          addressData = _context16.sent;
-          console.log(addressData); // Check the result of the database update
-
+          // Update user data in the database
           res.redirect("/userdetails");
-          _context16.next = 27;
+          _context16.next = 23;
           break;
 
-        case 23:
-          _context16.prev = 23;
+        case 19:
+          _context16.prev = 19;
           _context16.t0 = _context16["catch"](0);
           console.error("Error updating user:", _context16.t0);
           res.render('error');
 
-        case 27:
+        case 23:
         case "end":
           return _context16.stop();
       }
     }
-  }, null, null, [[0, 23]]);
+  }, null, null, [[0, 19]]);
 };
 
 var userImageDelete = function userImageDelete(req, res) {

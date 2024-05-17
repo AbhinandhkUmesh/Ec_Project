@@ -10,7 +10,12 @@ const fetchWishlist = async (req, res, next) => {
         }
 
         const wishlistProduct = await Wishlist.findOne({ user: userId }).populate('product');
-        res.locals.wishlist = wishlistProduct?.product|| []; // Attach wishlist data to request object
+        const wishlistItems = wishlistProduct?.product || [];// Attach wishlist data to request object
+        const wishlistCount = wishlistItems.length;
+
+        res.locals.wishlist = wishlistItems;
+        res.locals.wishlistCount = wishlistCount;
+
 
         next(); // Proceed to next middleware or route handler
     } catch (error) {
@@ -20,5 +25,5 @@ const fetchWishlist = async (req, res, next) => {
 };
 
 module.exports = {
-    fetchWishlist
+ fetchWishlist
 }

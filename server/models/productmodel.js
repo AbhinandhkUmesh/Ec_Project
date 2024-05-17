@@ -3,7 +3,7 @@ const { type } = require('os');
 const wishlist = require('./wishlistmodel');
 
 
-const product = new mongoose.Schema({
+const product = new mongoose.Schema({ 
   name: {
     type: String,
     required: true,
@@ -13,7 +13,6 @@ const product = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'category',
     required: true,
-
   },
   properties: [
     {
@@ -23,9 +22,7 @@ const product = new mongoose.Schema({
       size: {
         type: String,
       },
-      price: {
-        type: Number,
-      },
+      
       stockQuantity: {
         type: Number,
       },
