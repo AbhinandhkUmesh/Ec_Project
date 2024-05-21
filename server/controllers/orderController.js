@@ -6,15 +6,16 @@ const userModel = require('../models/usermodel');
 const orders = async (req, res) => {
     try {
         const orderID = req.query.id;
-
+        const userId = req.session.userId
         const userEmail = req.session.email;
+        
         const userProfile = await userModel.findOne({
             email: userEmail
         });
         // Fetch the order details using the orderID
-        const order = await orderModel.findOne({ orderID });
+        const order = await orderModel.find({userID:userId});
 
-        
+        console.log(order)
 
         res.render('orderPage', {
             isUser: req.session.isUser,

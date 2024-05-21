@@ -44,6 +44,9 @@ router.get("/userManagement", adminCheck.isAdmin, adminController.adminShowUsers
 router.get("/userManagement/users", adminCheck.isAdmin, adminController.getUsersPage);
 router.get("/userStatus/:id", adminCheck.isAdmin, adminController.userStatus);
 
+router.get("/UserOrders", adminCheck.isAdmin, adminController.adminShowOrders);
+router.get('/orderEdit/:id', adminCheck.isAdmin,  adminController.adminShowOrderEditForm);
+router.post('/orderEditupdate/:id', adminCheck.isAdmin,  adminController.adminUpdateOrder);
 
 router.get("/logout", adminController.logout);
 

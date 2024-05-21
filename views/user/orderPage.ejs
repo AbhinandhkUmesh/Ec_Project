@@ -5,7 +5,7 @@
 
 <section class="bg-light py-3 py-md-5 py-xl-8">
     <div class="container mt-5">
-        <div class="row gy-4 gy-lg-0">
+        <div class="row">
             <div class="col-12 col-lg-4 col-xl-3">
                 <div class="row gy-4">
                     <div class="col-12">
@@ -13,12 +13,12 @@
                             <div class="card-body d-flex align-items-center">
                                 <div class="text-center">
                                     <% if (!userProfile.image) { %>
-                                        <img src="/images/NoImage.png" class="img-fluid rounded-circle" style="width: 80px;height: 80px;" alt="Profile">
+                                        <img src="/images/NoImage.png" class="img-fluid rounded-circle" style="width: 80px; height: 80px;" alt="Profile">
                                     <% } else { %>
-                                        <img src="/images/<%= userProfile.image %>" class="img-fluid rounded-circle" style="width: 80px;height: 80px;" alt="Profile">
+                                        <img src="/images/<%= userProfile.image %>" class="img-fluid rounded-circle" style="width: 80px; height: 80px;" alt="Profile">
                                     <% } %>
                                 </div>
-                                <div class="text-center m-l-10">
+                                <div class="text-center ml-3">
                                     <p>Hello,</p>
                                     <h5 class="text-center"><%= userProfile.Username %></h5>
                                 </div>
@@ -55,68 +55,54 @@
                         </div>
                         <div class="container">
                             <div class="row justify-content-center">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div id="orderContainer">
-                                            <% if (!orders || orders.length === 0) { %>
-                                                <div class="row justify-content-center mt-3 mb-5">
-                                                    <div class="col-6 text-center">
-                                                        <a href="/" class="btn btn-primary">Go to Shop</a>
-                                                    </div>
+                                <div class="col-md-12">
+                                   
+                                    <div id="orderContainer">
+                                        <% if (!orders || orders.length === 0) { %>
+                                            <div class="row justify-content-center mt-3 mb-5">
+                                                <div class="col-6 text-center">
+                                                    <a href="/" class="btn btn-primary">Go to Shop</a>
                                                 </div>
-                                            <% } else { %>
-                                                <div class="block-header">
-                                                    <div class="row">
-                                                        <div class="col-lg-7 col-md-6 col-sm-12">
-                                                            <h2>Order List</h2>
-                                                        </div>
-                                                    </div>
+                                            </div>
+                                        <% } else { %>
+                                            <div class="card">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover order_item_list c_table theme-color mb-0">
+                                                        <thead>
+                                                            <tr style="text-align:center;">
+                                                                <th>Order ID</th>
+                                                                <th>Products</th>
+                                                                <th>Total Value</th>
+                                                                <th>Status</th>
+                                                                <th>Date</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% for (let i = 0; i < orders.length; i++) { %>
+                                                                <tr style="text-align:center;">
+                                                                    <td><%= orders[i].orderID %></td>
+                                                                    <td>
+                                                                        <% orders[i].products.forEach(product => { %>
+                                                                            <p><%= product.name %> (x<%= product.quantity %>)</p>
+                                                                        <% }); %>
+                                                                    </td>
+                                                                    <td>₹<%= orders[i].totalOrderValue %></td>
+                                                                    <td><%= orders[i].status %></td>
+                                                                    <td><%= new Date(orders[i].date).toLocaleDateString() %></td>
+                                                                    <td>
+                                                                        <a href="/orderDetails/<%= orders[i]._id %>" class="btn btn-outline-secondary">View</a>
+                                                                        <% if (orders[i].status !== 'Cancelled') { %>
+                                                                            <a href="/cancelOrder/<%= orders[i]._id %>" class="btn btn-outline-danger">Cancel</a>
+                                                                        <% } %>
+                                                                    </td>
+                                                                </tr>
+                                                            <% } %>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                                <div class="container-fluid">
-                                                    <div class="row clearfix">
-                                                        <div class="col-lg-12">
-                                                            <div class="card">
-                                                                <div class="table-responsive">
-                                                                    <table class="table table-hover order_item_list c_table theme-color mb-0">
-                                                                        <thead>
-                                                                            <tr style="text-align:center;">
-                                                                                <th>Order ID</th>
-                                                                                <th>Products</th>
-                                                                                <th>Total Value</th>
-                                                                                <th>Status</th>
-                                                                                <th>Date</th>
-                                                                                <th>Action</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <% for(let i = 0; i < orders.length; i++) { %>
-                                                                                <tr style="text-align:center;">
-                                                                                    <td><%= orders[i].orderID %></td>
-                                                                                    <td>
-                                                                                        <% orders[i].products.forEach(product => { %>
-                                                                                            <p><%= product.name %> (x<%= product.quantity %>)</p>
-                                                                                        <% }); %>
-                                                                                    </td>
-                                                                                    <td>₹<%= orders[i].totalOrderValue %></td>
-                                                                                    <td><%= orders[i].status %></td>
-                                                                                    <td><%= new Date(orders[i].date).toLocaleDateString() %></td>
-                                                                                    <td>
-                                                                                        <a href="/orderDetails/<%= orders[i]._id %>" class="btn btn-outline-secondary">View</a>
-                                                                                        <% if (orders[i].status !== 'Cancelled') { %>
-                                                                                            <a href="/cancelOrder/<%= orders[i]._id %>" class="btn btn-outline-danger">Cancel</a>
-                                                                                        <% } %>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            <% } %>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            <% } %>
-                                        </div>
+                                            </div>
+                                        <% } %>
                                     </div>
                                 </div>
                             </div>
@@ -134,4 +120,3 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-

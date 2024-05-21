@@ -59,7 +59,7 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-12">
                                     <div id="addressContainer">
-                                        <% if (addressData.length === 0) { %>
+                                        <% if (!addressData) { %>
                                             <div class="row justify-content-center mt-3 mb-5">
                                                 <div class="col-6 text-center">
                                                     <a href="/addressAdd" class="btn btn-primary">Add Address</a>
@@ -67,13 +67,13 @@
                                             </div>
                                         <% } else { %>
                                             <div class="row">
-                                                <% addressData.forEach(address => { %>
+                                                <% addressData.addresses.forEach(address => { %>
                                                     <div class="col-md-6 mb-3">
                                                         <div class="card">
                                                             <div class="card-body">
-                                                                <h5 class="card-title"><%= address.fullName %></h5>
+                                                                <h5 class="card-title"><%= address.name %></h5>
                                                                 <p class="card-text">
-                                                                    <%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.postalCode %>
+                                                                    <%= address.streetAddress %>, <%= address.city %>, <%= address.state %>, <%= address.postalCode %>, <%= address.country %>
                                                                 </p>
                                                                 <a href="/addressEdit/<%= address._id %>" class="btn btn-outline-secondary">Edit</a>
                                                                 <a href="/addressDelete/<%= address._id %>" class="btn btn-danger">Delete</a>

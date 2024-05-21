@@ -26,7 +26,7 @@
 													<img src="/images/<%= item.productId.image[0] %>" alt="Product Image">
 												</div>
 											</td>
-											<td class="column-2"><%= item.productId.name %></td>
+											<td class="column-2"><a href="/product-detail/<%= item.productId._id %>"><%= item.productId.name %></a></td>
 											<td class="column-3">$ <%= item.productId.rate %></td>
 											<td class="column-4">
 												<div class="wrap-num-product flex-w m-l-auto m-r-0">
@@ -40,8 +40,8 @@
 												</div>
 											</td>
 											<td class="column-5 product-total" data-index="<%= i %>">$ <%= item.productTotal %></td>
-											<td class="column-6">
-												<button type="button" class="delete-button btn btn-danger" data-product-id="<%= item.productId._id %>">Remove</button>
+											<td class="column-6 m">
+												<button type="button" class="delete-button btn btn-danger mr-4" data-product-id="<%= item.productId._id %>">Remove</button>
 											</td>
 										</tr>
 									<% }); %>

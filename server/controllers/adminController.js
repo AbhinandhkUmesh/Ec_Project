@@ -1,7 +1,7 @@
 const userModel = require('../models/usermodel')
 const bcrypt = require('bcrypt')
 const { ObjectId } = require('mongoose').Types;
-
+const orderModel = require('../models/ordermodel')
 
 const adminLogin = async (req, res) => {
     if (req.session.isAdmin) {
@@ -160,6 +160,71 @@ const logout = (req, res) => {
   }
 };
 
+const adminShowOrders = async (req, res) => {
+  try {
+    const orders = await orderModel.find({}).populate('userID')
+
+    res.render('orderManagement', {
+      Username: req.session.username,
+      orders: orders // Pass the order details to the template
+    });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Display the order edit form
+const adminShowOrderEditForm = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const order = await orderModel.findById(orderId).populate('userID');
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.render('orderEdit', {
+      Username: req.session.username,
+      order: order // Pass the order details to the template
+    });
+  } catch (error) {
+    console.error('Error fetching order:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+const adminUpdateOrder = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { status, cancel } = req.body;
+    
+    console.log('Received data:', { status, cancel });
+
+    const order = await orderModel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    console.log('Original order:', order);
+
+    if (status) {
+      order.status = status;
+    }
+
+    order.cancel = cancel === 'true';
+
+    const updatedOrder = await order.save();
+    console.log('Updated order:', updatedOrder);
+
+    res.redirect('/admin/orders');
+  } catch (error) {
+    console.error('Error updating order:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
     adminLogin,
     adminDashboard,
@@ -168,5 +233,8 @@ module.exports = {
     adminShowUsers,
     userStatus,
     getUsersPage,
-    logout
+    logout,
+    adminShowOrders,
+    adminShowOrderEditForm,
+    adminUpdateOrder
 }      

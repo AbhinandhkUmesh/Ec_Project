@@ -51,6 +51,9 @@ router.get("/userImageDelete/:id", userCheck.isUser, multer.array("image", 1), u
 router.get("/address", userCheck.isUser, AddressController.addressPage);
 router.get("/addressAdd", userCheck.isUser, AddressController.addressAddPage);
 router.post("/AddNewAddress", userCheck.isUser, AddressController.AddNewAddress);
+router.get("/addressEdit/:id", userCheck.isUser, AddressController.addressEditPage);
+router.post("/updateAddress/:id", userCheck.isUser, AddressController.updateAddress);
+router.get("/addressDelete/:id", userCheck.isUser, AddressController.addressDelete);
 router.get("/changePassword", userCheck.isUser, userController.changePassword);
 router.post("/changePassword", userCheck.isUser, userController.changeVerify); // router.post("/changeOtpPage", userController.changeOtpPage);
 

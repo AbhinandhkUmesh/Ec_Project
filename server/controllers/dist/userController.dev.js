@@ -103,7 +103,7 @@ var signupPage = function signupPage(req, res) {
 };
 
 var signUp = function signUp(req, res) {
-  var email, Username, _password, conformPassword, uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, alreadyExist, otpData;
+  var email, Username, _password, conformPassword, alreadyExist, otpData;
 
   return regeneratorRuntime.async(function signUp$(_context2) {
     while (1) {
@@ -114,14 +114,20 @@ var signUp = function signUp(req, res) {
           Username = req.body.Username; // Assuming username is in req.body
 
           _password = req.body.password;
-          conformPassword = req.body.password;
-          req.session.email = email;
-          uppercaseRegex = /[A-Z]/;
-          lowercaseRegex = /[a-z]/;
-          numberRegex = /[0-9]/;
-          specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/; // Check if email or username already exists
+          conformPassword = req.body.password; // const uppercaseRegex = /[A-Z]/;
+          // const lowercaseRegex = /[a-z]/;
+          // const numberRegex = /[0-9]/;
+          // const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
 
-          _context2.next = 12;
+          if (!(email === '' && _password === '')) {
+            _context2.next = 7;
+            break;
+          }
+
+          return _context2.abrupt("return", res.redirect('/signup?error=Enter your details'));
+
+        case 7:
+          _context2.next = 9;
           return regeneratorRuntime.awrap(userModel.findOne({
             $or: [{
               email: email
@@ -130,58 +136,53 @@ var signUp = function signUp(req, res) {
             }]
           }));
 
-        case 12:
+        case 9:
           alreadyExist = _context2.sent;
 
           if (!alreadyExist) {
-            _context2.next = 20;
+            _context2.next = 17;
             break;
           }
 
           if (!(alreadyExist.email === email)) {
-            _context2.next = 18;
+            _context2.next = 15;
             break;
           }
 
           return _context2.abrupt("return", res.redirect('/signup?error=Email Already Exists'));
 
-        case 18:
+        case 15:
           if (!(alreadyExist.Username === Username)) {
-            _context2.next = 20;
+            _context2.next = 17;
             break;
           }
 
           return _context2.abrupt("return", res.redirect('/signup?error=Username Already Exists'));
 
-        case 20:
-          if (!(conformPassword !== _password)) {
-            _context2.next = 22;
-            break;
-          }
-
-          return _context2.abrupt("return", res.redirect('/signup?error=Conform your password'));
-
-        case 22:
-          if (!(_password.length < 6 || !uppercaseRegex.test(_password) || !lowercaseRegex.test(_password) || !numberRegex.test(_password) || !specialCharRegex.test(_password))) {
-            _context2.next = 24;
-            break;
-          }
-
-          return _context2.abrupt("return", res.redirect('/signup?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.'));
-
-        case 24:
+        case 17:
+          // if (conformPassword !== password) {
+          //     return res.redirect('/signup?error=Conform your password');
+          // }
+          // if (password.length < 6 ||
+          //     !uppercaseRegex.test(password) ||
+          //     !lowercaseRegex.test(password) ||
+          //     !numberRegex.test(password) ||
+          //     !specialCharRegex.test(password)) {
+          //     return res.redirect('/signup?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+          // }
           // Set user details in session
           req.session.userDetails = {
             email: email,
             Username: Username,
             password: _password
-          }; // Assuming otpSend.sendmail(email) is an asynchronous function
+          };
+          req.session.email = email; // Assuming otpSend.sendmail(email) is an asynchronous function
 
           console.log("Sending OTP to:", email);
-          _context2.next = 28;
+          _context2.next = 22;
           return regeneratorRuntime.awrap(otpSend.sendmail(email));
 
-        case 28:
+        case 22:
           otpData = _context2.sent;
           console.log("OTP sent:", otpData); // Store OTP in session
 
@@ -194,18 +195,18 @@ var signUp = function signUp(req, res) {
             isUser: req.session.isUser
           }));
 
-        case 34:
-          _context2.prev = 34;
+        case 28:
+          _context2.prev = 28;
           _context2.t0 = _context2["catch"](0);
           console.log("Error in signUp: ", _context2.t0);
           res.render('error');
 
-        case 38:
+        case 32:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 34]]);
+  }, null, null, [[0, 28]]);
 };
 
 var authOTP = function authOTP(req, res) {

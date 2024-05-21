@@ -1,0 +1,87 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
+  <title>:: AnB :: Edit Order</title>
+  <link rel="stylesheet" href="/assets/plugins/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/css/style.min.css">
+</head>
+<body class="theme-blush">
+  <div class="overlay"></div>
+  <%- include('./partials/sidebar.ejs') %>
+
+  <section class="content">
+    <div class="body_scroll">
+      <div class="block-header">
+        <div class="row">
+          <div class="col-lg-7 col-md-6 col-sm-12">
+            <h2>Edit Order</h2>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <div class="row clearfix">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="body">
+                <form action="/admin/orderEditupdate/<%= order._id %>" method="POST">
+                  <div class="form-group">
+                    <label for="orderID">Order ID:</label>
+                    <p class="form-control-plaintext"><%= order.orderID %></p>
+                  </div>
+                  <div class="form-group">
+                    <label for="user">Customer Name:</label>
+                    <p class="form-control-plaintext"><%= order.userID.Username %></p>
+                  </div>
+                  <div class="form-group">
+                    <label for="products">Products:</label>
+                    <ul class="list-unstyled">
+                      <% order.products.forEach(product => { %>
+                        <li><%= product.name %> (Qty: <%= product.quantity %>)</li>
+                      <% }); %>
+                    </ul>
+                  </div>
+                  <div class="form-group">
+                    <label for="totalOrderValue">Total Order Value</label>
+                    <p class="form-control-plaintext">₹<%= order.totalOrderValue %></p>
+                  </div>
+                  <div class="form-group">
+                    <label for="address">Address:</label>
+                    <p class="form-control-plaintext"><%= order.address.streetAddress %>, <%= order.address.city %>, <%= order.address.state %></p>
+                  </div>
+                  <div class="form-group">
+                    <label for="date">Date:</label>
+                    <p class="form-control-plaintext"><%= new Date(order.date).toLocaleDateString() %></p>
+                  </div>
+                  <div class="form-group">
+                    <label for="status">Status</label>
+                    <select class="form-control" id="status" name="status">
+                      <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                      <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Processing</option>
+                      <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                      <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                      <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                    </select>
+                  </div>
+                  <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="cancel" name="cancel" value="true" <%= order.cancel ? 'checked' : '' %>>
+                    <label class="form-check-label" for="cancel">Cancel Order</label>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Update Order</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="/assets/bundles/libscripts.bundle.js"></script>
+  <script src="/assets/bundles/vendorscripts.bundle.js"></script>
+  <script src="/assets/bundles/mainscripts.bundle.js"></script>
+</body>
+</html>

@@ -69,6 +69,7 @@ const signupPage = (req, res) => {
         res.render('error');
     }
 };
+
 const signUp = async (req, res) => {
     try {
         const email = req.body.email;
@@ -76,13 +77,14 @@ const signUp = async (req, res) => {
         const password = req.body.password;
         const conformPassword = req.body.password;
 
-        req.session.email = email
+        // const uppercaseRegex = /[A-Z]/;
+        // const lowercaseRegex = /[a-z]/;
+        // const numberRegex = /[0-9]/;
+        // const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
 
-        const uppercaseRegex = /[A-Z]/;
-        const lowercaseRegex = /[a-z]/;
-        const numberRegex = /[0-9]/;
-        const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
-
+        if (email === '' && password === ''  ) {
+            return res.redirect('/signup?error=Enter your details');
+        } 
         // Check if email or username already exists
         const alreadyExist = await userModel.findOne({
             $or: [{
@@ -92,6 +94,8 @@ const signUp = async (req, res) => {
             }]
         });
 
+
+
         if (alreadyExist) {
             if (alreadyExist.email === email) {
                 return res.redirect('/signup?error=Email Already Exists');
@@ -99,17 +103,17 @@ const signUp = async (req, res) => {
                 return res.redirect('/signup?error=Username Already Exists');
             }
         }
-        if (conformPassword !== password) {
-            return res.redirect('/signup?error=Conform your password');
-        }
+        // if (conformPassword !== password) {
+        //     return res.redirect('/signup?error=Conform your password');
+        // }
 
-        if (password.length < 6 ||
-            !uppercaseRegex.test(password) ||
-            !lowercaseRegex.test(password) ||
-            !numberRegex.test(password) ||
-            !specialCharRegex.test(password)) {
-            return res.redirect('/signup?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
-        }
+        // if (password.length < 6 ||
+        //     !uppercaseRegex.test(password) ||
+        //     !lowercaseRegex.test(password) ||
+        //     !numberRegex.test(password) ||
+        //     !specialCharRegex.test(password)) {
+        //     return res.redirect('/signup?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+        // }
 
         // Set user details in session
         req.session.userDetails = {
@@ -117,6 +121,7 @@ const signUp = async (req, res) => {
             Username,
             password
         };
+        req.session.email = email
 
         // Assuming otpSend.sendmail(email) is an asynchronous function
         console.log("Sending OTP to:", email);

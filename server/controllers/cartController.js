@@ -175,7 +175,7 @@ const deleteCartItem = async (req, res) => {
         const {
             productId
         } = req.params;
-        const userId = req.user._id;
+        const userId = req.session.userId;
 
         let cart = await cartModel.findOne({
             userId

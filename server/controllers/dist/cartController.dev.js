@@ -256,7 +256,7 @@ var deleteCartItem = function deleteCartItem(req, res) {
         case 0:
           _context4.prev = 0;
           productId = req.params.productId;
-          userId = req.user._id;
+          userId = req.session.userId;
           _context4.next = 5;
           return regeneratorRuntime.awrap(cartModel.findOne({
             userId: userId
