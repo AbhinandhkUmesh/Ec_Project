@@ -291,31 +291,54 @@ const productImageDelete = async (req, res) => {
 
 
 // =====User Side========
+const ITEMS_PER_PAGE = 8; // Number of products per page
 
 const product = async (req, res) => {
     try {
-        let products = await productModel.find({ status: true }).populate('category');
+        const page = +req.query.page || 1; // Current page, default to 1 if not provided
+        const totalProducts = await productModel.countDocuments({ status: true });
+        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
+
+        let products = await productModel.find({ status: true })
+            .populate('category')
+            .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
+            .limit(ITEMS_PER_PAGE); // Limit products per page
+
         const category = await categoryModel.find({});
+
         res.render('product', {
             isUser: req.session.isUser,
             products,
-            category
+            category,
+            currentPage: page,
+            totalPages
         });
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ message: 'Error fetching products.' });
     }
 };
- 
+
 const categoryProduct = async (req, res) => {
     try {
         const categoryId = req.params.categoryid;
-        let products = await productModel.find({ status: true, category: categoryId }).populate('category');
+        const page = +req.query.page || 1; // Current page, default to 1 if not provided
+        const totalProducts = await productModel.countDocuments({ status: true, category: categoryId });
+        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
+
+        let products = await productModel.find({ status: true, category: categoryId })
+            .populate('category')
+            .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
+            .limit(ITEMS_PER_PAGE); // Limit products per page
+
         const category = await categoryModel.find({});
+
         res.render('product', {
             isUser: req.session.isUser,
             products,
-            category
+            category,
+            currentPage: page,
+            totalPages
         });
     } catch (error) {
         console.error('Error fetching products by category:', error);
@@ -323,6 +346,60 @@ const categoryProduct = async (req, res) => {
     }
 };
 
+
+const sortProductByPriceLowToHigh = async (req, res) => {
+    try {
+        const page = +req.query.page || 1; // Current page, default to 1 if not provided
+        const totalProducts = await productModel.countDocuments({ status: true });
+        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
+
+        let products = await productModel.find({ status: true })
+            .populate('category')
+            .sort({ rate: 1 }) // Sort by price in ascending order
+            .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
+            .limit(ITEMS_PER_PAGE); // Limit products per page
+
+        const category = await categoryModel.find({});
+
+        res.render('product', {
+            isUser: req.session.isUser,
+            products,
+            category,
+            currentPage: page,
+            totalPages
+        });
+    } catch (error) {
+        console.error('Error sorting products by price (low to high):', error);
+        res.status(500).json({ message: 'Error sorting products by price (low to high).' });
+    }
+};
+
+const sortProductByPriceHighToLow = async (req, res) => {
+    try {
+        const page = +req.query.page || 1; // Current page, default to 1 if not provided
+        const totalProducts = await productModel.countDocuments({ status: true });
+        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
+
+        let products = await productModel.find({ status: true })
+            .populate('category')
+            .sort({ rate: -1 }) // Sort by price in descending order
+            .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
+            .limit(ITEMS_PER_PAGE); // Limit products per page
+
+        const category = await categoryModel.find({});
+
+        res.render('product', {
+            isUser: req.session.isUser,
+            products,
+            category,
+            currentPage: page,
+            totalPages
+        });
+    } catch (error) {
+        console.error('Error sorting products by price (high to low):', error);
+        res.status(500).json({ message: 'Error sorting products by price (high to low).' });
+    }
+};
 
 const productdetail = async (req, res) => {
     try {
@@ -345,8 +422,6 @@ const productdetail = async (req, res) => {
             return res.status(404).send("Category not found or unavailable.");
         }
 
-        
-
         const relatedProduct = await productModel.find({
             category: productData.category,
             status: true
@@ -366,11 +441,13 @@ const productdetail = async (req, res) => {
     }
 };
 
+             
+
 
 module.exports = {
     // Admin
     adminProduct,
-    NewProduct,
+    NewProduct,  
     AddProduct,
     ProductStatus,
     getproductPage,
@@ -382,7 +459,9 @@ module.exports = {
     product,
     categoryProduct,
     productdetail,
-
-
-
+    sortProductByPriceLowToHigh ,
+    sortProductByPriceHighToLow ,
 };
+
+
+ 

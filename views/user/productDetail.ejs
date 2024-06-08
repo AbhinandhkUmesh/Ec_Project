@@ -51,33 +51,44 @@
 								<div class="p-t-33">
 
 									<!-- Color Selector using radio buttons -->
+									<!-- Color Selector using radio buttons -->
 									<div class="form-group mt-3">
 										<label for="colorSelect">Select Color:</label><br>
 										<div class="color-selector">
-											<% if(products.properties.length> 0) { %>
-												<% const selectedColors={}; %>
-													<div class="color-option-wrapper">
-														<% for(let i=0; i < products.properties.length; i++) { %>
+											<% if (products.properties.length> 0) { %>
+												<div class="color-option-wrapper">
+													<% const selectedColors={}; %>
+														<% for (let i=0; i < products.properties.length; i++) { %>
 															<% const color=products.properties[i].color; %>
-																<% if(!selectedColors[color]) { %>
-																	<div class="color-option-item">
-																		<input class="form-check-input" type="radio"
-																			name="color" id="color<%= i %>"
-																			value="<%= color %>" required>
-																		<label class="form-check-label"
-																			for="color<%= i %>">
-																			<span class="color-option"
-																				style="background-color:<%= color %>"></span>
-
-																		</label>
-																	</div>
-																	<% selectedColors[color]=true; %>
-																		<% } %>
+																<% const
+																	stockQuantity=products.properties[i].stockQuantity;
+																	%>
+																	<% if (!selectedColors[color]) { %>
+																		<div class="color-option-item">
+																			<input class="form-check-input" type="radio"
+																				name="color" id="color<%= i %>"
+																				value="<%= color %>" required <% if
+																				(stockQuantity===0) { %> disabled <% }
+																				%>
+																				>
+																				<label class="form-check-label"
+																					for="color<%= i %>" <% if
+																					(stockQuantity===0) { %>
+																					style="color: gray;" <% } %>
+																						>
+																						<span class="color-option"
+																							style="background-color:<%= color %>"></span>
+																						<% if (stockQuantity===0) { %>
+																							(Out of Stock) <% } %>
+																				</label>
+																		</div>
+																		<% selectedColors[color]=true; %>
 																			<% } %>
-													</div>
-													<% } else { %>
-														<p>No color options available</p>
-														<% } %>
+																				<% } %>
+												</div>
+												<% } else { %>
+													<p style="color: red;">No Stock</p>
+													<% } %>
 										</div>
 									</div>
 
@@ -86,29 +97,43 @@
 									<div class="form-group">
 										<label>Select Size:</label><br>
 										<div class="size-selector">
-											<% if(products.properties.length> 0) { %>
-												<% const selectedSizes={}; %>
-													<div class="size-option-wrapper">
-														<% for(let i=0; i < products.properties.length; i++) { %>
+											<% if (products.properties.length> 0) { %>
+												<div class="size-option-wrapper">
+													<% const selectedSizes={}; %>
+														<% for (let i=0; i < products.properties.length; i++) { %>
 															<% const size=products.properties[i].size; %>
-																<% if(!selectedSizes[size]) { %>
-																	<div class="size-option-item">
-																		<input class="form-check-input" type="radio"
-																			name="size" id="size<%= i %>"
-																			value="<%= size %>">
-																		<label class="size-option" for="size<%= i %>">
-																			<%= size %>
-																		</label>
-																	</div>
-																	<% selectedSizes[size]=true; %>
-																		<% } %>
+																<% const
+																	stockQuantity=products.properties[i].stockQuantity;
+																	%>
+																	<% if (!selectedSizes[size]) { %>
+																		<div class="size-option-item">
+																			<input class="form-check-input" type="radio"
+																				name="size" id="size<%= i %>"
+																				value="<%= size %>" <% if
+																				(stockQuantity===0) { %> disabled <% }
+																				%>
+																				>
+																				<label class="size-option"
+																					for="size<%= i %>" <% if
+																					(stockQuantity===0) { %>
+																					style="color: gray;" <% } %>
+																						>
+																						<%= size %>
+																							<% if (stockQuantity===0) {
+																								%> (Out of Stock) <% }
+																									%>
+																				</label>
+																		</div>
+																		<% selectedSizes[size]=true; %>
 																			<% } %>
-													</div>
-													<% } else { %>
-														<p>No size options available</p>
-														<% } %>
+																				<% } %>
+												</div>
+												<% } else { %>
+													<p>No size options available</p>
+													<% } %>
 										</div>
 									</div>
+
 
 
 									<div class="flex-w flex-r-m p-b-10">
@@ -129,19 +154,18 @@
 
 											<% if (isUser) { %>
 												<button
-												onclick="addToCart('<%= products._id %>', getColor(), getSize(), getQuantity())"
-												class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 js-addcart-detail">
-												Add to cart
-											</button>
-											<% } else {%>
-												<button
-												onclick="Login('Please Login to access this')"
-												class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04">
-												Add to cart
-											</button>
-												<% } %>
-												
-		
+													onclick="addToCart('<%= products._id %>', getColor(), getSize(), getQuantity())"
+													class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 js-addcart-detail">
+													Add to cart
+												</button>
+												<% } else {%>
+													<button onclick="Login('Please Login to access this')"
+														class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04">
+														Add to cart
+													</button>
+													<% } %>
+
+
 										</div>
 									</div>
 
@@ -409,30 +433,63 @@
 		<%- include('./partials/footer.ejs') %>
 
 		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const quantityInputs = document.querySelectorAll('.num-product');
+				quantityInputs.forEach(input => {
+					input.addEventListener('change', updateQuantity);
+				});
+		
+				const btnNumProductUp = document.querySelectorAll('.btn-num-product-up');
+				btnNumProductUp.forEach(button => {
+					button.addEventListener('click', () => {
+						const input = button.parentElement.querySelector('.num-product');
+						if (parseInt(input.value) < 5) {
+							input.value = parseInt(input.value) + 1;
+							updateQuantity({ target: input });
+						}
+					});
+				});
+		
+				const btnNumProductDown = document.querySelectorAll('.btn-num-product-down');
+				btnNumProductDown.forEach(button => {
+					button.addEventListener('click', () => {
+						const input = button.parentElement.querySelector('.num-product');
+						if (parseInt(input.value) > 1) {
+							input.value = parseInt(input.value) - 1;
+							updateQuantity({ target: input });
+						}
+					});
+				});
+			});
+		
+			function updateQuantity(event) {
+				const input = event.target;
+				// Logic to handle quantity update if needed
+				console.log(`Quantity updated to: ${input.value}`);
+			}
+		
 			function getColor() {
-				// Logic to get selected color from radio buttons
 				const selectedColor = document.querySelector('input[name="color"]:checked');
 				return selectedColor ? selectedColor.value : null;
 			}
 		
 			function getSize() {
-				// Logic to get selected size from radio buttons
 				const selectedSize = document.querySelector('input[name="size"]:checked');
 				return selectedSize ? selectedSize.value : null;
 			}
 		
 			function getQuantity() {
-				// Get the quantity input value
 				const quantity = document.querySelector('input[name="quantity"]').value;
-				console.log(quantity);
 				return quantity;
 			}
 		
 			async function addToCart(productId, color, size, quantity) {
+				if (!color || !size) {
+					propertyNotSelected('Please select Color and Size');
+					return;
+				}
+		
 				try {
-					if(!color &&  !size){
-						propertyNotSelected('Please select Color and Size');
-					}
 					const response = await fetch(`/addToCart/${productId}`, {
 						method: 'POST',
 						headers: {
@@ -447,19 +504,32 @@
 		
 					const data = await response.json();
 					if (response.ok) {
-						// Update product quantity and stock based on data returned from the server
 						displaySuccessMessage('Added', 'Product added to Cart!');
 						updateProductQuantityAndStock(productId, quantity);
 						console.log(data.message); // Log success message or handle as needed
 					} else {
 						console.error(data.message); // Log error message or handle as needed
 					}
-		
 				} catch (error) {
 					console.error('Error adding product to cart:', error);
 				}
 			}
+		
+			function propertyNotSelected(message) {
+				alert(message);
+			}
+		
+			function displaySuccessMessage(title, message) {
+				// Display success message to the user (you can customize this as needed)
+				alert(`${title}: ${message}`);
+			}
+		
+			function updateProductQuantityAndStock(productId, quantity) {
+				// Logic to update the product quantity and stock
+				console.log(`Product ${productId} quantity updated to ${quantity}`);
+			}
 		</script>
 		
+
 
 	</body>

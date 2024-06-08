@@ -200,6 +200,23 @@
   });
 })(jQuery);
 
+document.addEventListener('DOMContentLoaded', function () {
+  // Add to Wishlist button click handler
+  document.querySelectorAll('button.add-to-cart').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var productId = this.getAttribute('data-product-id');
+      addToCart(productId);
+    });
+  }); // Remove from Wishlist button click handler
+
+  document.querySelectorAll('button.remove-from-wishlist').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var productId = this.getAttribute('data-product-id');
+      removeFromWishlist(productId);
+    });
+  });
+});
+
 function addToWishlist(productId) {
   var response;
   return regeneratorRuntime.async(function addToWishlist$(_context) {
@@ -288,8 +305,8 @@ function removeFromWishlist(productId) {
 }
 
 function toggleWishlistButton(productId, isInWishlist) {
-  var addButton = document.querySelector("button.add-from-wishlist[data-product-id=\"".concat(productId, "\"]"));
-  var removeButton = document.querySelector("button.remove-to-wishlist[data-product-id=\"".concat(productId, "\"]"));
+  var addButton = document.querySelector("button.add-to-cart[data-product-id=\"".concat(productId, "\"]"));
+  var removeButton = document.querySelector("button.remove-from-wishlist[data-product-id=\"".concat(productId, "\"]"));
 
   if (addButton && removeButton) {
     addButton.style.display = isInWishlist ? 'none' : 'block';
@@ -408,4 +425,4 @@ function updateWishlistSidebar() {
       }
     }
   });
-}
+} // ======================================================

@@ -16,11 +16,11 @@ const index = async (req, res) => {
         const category = await categoryModel.find({})
         let products = await productModel.find({
             status: true
-        })
+        }).limit(8)
         console.log("=====", products)
         if (req.session.isUser) {
             res.redirect('/home');
-            
+        
         } else {
             res.render('home', {
                 isUser: req.session.isUser,

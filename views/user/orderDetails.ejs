@@ -1,0 +1,80 @@
+<%- include('./partials/navbar.ejs') %>
+
+<!-- Order Detail Page -->
+<br>
+<br>
+<div class="container mt-5">
+    <div class="row mt-5">
+        <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+            <div class="m-l-25 m-r--38 m-lr-0-xl">
+                <div class="wrap-table-shopping-cart">
+                    <% if (order) { %>
+                        <table class="table-shopping-cart">
+                            <tr class="table_head">
+                                <th class="column-1">Product</th>
+                                <th class="column-2">Name</th>
+                                <th class="column-3">Price</th>
+                                <th class="column-4">Quantity</th>
+                                <th class="column-5">Total</th>
+                            </tr>
+                            <% for (let i = 0; i < order.products.length; i++) { %>
+                                <tr class="table_row">
+                                    <td class="column-1">
+                                        
+                                    </td>
+                                    <td class="column-2"><%= order.products[i].name %></td>
+                                    <td class="column-3">$ <%= order.products[i].productId.rate %></td>
+                                    <td class="column-4"><%= order.products[i].quantity %></td>
+                                    <td class="column-5 product-total" data-index="<%= i %>">$ <%= order.products[i].productTotal %></td>
+                                </tr>
+                            <% } %>
+                        </table>
+                    <% } else { %>
+                        <h1>No Order Found</h1>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+            <div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+                <h4 class="mtext-109 cl2 p-b-30">Order Details</h4>
+
+                <div class="flex-w flex-t bor12 p-b-30">
+                    <div class="size-208">
+                        <span class="stext-110 cl2">Order ID:</span>
+                    </div>
+                    <div class="size-209">
+                        <span class="mtext-110 cl2"><%= order.orderID %></span>
+                    </div>
+                </div>
+
+                <div class="flex-w flex-t bor12 p-b-30">
+                    <div class="size-208">
+                        <span class="stext-110 cl2">Total Amount:</span>
+                    </div>
+                    <div class="size-209">
+                        <span class="mtext-110 cl2">$ <%= order.totalOrderValue %></span>
+                    </div>
+                </div>
+
+                <!-- Additional Order Details Here -->
+
+                <!-- Back to Orders Button -->
+                <a href="/orders" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+                    Back to Orders
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<%- include('./partials/footer.ejs') %>
+
+<!-- Back to top -->
+<div class="btn-back-to-top" id="myBtn">
+    <span class="symbol-btn-back-to-top">
+        <i class="zmdi zmdi-chevron-up"></i>
+    </span>
+</div>

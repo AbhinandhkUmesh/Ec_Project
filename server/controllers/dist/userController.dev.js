@@ -36,7 +36,7 @@ var index = function index(req, res) {
           _context.next = 6;
           return regeneratorRuntime.awrap(productModel.find({
             status: true
-          }));
+          }).limit(8));
 
         case 6:
           products = _context.sent;

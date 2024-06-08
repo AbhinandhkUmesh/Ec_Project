@@ -2,7 +2,7 @@ const cartModel = require('../models/cartmodel')
 const addressModel = require('../models/addressmodel');
 const orderModel = require('../models/ordermodel')
 const { v4: uuidv4 } = require('uuid');
-
+const otpGenerator = require("otp-generator");
 const checkOutPage = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -61,6 +61,8 @@ const placeOrder = async (req, res) => {
 
         const cart = await cartModel.findOne({ userId }).populate('items.productId');
 
+        console.log("========================++++++++",cart)
+
         if (!cart || cart.items.length === 0) {
             return res.status(400).json({ message: 'Cart is empty.' });
         }
@@ -69,14 +71,23 @@ const placeOrder = async (req, res) => {
             productId: item.productId._id,
             name: item.productId.name,
             quantity: item.quantity,
-            price: item.productId.price
+            price: item.productId.price,
+            color:  item.color,
+            size:item.size
+
         }));
 
         const totalOrderValue = cart.cartTotal;
+        const orderId = otpGenerator.generate(6, {
+            digits: true,
+            upperCaseAlphabets: false,
+            lowerCaseAlphabets: false,
+            specialChars: false,
+          });
 
         const newOrder = new orderModel({
             userID: userId,
-            orderID: uuidv4(),
+            orderID: orderId,
             user: req.session.userName,
             products: products,
             totalOrderValue: totalOrderValue,
@@ -90,16 +101,18 @@ const placeOrder = async (req, res) => {
         await cartModel.updateOne({ userId }, { $set: { items: [], cartTotal: 0 } });
 
         res.status(200).json({ orderID: newOrder.orderID }); // Send the order ID back to the client
-
+           
     } catch (error) {
         console.error('Error placing order:', error);
         res.status(500).json({ message: 'An error occurred while placing the order. Please try again later.' });
     }
 };
 
+
+
 module.exports = {
     checkOutPage,
     OrderConformation,
-    placeOrder
-
+    placeOrder,  
+    
 }

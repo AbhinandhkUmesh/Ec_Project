@@ -89,7 +89,12 @@
                                                     ₹<%= products[i].discountAmount %>
                                                 </td>
                                                 <td data-breakpoints="xs md">
-                                                    <span class="col-green"><%= products[i].stock %></span>
+                                                    <!-- Iterate over properties array to sum up stock quantities -->
+                                                    <% let totalStockQuantity = 0; %>
+                                                    <% products[i].properties.forEach(property => { %>
+                                                        <% totalStockQuantity += property.stockQuantity; %>
+                                                    <% }); %>
+                                                    <%= totalStockQuantity %>
                                                 </td>
                                             
                                                
@@ -97,10 +102,10 @@
                                                     <a href="/admin/productEdit/<%= products[i]._id %>" class="btn btn-outline-secondary" style="width: 100px;background-color:rgb(0, 0, 0);">Edit</a>
 
                                                     <% if (products[i].status) { %>
-                                                        <a href="/admin/ProductStatus/<%= products[i]._id %>?status=<%= products[i].status %>" class="btn btn-outline-secondary" style="width: 100px;background-color:green;">List</a>
+                                                        <a href="/admin/ProductStatus/<%= products[i]._id %>?status=<%= products[i].status %>" class="btn btn-outline-secondary" style="width: 100px;background-color:green;">Listed</a>
                                                     
                                                         <% } else { %>
-                                                        <a href="/admin/ProductStatus/<%= products[i]._id %>?status=<%= products[i].status %>" class="btn btn-outline-secondary" style="width: 100px;background-color:red;">Unlist</a>
+                                                        <a href="/admin/ProductStatus/<%= products[i]._id %>?status=<%= products[i].status %>" class="btn btn-outline-secondary" style="width: 100px;background-color:red;">Unlistd</a>
                                                     <% } %>
                                                 </td>
                                             </tr>

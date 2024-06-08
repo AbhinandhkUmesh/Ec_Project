@@ -21,7 +21,7 @@
             <h2>Edit Order</h2>
           </div>
         </div>
-      </div>
+      </div> 
       <div class="container-fluid">
         <div class="row clearfix">
           <div class="col-lg-12">
@@ -34,7 +34,7 @@
                   </div>
                   <div class="form-group">
                     <label for="user">Customer Name:</label>
-                    <p class="form-control-plaintext"><%= order.userID.Username %></p>
+                    <p class="form-control-plaintext"><%= order.user %></p>
                   </div>
                   <div class="form-group">
                     <label for="products">Products:</label>
@@ -68,7 +68,7 @@
                   </div>
                   <div class="form-group form-check">
                     <input type="checkbox" class="form-check-input" id="cancel" name="cancel" value="true" <%= order.cancel ? 'checked' : '' %>>
-                    <label class="form-check-label" for="cancel">Cancel Order</label>
+                    <label class="form-check-label" for=" ">Cancel Order</label>
                   </div>
                   <button type="submit" class="btn btn-primary">Update Order</button>
                 </form>
@@ -80,8 +80,4 @@
     </div>
   </section>
 
-  <script src="/assets/bundles/libscripts.bundle.js"></script>
-  <script src="/assets/bundles/vendorscripts.bundle.js"></script>
-  <script src="/assets/bundles/mainscripts.bundle.js"></script>
-</body>
-</html>
+

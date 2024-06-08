@@ -163,9 +163,9 @@ const logout = (req, res) => {
 const adminShowOrders = async (req, res) => {
   try {
     const orders = await orderModel.find({}).populate('userID')
-
+    console.log();
     res.render('orderManagement', {
-      Username: req.session.username,
+      Username: req.session.Username,
       orders: orders // Pass the order details to the template
     });
   } catch (error) {
@@ -218,7 +218,7 @@ const adminUpdateOrder = async (req, res) => {
     const updatedOrder = await order.save();
     console.log('Updated order:', updatedOrder);
 
-    res.redirect('/admin/orders');
+    res.redirect('/admin/UserOrders');
   } catch (error) {
     console.error('Error updating order:', error);
     res.status(500).json({ message: 'Server error' });

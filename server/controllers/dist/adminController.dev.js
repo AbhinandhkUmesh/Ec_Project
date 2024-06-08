@@ -331,28 +331,29 @@ var adminShowOrders = function adminShowOrders(req, res) {
 
         case 3:
           orders = _context6.sent;
+          console.log();
           res.render('orderManagement', {
-            Username: req.session.username,
+            Username: req.session.Username,
             orders: orders // Pass the order details to the template
 
           });
-          _context6.next = 11;
+          _context6.next = 12;
           break;
 
-        case 7:
-          _context6.prev = 7;
+        case 8:
+          _context6.prev = 8;
           _context6.t0 = _context6["catch"](0);
           console.error('Error fetching orders:', _context6.t0);
           res.status(500).json({
             message: 'Server error'
           });
 
-        case 11:
+        case 12:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 7]]);
+  }, null, null, [[0, 8]]);
 }; // Display the order edit form
 
 
@@ -447,7 +448,7 @@ var adminUpdateOrder = function adminUpdateOrder(req, res) {
         case 14:
           updatedOrder = _context8.sent;
           console.log('Updated order:', updatedOrder);
-          res.redirect('/admin/orders');
+          res.redirect('/admin/UserOrders');
           _context8.next = 23;
           break;
 

@@ -224,6 +224,23 @@
 
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Add to Wishlist button click handler
+    document.querySelectorAll('button.add-to-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            addToCart(productId);
+        });
+    });
+
+    // Remove from Wishlist button click handler
+    document.querySelectorAll('button.remove-from-wishlist').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            removeFromWishlist(productId);
+        });
+    });
+});
 
 async function addToWishlist(productId) {
     try {
@@ -265,16 +282,14 @@ async function removeFromWishlist(productId) {
 }
 
 function toggleWishlistButton(productId, isInWishlist) {
-    const addButton = document.querySelector(`button.add-from-wishlist[data-product-id="${productId}"]`);
-    const removeButton = document.querySelector(`button.remove-to-wishlist[data-product-id="${productId}"]`);
+    const addButton = document.querySelector(`button.add-to-cart[data-product-id="${productId}"]`);
+    const removeButton = document.querySelector(`button.remove-from-wishlist[data-product-id="${productId}"]`);
 
     if (addButton && removeButton) {
         addButton.style.display = isInWishlist ? 'none' : 'block';
         removeButton.style.display = isInWishlist ? 'block' : 'none';
     }
 }
-
-
 
 function displaySuccessMessage(title, message) {
     swal({
@@ -299,7 +314,6 @@ function displayErrorMessage(title, message) {
         icon: 'error',
     });
 }
-
 
 function EmptyWishlistSidebar(title) {
     Swal({
@@ -383,4 +397,9 @@ async function updateWishlistSidebar() {
     // Add logic here to fetch updated wishlist data and update UI
     // For testing, you can log messages or perform dummy UI updates
 }
+
+
+
+// ======================================================
+
 

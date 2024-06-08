@@ -9,6 +9,8 @@ var orderModel = require('../models/ordermodel');
 var _require = require('uuid'),
     uuidv4 = _require.v4;
 
+var otpGenerator = require("otp-generator");
+
 var checkOutPage = function checkOutPage(req, res) {
   var userId, cart, address, add;
   return regeneratorRuntime.async(function checkOutPage$(_context) {
@@ -110,7 +112,7 @@ var OrderConformation = function OrderConformation(req, res) {
 };
 
 var placeOrder = function placeOrder(req, res) {
-  var userId, _req$body, address, paymentMethod, cart, products, totalOrderValue, newOrder;
+  var userId, _req$body, address, paymentMethod, cart, products, totalOrderValue, orderId, newOrder;
 
   return regeneratorRuntime.async(function placeOrder$(_context3) {
     while (1) {
@@ -126,9 +128,10 @@ var placeOrder = function placeOrder(req, res) {
 
         case 5:
           cart = _context3.sent;
+          console.log("========================++++++++", cart);
 
           if (!(!cart || cart.items.length === 0)) {
-            _context3.next = 8;
+            _context3.next = 9;
             break;
           }
 
@@ -136,19 +139,27 @@ var placeOrder = function placeOrder(req, res) {
             message: 'Cart is empty.'
           }));
 
-        case 8:
+        case 9:
           products = cart.items.map(function (item) {
             return {
               productId: item.productId._id,
               name: item.productId.name,
               quantity: item.quantity,
-              price: item.productId.price
+              price: item.productId.price,
+              color: item.color,
+              size: item.size
             };
           });
           totalOrderValue = cart.cartTotal;
+          orderId = otpGenerator.generate(6, {
+            digits: true,
+            upperCaseAlphabets: false,
+            lowerCaseAlphabets: false,
+            specialChars: false
+          });
           newOrder = new orderModel({
             userID: userId,
-            orderID: uuidv4(),
+            orderID: orderId,
             user: req.session.userName,
             products: products,
             totalOrderValue: totalOrderValue,
@@ -157,11 +168,11 @@ var placeOrder = function placeOrder(req, res) {
             status: 'Pending',
             cancel: 'No'
           });
-          _context3.next = 13;
+          _context3.next = 15;
           return regeneratorRuntime.awrap(newOrder.save());
 
-        case 13:
-          _context3.next = 15;
+        case 15:
+          _context3.next = 17;
           return regeneratorRuntime.awrap(cartModel.updateOne({
             userId: userId
           }, {
@@ -171,28 +182,28 @@ var placeOrder = function placeOrder(req, res) {
             }
           }));
 
-        case 15:
+        case 17:
           res.status(200).json({
             orderID: newOrder.orderID
           }); // Send the order ID back to the client
 
-          _context3.next = 22;
+          _context3.next = 24;
           break;
 
-        case 18:
-          _context3.prev = 18;
+        case 20:
+          _context3.prev = 20;
           _context3.t0 = _context3["catch"](0);
           console.error('Error placing order:', _context3.t0);
           res.status(500).json({
             message: 'An error occurred while placing the order. Please try again later.'
           });
 
-        case 22:
+        case 24:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[0, 18]]);
+  }, null, null, [[0, 20]]);
 };
 
 module.exports = {
