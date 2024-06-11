@@ -77,13 +77,12 @@ const addCategory = async (req, res) => {
 
         console.log("Category added ===" + category)
 
-
         // Finding category by name ignoring case
         const categoryFound = await categoryModel.findOne({
             category: {
                 $regex: new RegExp(category, "i")
             },
-        });
+        }); 
         console.log(categoryFound);
 
         if (categoryFound) {
@@ -155,9 +154,10 @@ const categoryUpdate = async (req,res) => {
 
 } catch (error) {
     console.error("Error updating product:", error);
-    res.render('error'); // Render an error page if there's an error
-
+    res.render('error');
+    // Render an error page if there's an error
 }
+
 }
 
 
@@ -187,7 +187,6 @@ const categoryStatus = async (req, res) => {
                     status: true
                 }
             });
-
         }
 
         console.log("updatedStatus :", updatedStatus);
@@ -199,6 +198,7 @@ const categoryStatus = async (req, res) => {
 
     }
 };
+
 
 module.exports = {
     showCategory,

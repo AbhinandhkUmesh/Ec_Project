@@ -74,7 +74,6 @@ const placeOrder = async (req, res) => {
             price: item.productId.price,
             color:  item.color,
             size:item.size
-
         }));
 
         const totalOrderValue = cart.cartTotal;
@@ -114,5 +113,4 @@ module.exports = {
     checkOutPage,
     OrderConformation,
     placeOrder,  
-    
 }
