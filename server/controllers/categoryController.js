@@ -168,7 +168,7 @@ const categoryStatus = async (req, res) => {
         console.log("categoryStatus check1")
         let updatedStatus;
         if (categoryStatus === "true") {
-            console.log("ProductStatus check2=========")
+            console.log("ProductStatus check2=========")    
             updatedStatus = await categoryModel.updateOne({
                 _id: new ObjectId(categoryid)
             }, {
@@ -198,6 +198,7 @@ const categoryStatus = async (req, res) => {
 
     }
 };
+
 
 
 module.exports = {

@@ -42,7 +42,7 @@ router.get("/productmanagement", adminCheck.isAdmin, productController.adminProd
 
 router.get("/NewProduct", adminCheck.isAdmin, productController.NewProduct); //admin add products
 
-router.post("/addProduct", adminCheck.isAdmin, multer.array("image", 4), productController.AddProduct); // go to the add product page
+router.post("/addProduct", adminCheck.isAdmin, multer.array("image", 4), productController.AddProduct); // go to the add product page  
 
 router.get("/ProductStatus/:id", adminCheck.isAdmin, productController.ProductStatus);
 router.get("/productmanagement/products", adminCheck.isAdmin, productController.getproductPage);
