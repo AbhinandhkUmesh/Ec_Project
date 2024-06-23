@@ -481,7 +481,9 @@ var product = function product(req, res) {
             products: products,
             category: category,
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages,
+            sort: '' // Default sort value
+
           });
           _context9.next = 19;
           break;
@@ -541,7 +543,9 @@ var categoryProduct = function categoryProduct(req, res) {
             products: products,
             category: category,
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages,
+            sort: '' // Default sort value
+
           });
           _context10.next = 20;
           break;
@@ -601,7 +605,9 @@ var sortProductByPriceLowToHigh = function sortProductByPriceLowToHigh(req, res)
             products: products,
             category: category,
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages,
+            sort: 'priceLowToHigh' // Sorting identifier
+
           });
           _context11.next = 19;
           break;
@@ -661,7 +667,9 @@ var sortProductByPriceHighToLow = function sortProductByPriceHighToLow(req, res)
             products: products,
             category: category,
             currentPage: page,
-            totalPages: totalPages
+            totalPages: totalPages,
+            sort: 'priceHighToLow' // Sorting identifier
+
           });
           _context12.next = 19;
           break;

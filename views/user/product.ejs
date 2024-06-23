@@ -1,159 +1,99 @@
 <%- include('./partials/navbar.ejs') %>
-<body class="animsition">	
-	<!-- Product -->
-	<div class="bg0 m-t-80 p-b-140">
-		<div class="container">
-			<div class="flex-w flex-sb-m p-b-52">
-				<div class="filter-tope-group">
-					<a href="/product" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 category-btn">
-						All Products
-					</a>
-					<% category.forEach(a => { %>
-						<a href="/product/category/<%= a._id %>" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 category-btn">
-							<%= a.category %>
-						</a>
-					<% }); %>
-					
-					
-					
-</div>
+<body class="animsition">    
+    <!-- Product -->
+    <div class="bg0 m-t-80 p-b-140">
+        <div class="container">
+            <div class="flex-w flex-sb-m p-b-52">
+                <div class="filter-tope-group">
+                    <a href="/product" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 category-btn">
+                        All Products
+                    </a>
+                    <% category.forEach(a => { %>
+                        <a href="/product/category/<%= a._id %>" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 category-btn">
+                            <%= a.category %>
+                        </a>
+                    <% }); %>
+                </div>
 
-<div class="flex-w flex-c-m m-tb-10">
-    <div id="filterToggleBtn" class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4">
-        <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
-        <i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-        Filter
+                <div class="flex-w flex-c-m m-tb-10">
+                    <div id="filterToggleBtn" class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4">
+                        <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+                        <i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+                        Filter
+                    </div>
+                </div>
+                <!-- Filter -->
+                <%- include('./partials/filter.ejs') %>
+            </div>
+
+            <div class="row isotope-grid" id="productContainer">
+                <% for(let i = 0; i < products.length; i++) { %>
+                    <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item" data-category="<%=products[i].category.category %>">
+                        <!-- Products-->
+                        <div class="block2">
+                            <div class="block2-pic hov-img0">
+                                <img style="width: 307.5px;height: 384.32px;" src="/images/<%= products[i].image[0] %>" alt="IMG-PRODUCT">
+                                <a href="/product-detail/<%= products[i]._id %>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                    Quick View
+                                </a>
+                            </div>
+
+                            <div class="block2-txt flex-w flex-t p-t-14">
+                                <div class="block2-txt-child1 flex-col-l">
+                                    <a href="/product-detail/<%= products[i]._id %>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                        <%= products[i].name %>
+                                    </a>
+                                    <span class="stext-105 cl3">₹<%= products[i].rate %></span>
+                                </div>
+
+                                <div class="block2-txt-child2 flex-r p-t-3">
+                                    <button class="btn-addwish-b2 dis-block pos-relative add-from-wishlist"
+                                        onclick="addToWishlist('<%= products[i]._id %>')"
+                                        data-product-id="<%= products[i]._id %>" <% if (products[i].wishlist) { %> style="display: none;" <% } %>>
+                                        <img class="" src="/images/icons/icon-heart-01.png" alt="ICON">
+                                    </button>
+
+                                    <button class="btn-addwish-b2 dis-block pos-relative remove-to-wishlist"
+                                        onclick="removeFromWishlist('<%= products[i]._id %>')"
+                                        data-product-id="<%= products[i]._id %>" <% if (!products[i].wishlist) { %> style="display: none;" <% } %>>
+                                        <img class=" " src="/images/icons/icon-heart-02.png" alt="ICON">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Load more -->
+            <div class="row justify-content-center mt-4">
+                <div class="col-auto">
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <a href="/product?page=<%= currentPage - 1 %>&sort=<%= sort %>" class="btn btn-secondary mr-2">Previous</a>
+                        <% } %>
+                        
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a href="/product?page=<%= i %>&sort=<%= sort %>" class="btn mr-2 <%= currentPage === i ? 'btn-primary' : 'btn-secondary' %>"><%= i %></a>
+                        <% } %>
+                        
+                        <% if (currentPage < totalPages) { %>
+                            <a href="/product?page=<%= currentPage + 1 %>&sort=<%= sort %>" class="btn btn-secondary mr-2">Next</a>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-				<!-- Filter -->
-				<%- include('./partials/filter.ejs') %>
-			</div>
 
-			<div class="row isotope-grid" id="productContainer">
-				<% for(let i = 0; i < products.length; i++) { %>
-					
-					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item" data-category="<%=products[i].category.category %>">
-						<!-- Products-->
-						<div class="block2">
-							<div class="block2-pic hov-img0">
-								<img style="width: 307.5px;height: 384.32px; " src="/images/<%= products[i].image[0] %>" alt="IMG-PRODUCT">
-								<a href="/product-detail/<%= products[i]._id %>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
-									Quick View
-								</a>
-							</div>
+    <!-- Footer -->
+    <%- include('./partials/footer.ejs') %>
 
-							<div class="block2-txt flex-w flex-t p-t-14">
-								<div class="block2-txt-child1 flex-col-l">
-									<a href="/product-detail/<%= products[i]._id %>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-										<%= products[i].name %>
-									</a>
-									<span class="stext-105 cl3">₹<%= products[i].rate %></span>
-								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<button class="btn-addwish-b2 dis-block pos-relative add-from-wishlist"
-										onclick="addToWishlist('<%= products[i]._id %>')"
-										data-product-id="<%= products[i]._id %>" <% if (products[i].wishlist) { %> style="display: none;" <% } %>>
-										<img class="" src="/images/icons/icon-heart-01.png" alt="ICON">
-									</button>
-
-									<button class="btn-addwish-b2 dis-block pos-relative remove-to-wishlist"
-										onclick="removeFromWishlist('<%= products[i]._id %>')"
-										data-product-id="<%= products[i]._id %>" <% if (!products[i].wishlist) { %> style="display: none;" <% } %>>
-										<img class=" " src="/images/icons/icon-heart-02.png" alt="ICON">
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				<% } %>
-			</div>
-
-			<!-- Load more -->
-			<div class="row justify-content-center mt-4">
-				<div class="col-auto">
-					<!-- Pagination -->
-					<div class="pagination">
-						<% if (currentPage > 1) { %>
-							<a href="/product?page=<%= currentPage - 1 %>" class="btn btn-secondary mr-2">Previous</a>
-						<% } %>
-						
-						<% for (let i = 1; i <= totalPages; i++) { %>
-							<a href="/product?page=<%= i %>" class="btn mr-2 <%= currentPage === i ? 'btn-primary' : 'btn-secondary' %>"><%= i %></a>
-						<% } %>
-						
-						<% if (currentPage < totalPages) { %>
-							<a href="/product?page=<%= currentPage + 1 %>" class="btn btn-secondary mr-2">Next</a>
-						<% } %>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Footer -->
-	<%- include('./partials/footer.ejs') %>
-
-	<!-- Back to top -->
-	<div class="btn-back-to-top" id="myBtn">
-		<span class="symbol-btn-back-to-top">
-			<i class="zmdi zmdi-chevron-up"></i>
-		</span>
-	</div>
-
-<!-- 	
-	<script>
-		async function displayAllProducts() {
-			try {
-				const response = await fetch(`/products`, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
-		
-				if (!response.ok) {
-					throw new Error('Failed to fetch products');
-				}
-		
-				// Assuming you handle the response data here
-				const products = await response.json();
-				console.log('All products:', products);
-				// Update UI or do something with the products
-			} catch (error) {
-				console.error('Error fetching all products:', error);
-				displayErrorMessage('Error', 'Failed to fetch products. Please try again.');
-			}
-		}
-		
-		async function displayProductsByCategory(categoryId) {
-			try {
-				const response = await fetch(`/products/category/${categoryId}`, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
-		
-				if (!response.ok) {
-					throw new Error('Failed to fetch products by category');
-				}
-		
-				// Assuming you handle the response data here
-				const products = await response.json();
-				console.log(`Products in category ${categoryId}:`, products);
-				// Update UI or do something with the products
-			} catch (error) {
-				console.error(`Error fetching products for category ${categoryId}:`, error);
-				displayErrorMessage('Error', 'Failed to fetch products. Please try again.');
-			}
-		}
-		
-		function displayErrorMessage(title, message) {
-			// Implement your logic to display an error message to the user
-			// For example, show a modal with the error message
-			alert(`${title}: ${message}`);
-		}
-		
-		</script> -->
-		
+    <!-- Back to top -->
+    <div class="btn-back-to-top" id="myBtn">
+        <span class="symbol-btn-back-to-top">
+            <i class="zmdi zmdi-chevron-up"></i>
+        </span>
+    </div>
+</body>

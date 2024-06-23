@@ -299,7 +299,7 @@ const product = async (req, res) => {
         const totalProducts = await productModel.countDocuments({ status: true });
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
 
-        let products = await productModel.find({ status: true })
+        const products = await productModel.find({ status: true })
             .populate('category')
             .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
             .limit(ITEMS_PER_PAGE); // Limit products per page
@@ -311,7 +311,8 @@ const product = async (req, res) => {
             products,
             category,
             currentPage: page,
-            totalPages
+            totalPages,
+            sort: '', // Default sort value
         });
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -326,7 +327,7 @@ const categoryProduct = async (req, res) => {
         const totalProducts = await productModel.countDocuments({ status: true, category: categoryId });
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
 
-        let products = await productModel.find({ status: true, category: categoryId })
+        const products = await productModel.find({ status: true, category: categoryId })
             .populate('category')
             .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
             .limit(ITEMS_PER_PAGE); // Limit products per page
@@ -338,7 +339,8 @@ const categoryProduct = async (req, res) => {
             products,
             category,
             currentPage: page,
-            totalPages
+            totalPages,
+            sort: '', // Default sort value
         });
     } catch (error) {
         console.error('Error fetching products by category:', error);
@@ -346,14 +348,13 @@ const categoryProduct = async (req, res) => {
     }
 };
 
-
 const sortProductByPriceLowToHigh = async (req, res) => {
     try {
         const page = +req.query.page || 1; // Current page, default to 1 if not provided
         const totalProducts = await productModel.countDocuments({ status: true });
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
 
-        let products = await productModel.find({ status: true })
+        const products = await productModel.find({ status: true })
             .populate('category')
             .sort({ rate: 1 }) // Sort by price in ascending order
             .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
@@ -366,7 +367,8 @@ const sortProductByPriceLowToHigh = async (req, res) => {
             products,
             category,
             currentPage: page,
-            totalPages
+            totalPages,
+            sort: 'priceLowToHigh', // Sorting identifier
         });
     } catch (error) {
         console.error('Error sorting products by price (low to high):', error);
@@ -380,7 +382,7 @@ const sortProductByPriceHighToLow = async (req, res) => {
         const totalProducts = await productModel.countDocuments({ status: true });
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
 
-        let products = await productModel.find({ status: true })
+        const products = await productModel.find({ status: true })
             .populate('category')
             .sort({ rate: -1 }) // Sort by price in descending order
             .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
@@ -393,13 +395,16 @@ const sortProductByPriceHighToLow = async (req, res) => {
             products,
             category,
             currentPage: page,
-            totalPages
+            totalPages,
+            sort: 'priceHighToLow', // Sorting identifier
         });
     } catch (error) {
         console.error('Error sorting products by price (high to low):', error);
         res.status(500).json({ message: 'Error sorting products by price (high to low).' });
     }
 };
+
+
 
 const productdetail = async (req, res) => {
     try {

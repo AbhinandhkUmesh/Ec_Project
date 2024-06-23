@@ -56,9 +56,11 @@ router.get("/addressDelete/:id", userCheck.isUser, AddressController.addressDele
 router.get("/changePassword", userCheck.isUser, userController.changePassword); // Change password page
 router.post("/changePassword", userCheck.isUser, userController.changeVerify); // Change password action
 
-// Product routes
-router.get("/product", userCheck.isUser, productController.product); // Product listing page
-router.get("/product/category/:categoryid", userCheck.isUser, productController.categoryProduct); // Products by category
+// Product listing page
+router.get("/product", userCheck.isUser, productController.product);
+
+// Products by category
+router.get("/product/category/:categoryid", userCheck.isUser, productController.categoryProduct);
 
 // Sorting routes
 router.get('/product/sort/priceLowToHigh', userCheck.isUser, productController.sortProductByPriceLowToHigh); // Sort products by price (low to high)
@@ -84,7 +86,7 @@ router.post('/placeOrder', userCheck.isUser, checkOutController.placeOrder); // 
 
 // Order routes
 router.get('/Order', userCheck.isUser, orderController.orders); // Orders page
-router.post('/cancelOrder/:id', userCheck.isUser, orderController.orderCancel); // Cancel order action
+router.post('/cancelOrder/:id', userCheck.isUser, orderController.orderCancel); // C`ancel order action
 router.get('/orderDetails/:orderId', orderController.viewOrderDetails); // Order details page
 router.post('/returnOrder/:id', orderController.orderReturn); // Return order action
 
