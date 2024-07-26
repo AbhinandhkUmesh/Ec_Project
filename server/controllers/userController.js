@@ -14,7 +14,7 @@ const { ObjectId } = require('mongoose').Types;
 const index = async (req, res) => {
     try {
         const category = await categoryModel.find({})
-        let products = await productModel.find({
+        let products = await productModel.findOne({
             status: true
         }).limit(8)
         console.log("=====", products)
@@ -272,7 +272,6 @@ const redirectUser = async (req, res) => {
         const products = await productModel.find({})
         const userId = req.session.userId
         
-        const wishlistProduct =  await wishlist.findOne({user:userId}).populate('product')
   
      
             res.render("home", {

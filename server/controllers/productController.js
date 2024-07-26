@@ -1,5 +1,6 @@
 const productModel = require('../models/productmodel');
 const categoryModel = require('../models/categorymodel');
+const category = require('../models/categorymodel');
 
 
 const {
@@ -154,14 +155,14 @@ const AddProduct = async (req, res) => {
 
 const ProductStatus = async (req, res) => {
     try {
-        const Productid = req.params.id;
+        const ProductId = req.params.id;
         const ProductStatus = req.query.status;
         console.log("ProductStatus check1")
         let updatedStatus;
         if (ProductStatus === "true") {
             console.log("ProductStatus check2=========")
             updatedStatus = await productModel.updateOne({
-                _id: new ObjectId(Productid)
+                _id: new ObjectId(ProductId)
             }, {
                 $set: {
                     status: false
@@ -170,9 +171,9 @@ const ProductStatus = async (req, res) => {
 
         } else {
             console.log("ProductStatus check3 =========")
-            console.log(Productid)
+            console.log(ProductId)
             updatedStatus = await productModel.updateOne({
-                _id: new ObjectId(Productid)
+                _id: new ObjectId(ProductId)
             }, {
                 $set: {
                     status: true
@@ -404,7 +405,10 @@ const productImageDelete = async (req, res) => {
 //         console.error('Error sorting products by price (high to low):', error);
 //         res.status(500).json({ message: 'Error sorting products by price (high to low).' });
 //     }
-// };
+// };// Define an asynchronous function to get products
+
+const ITEMS_PER_PAGE = 8; // Adjust as needed
+
 const getProducts = async (req, res) => {
     try {
         const page = +req.query.page || 1;
@@ -413,36 +417,30 @@ const getProducts = async (req, res) => {
         const categoryFilter = req.query.category || '';
         const minPrice = +req.query.minPrice || 0;
         const maxPrice = +req.query.maxPrice || Infinity;
-        const ITEMS_PER_PAGE = 8; // Adjust this as per your requirement
 
-        // Build query
         const query = {
             status: true,
-            rate: { $gte: minPrice, $lte: maxPrice },
+            rate: { $gte: minPrice, $lte: maxPrice }
         };
-        
+
         if (categoryFilter) {
             query.category = categoryFilter;
         }
 
-        // Count total products
         const totalProducts = await productModel.countDocuments(query);
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
-        // Define sorting option
         const sortCriteria = {};
         if (sortOption === 'rate') {
             sortCriteria.rate = sortDirection;
         }
 
-        // Fetch products
         const products = await productModel.find(query)
             .populate('category')
             .sort(sortCriteria)
             .skip((page - 1) * ITEMS_PER_PAGE)
             .limit(ITEMS_PER_PAGE);
 
-        // Fetch categories
         const categories = await categoryModel.find({});
 
         res.render('product', {
@@ -451,17 +449,22 @@ const getProducts = async (req, res) => {
             categories,
             currentPage: page,
             totalPages,
-            sortOption,          // Pass sortOption
-            sortDirection,       // Pass sortDirection
-            categoryFilter,      // Pass categoryFilter
-            minPrice,            // Pass minPrice
-            maxPrice             // Pass maxPrice
+            sortOption,
+            sortDirection,
+            categoryFilter,
+            minPrice,
+            maxPrice
         });
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ message: 'Error fetching products.' });
     }
 };
+
+
+
+
+
 
 const productdetail = async (req, res) => {
     try {

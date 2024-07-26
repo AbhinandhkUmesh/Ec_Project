@@ -23,14 +23,14 @@
                     </div>
                 </div>
                 <!-- Filter -->
-                <%- include('./partials/filter.ejs', { sortOption, sortDirection, categoryFilter, minPrice, maxPrice }) %>
+                <%- include('./partials/filter.ejs') %>
             </div>
 
             <div class="row isotope-grid" id="productContainer">
                 <% products.forEach(product => { %>
                     <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item" data-category="<%= product.category.name %>">
                         <div class="block2">
-                            <div class= "block2-pic hov-img0">
+                            <div class="block2-pic hov-img0">
                                 <img style="width: 307.5px;height: 384.32px;" src="/images/<%= product.image[0] %>" alt="IMG-PRODUCT">
                                 <a href="/product-detail/<%= product._id %>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
                                     Quick View
@@ -52,7 +52,7 @@
                                         <img class="" src="/images/icons/icon-heart-01.png" alt="ICON">
                                     </button>
 
-                                    <button class="btn-addwish-b2 dis-block pos-relative remove-to-wishlist"
+                                    <button class="btn-addwish-b2 dis-block pos-relative remove-from-wishlist"
                                         onclick="removeFromWishlist('<%= product._id %>')"
                                         data-product-id="<%= product._id %>" <% if (!product.wishlist) { %> style="display: none;" <% } %>>
                                         <img class=" " src="/images/icons/icon-heart-02.png" alt="ICON">
@@ -68,19 +68,15 @@
             <div class="row justify-content-center mt-4">
                 <div class="col-auto">
                     <!-- Pagination -->
-                    <div class="pagination">
-                        <% if (currentPage > 1) { %>
-                            <a href="?page=<%= currentPage - 1 %>&sort=<%= sortOption %>&direction=<%= sortDirection %>&category=<%= categoryFilter %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>" class="btn btn-secondary mr-2">Previous</a>
-                        <% } %>
-                        
-                        <% for (let i = 1; i <= totalPages; i++) { %>
-                            <a href="?page=<%= i %>&sort=<%= sortOption %>&direction=<%= sortDirection %>&category=<%= categoryFilter %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>" class="btn mr-2 <%= currentPage === i ? 'btn-primary' : 'btn-secondary' %>"><%= i %></a>
-                        <% } %>
-                        
-                        <% if (currentPage < totalPages) { %>
-                            <a href="?page=<%= currentPage + 1 %>&sort=<%= sortOption %>&direction=<%= sortDirection %>&category=<%= categoryFilter %>&minPrice=<%= minPrice %>&maxPrice=<%= maxPrice %>" class="btn btn-secondary mr-2">Next</a>
-                        <% } %>
-                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                    <a class="page-link" href="/product?page=<%= i %>"><%= i %></a>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
@@ -96,4 +92,3 @@
         </span>
     </div>
 </body>
-    

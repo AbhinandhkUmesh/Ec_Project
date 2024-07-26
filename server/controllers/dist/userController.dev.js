@@ -34,7 +34,7 @@ var index = function index(req, res) {
         case 3:
           category = _context.sent;
           _context.next = 6;
-          return regeneratorRuntime.awrap(productModel.find({
+          return regeneratorRuntime.awrap(productModel.findOne({
             status: true
           }).limit(8));
 
@@ -427,7 +427,7 @@ var checkUserIn = function checkUserIn(req, res) {
 };
 
 var redirectUser = function redirectUser(req, res) {
-  var category, products, userId, wishlistProduct;
+  var category, products, userId;
   return regeneratorRuntime.async(function redirectUser$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
@@ -444,34 +444,27 @@ var redirectUser = function redirectUser(req, res) {
         case 6:
           products = _context6.sent;
           userId = req.session.userId;
-          _context6.next = 10;
-          return regeneratorRuntime.awrap(wishlist.findOne({
-            user: userId
-          }).populate('product'));
-
-        case 10:
-          wishlistProduct = _context6.sent;
           res.render("home", {
             isUser: req.session.isUser,
             products: products,
             category: category,
             wishlist: res.locals.wishlist
           });
-          _context6.next = 18;
+          _context6.next = 15;
           break;
 
-        case 14:
-          _context6.prev = 14;
+        case 11:
+          _context6.prev = 11;
           _context6.t0 = _context6["catch"](0);
           console.log("Error redirecting user: " + _context6.t0);
           res.render('error');
 
-        case 18:
+        case 15:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 14]]);
+  }, null, null, [[0, 11]]);
 };
 
 var forgotPassword = function forgotPassword(req, res) {

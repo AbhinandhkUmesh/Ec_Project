@@ -4,6 +4,8 @@ var productModel = require('../models/productmodel');
 
 var categoryModel = require('../models/categorymodel');
 
+var category = require('../models/categorymodel');
+
 var ObjectId = require('mongoose').Types.ObjectId; // Node.js route handlers
 
 
@@ -138,7 +140,7 @@ var NewProduct = function NewProduct(req, res) {
 };
 
 var AddProduct = function AddProduct(req, res) {
-  var _req$body, name, category, rate, description, offer, discountAmount, catOffer, properties, files, images, existingProduct, newProduct;
+  var _req$body, name, _category, rate, description, offer, discountAmount, catOffer, properties, files, images, existingProduct, newProduct;
 
   return regeneratorRuntime.async(function AddProduct$(_context4) {
     while (1) {
@@ -146,7 +148,7 @@ var AddProduct = function AddProduct(req, res) {
         case 0:
           _context4.prev = 0;
           console.log("Check 1 Adding product");
-          _req$body = req.body, name = _req$body.name, category = _req$body.category, rate = _req$body.rate, description = _req$body.description, offer = _req$body.offer, discountAmount = _req$body.discountAmount, catOffer = _req$body.catOffer, properties = _req$body.properties;
+          _req$body = req.body, name = _req$body.name, _category = _req$body.category, rate = _req$body.rate, description = _req$body.description, offer = _req$body.offer, discountAmount = _req$body.discountAmount, catOffer = _req$body.catOffer, properties = _req$body.properties;
           console.log("Received Body:", req.body.properties); // Handle file uploads
 
           if (!(!req.files || !req.files.length)) {
@@ -186,7 +188,7 @@ var AddProduct = function AddProduct(req, res) {
           // Create new product instance
           newProduct = new productModel({
             name: name,
-            category: category,
+            category: _category,
             rate: rate,
             description: description,
             image: images,
@@ -219,14 +221,14 @@ var AddProduct = function AddProduct(req, res) {
 };
 
 var ProductStatus = function ProductStatus(req, res) {
-  var Productid, _ProductStatus, updatedStatus;
+  var ProductId, _ProductStatus, updatedStatus;
 
   return regeneratorRuntime.async(function ProductStatus$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
           _context5.prev = 0;
-          Productid = req.params.id;
+          ProductId = req.params.id;
           _ProductStatus = req.query.status;
           console.log("ProductStatus check1");
 
@@ -238,7 +240,7 @@ var ProductStatus = function ProductStatus(req, res) {
           console.log("ProductStatus check2=========");
           _context5.next = 8;
           return regeneratorRuntime.awrap(productModel.updateOne({
-            _id: new ObjectId(Productid)
+            _id: new ObjectId(ProductId)
           }, {
             $set: {
               status: false
@@ -252,10 +254,10 @@ var ProductStatus = function ProductStatus(req, res) {
 
         case 11:
           console.log("ProductStatus check3 =========");
-          console.log(Productid);
+          console.log(ProductId);
           _context5.next = 15;
           return regeneratorRuntime.awrap(productModel.updateOne({
-            _id: new ObjectId(Productid)
+            _id: new ObjectId(ProductId)
           }, {
             $set: {
               status: true
@@ -536,11 +538,13 @@ var productImageDelete = function productImageDelete(req, res) {
 //         console.error('Error sorting products by price (high to low):', error);
 //         res.status(500).json({ message: 'Error sorting products by price (high to low).' });
 //     }
-// };
+// };// Define an asynchronous function to get products
 
+
+var ITEMS_PER_PAGE = 8; // Adjust as needed
 
 var getProducts = function getProducts(req, res) {
-  var page, sortOption, sortDirection, categoryFilter, minPrice, maxPrice, ITEMS_PER_PAGE, query, totalProducts, totalPages, sortCriteria, products, categories;
+  var page, sortOption, sortDirection, categoryFilter, minPrice, maxPrice, query, totalProducts, totalPages, sortCriteria, products, categories;
   return regeneratorRuntime.async(function getProducts$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
@@ -552,9 +556,6 @@ var getProducts = function getProducts(req, res) {
           categoryFilter = req.query.category || '';
           minPrice = +req.query.minPrice || 0;
           maxPrice = +req.query.maxPrice || Infinity;
-          ITEMS_PER_PAGE = 8; // Adjust this as per your requirement
-          // Build query
-
           query = {
             status: true,
             rate: {
@@ -565,32 +566,29 @@ var getProducts = function getProducts(req, res) {
 
           if (categoryFilter) {
             query.category = categoryFilter;
-          } // Count total products
+          }
 
-
-          _context9.next = 12;
+          _context9.next = 11;
           return regeneratorRuntime.awrap(productModel.countDocuments(query));
 
-        case 12:
+        case 11:
           totalProducts = _context9.sent;
-          totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Define sorting option
-
+          totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
           sortCriteria = {};
 
           if (sortOption === 'rate') {
             sortCriteria.rate = sortDirection;
-          } // Fetch products
+          }
 
-
-          _context9.next = 18;
+          _context9.next = 17;
           return regeneratorRuntime.awrap(productModel.find(query).populate('category').sort(sortCriteria).skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE));
 
-        case 18:
+        case 17:
           products = _context9.sent;
-          _context9.next = 21;
+          _context9.next = 20;
           return regeneratorRuntime.awrap(categoryModel.find({}));
 
-        case 21:
+        case 20:
           categories = _context9.sent;
           res.render('product', {
             isUser: req.session.isUser,
@@ -599,33 +597,28 @@ var getProducts = function getProducts(req, res) {
             currentPage: page,
             totalPages: totalPages,
             sortOption: sortOption,
-            // Pass sortOption
             sortDirection: sortDirection,
-            // Pass sortDirection
             categoryFilter: categoryFilter,
-            // Pass categoryFilter
             minPrice: minPrice,
-            // Pass minPrice
-            maxPrice: maxPrice // Pass maxPrice
-
+            maxPrice: maxPrice
           });
-          _context9.next = 29;
+          _context9.next = 28;
           break;
 
-        case 25:
-          _context9.prev = 25;
+        case 24:
+          _context9.prev = 24;
           _context9.t0 = _context9["catch"](0);
           console.error('Error fetching products:', _context9.t0);
           res.status(500).json({
             message: 'Error fetching products.'
           });
 
-        case 29:
+        case 28:
         case "end":
           return _context9.stop();
       }
     }
-  }, null, null, [[0, 25]]);
+  }, null, null, [[0, 24]]);
 };
 
 var productdetail = function productdetail(req, res) {
