@@ -98,7 +98,7 @@ var addressAddPage = function addressAddPage(req, res) {
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 8]]);
+  }, null, null, [[0, 8]]);  
 };
 
 var AddNewAddress = function AddNewAddress(req, res) {

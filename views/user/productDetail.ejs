@@ -158,14 +158,12 @@
 													class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 js-addcart-detail">
 													Add to cart
 												</button>
-												<% } else {%>
-													<button onclick="Login('Please Login to access this')"
+												<% } else { %>
+													<button onclick="login('Please Login to access this')"
 														class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04">
 														Add to cart
 													</button>
 													<% } %>
-
-
 										</div>
 									</div>
 
@@ -213,6 +211,7 @@
 								<div class="row">
 									<div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
 										<ul class="p-lr-28 p-lr-15-sm">
+											
 											<li class="flex-w flex-t p-b-7">
 												<span class="stext-102 cl3 size-205">
 													Weight
@@ -384,7 +383,7 @@
 				<!-- Slide2 -->
 				<div class="wrap-slick2">
 					<div class="slick2">
-						 <% for(let i=0; i < relatedProduct.length; i++) { %>
+						<% for(let i=0; i < relatedProduct.length; i++) { %>
 							<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
 								<!-- Block2 -->
 								<div class="block2">
@@ -420,7 +419,7 @@
 									</div>
 								</div>
 							</div>
-							<% } %>   
+							<% } %>
 					</div>
 				</div>
 			</div>
@@ -430,104 +429,124 @@
 		<!-- Footer -->
 		<%- include('./partials/footer.ejs') %>
 
-		<script>
-			document.addEventListener('DOMContentLoaded', () => {
-				const quantityInputs = document.querySelectorAll('.num-product');
-				quantityInputs.forEach(input => {
-					input.addEventListener('change', updateQuantity);
-				});
-		
-				const btnNumProductUp = document.querySelectorAll('.btn-num-product-up');
-				btnNumProductUp.forEach(button => {
-					button.addEventListener('click', () => {
-						const input = button.parentElement.querySelector('.num-product');
-						if (parseInt(input.value) < 5) {
-							input.value = parseInt(input.value) + 1;
-							updateQuantity({ target: input });
-						}
+			<script>
+				document.addEventListener('DOMContentLoaded', () => {
+					const quantityInputs = document.querySelectorAll('.num-product');
+					quantityInputs.forEach(input => {
+						input.addEventListener('change', updateQuantity);
+					});
+
+					const btnNumProductUp = document.querySelectorAll('.btn-num-product-up');
+					btnNumProductUp.forEach(button => {
+						button.addEventListener('click', () => {
+							const input = button.parentElement.querySelector('.num-product');
+							if (parseInt(input.value) < 5) {
+								input.value = parseInt(input.value) + 1;
+								updateQuantity({ target: input });
+							}
+						});
+					});
+
+					const btnNumProductDown = document.querySelectorAll('.btn-num-product-down');
+					btnNumProductDown.forEach(button => {
+						button.addEventListener('click', () => {
+							const input = button.parentElement.querySelector('.num-product');
+							if (parseInt(input.value) > 1) {
+								input.value = parseInt(input.value) - 1;
+								updateQuantity({ target: input });
+							}
+						});
 					});
 				});
-		
-				const btnNumProductDown = document.querySelectorAll('.btn-num-product-down');
-				btnNumProductDown.forEach(button => {
-					button.addEventListener('click', () => {
-						const input = button.parentElement.querySelector('.num-product');
-						if (parseInt(input.value) > 1) {
-							input.value = parseInt(input.value) - 1;
-							updateQuantity({ target: input });
-						}
-					});
-				});
-			});
-		
-			function updateQuantity(event) {
-				const input = event.target;
-				// Logic to handle quantity update if needed
-				console.log(`Quantity updated to: ${input.value}`);
-			}
-		
-			function getColor() {
-				const selectedColor = document.querySelector('input[name="color"]:checked');
-				return selectedColor ? selectedColor.value : null;
-			}
-		
-			function getSize() {
-				const selectedSize = document.querySelector('input[name="size"]:checked');
-				return selectedSize ? selectedSize.value : null;
-			}
-		
-			function getQuantity() {
-				const quantity = document.querySelector('input[name="quantity"]').value;
-				return quantity;
-			}
-		
-			async function addToCart(productId, color, size, quantity) {
-				if (!color || !size) {
-					propertyNotSelected('Please select Color and Size');
-					return;
+
+				function updateQuantity(event) {
+					const input = event.target;
+					// Logic to handle quantity update if needed
+					console.log(`Quantity updated to: ${input.value}`);
 				}
-		
-				try {
-					const response = await fetch(`/addToCart/${productId}`, {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify({
-							color,
-							size,
-							quantity
-						})
-					});
-		
-					const data = await response.json();
-					if (response.ok) {
-						displaySuccessMessage('Added', 'Product added to Cart!');
-						updateProductQuantityAndStock(productId, quantity);
-						console.log(data.message); // Log success message or handle as needed
-					} else {
-						console.error(data.message); // Log error message or handle as needed
+
+				function getColor() {
+					const selectedColor = document.querySelector('input[name="color"]:checked');
+					return selectedColor ? selectedColor.value : null;
+				}
+
+				function getSize() {
+					const selectedSize = document.querySelector('input[name="size"]:checked');
+					return selectedSize ? selectedSize.value : null;
+				}
+
+				function getQuantity() {
+					const quantity = document.querySelector('input[name="quantity"]').value;
+					return quantity;
+				}
+
+
+				async function addToCart(productId, color, size, quantity) {
+					if (!color || !size) {
+						propertyNotSelected('Please select Color and Size');
+						return;
 					}
-				} catch (error) {
-					console.error('Error adding product to cart:', error);
+
+					try {
+						const response = await fetch(`/addToCart/${productId}`, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({
+								color,
+								size,
+								quantity
+							})
+						});
+
+						const data = await response.json();
+						if (response.ok) {
+							displaySuccessMessage('Added', 'Product added to Cart!');
+							updateProductQuantityAndStock(productId, quantity);
+							console.log(data.message); // Log success message or handle as needed
+						} else {
+							console.error(data.message); // Log error message or handle as needed
+						}
+					} catch (error) {
+						console.error('Error adding product to cart:', error);
+					}
 				}
-			}
-		
-			function propertyNotSelected(message) {
-				alert(message);
-			}
-		
-			function displaySuccessMessage(title, message) {
-				// Display success message to the user (you can customize this as needed)
-				alert(`${title}: ${message}`);
-			}
-		
-			function updateProductQuantityAndStock(productId, quantity) {
-				// Logic to update the product quantity and stock
-				console.log(`Product ${productId} quantity updated to ${quantity}`);
-			}
-		</script>
-		
+
+				// function propertyNotSelected(message) {
+				// 	alert(message);
+				// }
+
+				// function displaySuccessMessage(title, message) {
+				// 	// Display success message to the user (you can customize this as needed)
+				// 	alert(`${title}: ${message}`);
+				// }
+
+				// function login(title) {
+				// 	console.log("clicked");
+				// 	Swal.fire({
+				// 		title: title,
+				// 		text: "You need to be logged in to add items to the cart.",
+				// 		icon: "warning",
+				// 		showCancelButton: true,
+				// 		confirmButtonColor: "#3085d6",
+				// 		cancelButtonColor: "#d33",
+				// 		confirmButtonText: "Login",
+				// 		cancelButtonText: "Cancel"
+				// 	}).then((result) => {
+				// 		if (result.isConfirmed) {
+				// 			// Redirect to login page or handle login
+				// 			window.location.href = '/login'; // Adjust the URL as needed
+				// 		}
+				// 	});
+				// }
+
+				function updateProductQuantityAndStock(productId, quantity) {
+					// Logic to update the product quantity and stock
+					console.log(`Product ${productId} quantity updated to ${quantity}`);
+				}
+			</script>
+
 
 
 	</body>

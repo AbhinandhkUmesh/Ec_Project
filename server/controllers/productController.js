@@ -289,122 +289,179 @@ const productImageDelete = async (req, res) => {
 }
 
 
+//=========== User Side =================
 
-// =====User Side========
-const ITEMS_PER_PAGE = 8; // Number of products per page
+// const product = async (req, res) => {
+//     try {
+//         const page = +req.query.page || 1; // Current page, default to 1 if not provided
+//         const totalProducts = await productModel.countDocuments({ status: true });
+//         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
 
-const product = async (req, res) => {
+//         const products = await productModel.find({ status: true })
+//             .populate('category')
+//             .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
+//             .limit(ITEMS_PER_PAGE); // Limit products per page
+
+//         const categories = await categoryModel.find({});
+
+//         res.render('product', {
+//             isUser: req.session.isUser, // Example session handling, adjust as per your setup
+//             products,
+//             categories,
+//             currentPage: page,
+//             totalPages,
+//             sort: '', // Default sort value
+//         });
+//     } catch (error) {
+//         console.error('Error fetching products:', error);
+//         res.status(500).json({ message: 'Error fetching products.' });
+//     }
+// };
+
+
+
+// const categoryProduct = async (req, res) => {
+//     try {
+//         const categoryId = req.params.categoryId;
+//         const page = +req.query.page || 1; // Current page, default to 1 if not provided
+//         const totalProducts = await productModel.countDocuments({ status: true, category: categoryId });
+//         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
+
+//         const products = await productModel.find({ status: true, category: categoryId })
+//             .populate('category')
+//             .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
+//             .limit(ITEMS_PER_PAGE); // Limit products per page
+
+//         const categories = await categoryModel.find({});
+
+//         res.render('product', {
+//             isUser: req.session.isUser, // Example session handling, adjust as per your setup
+//             products,
+//             categories,
+//             currentPage: page,
+//             totalPages,
+//             sort: '', // Default sort value
+//         });
+//     } catch (error) {
+//         console.error('Error fetching products by category:', error);
+//         res.status(500).json({ message: 'Error fetching products by category.' });
+//     }
+// };
+
+// const getProducts = async (req, res) => {
+//     try {
+
+//         const page = +req.query.page || 1; // Current page, default to 1 if not provided
+//         const totalProducts = await productModel.countDocuments({ status: true });
+//         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
+
+//         const searchTerm = req.query
+//         const products = await productModel.find({ status: true })
+//             .populate('category')
+//             .sort({ rate: 1 }) // Sort by price in ascending order
+//             .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
+//             .limit(ITEMS_PER_PAGE); // Limit products per page
+
+//         const categories = await categoryModel.find({});
+
+//         res.render('product', {
+//             isUser: req.session.isUser, // Example session handling, adjust as per your setup
+//             products,
+//             categories,
+//             currentPage: page,
+//             totalPages,
+//             sort: 'priceLowToHigh', // Sorting identifier
+//         });
+//     } catch (error) {
+//         console.error('Error sorting products by price (low to high):', error);
+//         res.status(500).json({ message: 'Error sorting products by price (low to high).' });
+//     }
+// };
+  
+// const sortProductByPriceHighToLow = async (req, res) => {
+//     try {
+//         const page = +req.query.page || 1; // Current page, default to 1 if not provided
+//         const totalProducts = await productModel.countDocuments({ status: true });
+//         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
+
+//         const products = await productModel.find({ status: true })
+//             .populate('category')
+//             .sort({ rate: -1 }) // Sort by price in descending order
+//             .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
+//             .limit(ITEMS_PER_PAGE); // Limit products per page
+
+//         const categories = await categoryModel.find({});
+
+//         res.render('product', {
+//             isUser: req.session.isUser, // Example session handling, adjust as per your setup
+//             products,
+//             categories,
+//             currentPage: page,
+//             totalPages,
+//             sort: 'priceHighToLow', // Sorting identifier
+//         });
+//     } catch (error) {
+//         console.error('Error sorting products by price (high to low):', error);
+//         res.status(500).json({ message: 'Error sorting products by price (high to low).' });
+//     }
+// };
+const getProducts = async (req, res) => {
     try {
-        const page = +req.query.page || 1; // Current page, default to 1 if not provided
-        const totalProducts = await productModel.countDocuments({ status: true });
-        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
+        const page = +req.query.page || 1;
+        const sortOption = req.query.sort || 'default';
+        const sortDirection = req.query.direction === 'desc' ? -1 : 1;
+        const categoryFilter = req.query.category || '';
+        const minPrice = +req.query.minPrice || 0;
+        const maxPrice = +req.query.maxPrice || Infinity;
+        const ITEMS_PER_PAGE = 8; // Adjust this as per your requirement
 
-        const products = await productModel.find({ status: true })
+        // Build query
+        const query = {
+            status: true,
+            rate: { $gte: minPrice, $lte: maxPrice },
+        };
+        
+        if (categoryFilter) {
+            query.category = categoryFilter;
+        }
+
+        // Count total products
+        const totalProducts = await productModel.countDocuments(query);
+        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+
+        // Define sorting option
+        const sortCriteria = {};
+        if (sortOption === 'rate') {
+            sortCriteria.rate = sortDirection;
+        }
+
+        // Fetch products
+        const products = await productModel.find(query)
             .populate('category')
-            .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
-            .limit(ITEMS_PER_PAGE); // Limit products per page
+            .sort(sortCriteria)
+            .skip((page - 1) * ITEMS_PER_PAGE)
+            .limit(ITEMS_PER_PAGE);
 
-        const category = await categoryModel.find({});
+        // Fetch categories
+        const categories = await categoryModel.find({});
 
         res.render('product', {
             isUser: req.session.isUser,
             products,
-            category,
+            categories,
             currentPage: page,
             totalPages,
-            sort: '', // Default sort value
+            sortOption,          // Pass sortOption
+            sortDirection,       // Pass sortDirection
+            categoryFilter,      // Pass categoryFilter
+            minPrice,            // Pass minPrice
+            maxPrice             // Pass maxPrice
         });
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ message: 'Error fetching products.' });
     }
 };
-
-const categoryProduct = async (req, res) => {
-    try {
-        const categoryId = req.params.categoryid;
-        const page = +req.query.page || 1; // Current page, default to 1 if not provided
-        const totalProducts = await productModel.countDocuments({ status: true, category: categoryId });
-        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
-
-        const products = await productModel.find({ status: true, category: categoryId })
-            .populate('category')
-            .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
-            .limit(ITEMS_PER_PAGE); // Limit products per page
-
-        const category = await categoryModel.find({});
-
-        res.render('product', {
-            isUser: req.session.isUser,
-            products,
-            category,
-            currentPage: page,
-            totalPages,
-            sort: '', // Default sort value
-        });
-    } catch (error) {
-        console.error('Error fetching products by category:', error);
-        res.status(500).json({ message: 'Error fetching products by category.' });
-    }
-};
-
-const sortProductByPriceLowToHigh = async (req, res) => {
-    try {
-        const page = +req.query.page || 1; // Current page, default to 1 if not provided
-        const totalProducts = await productModel.countDocuments({ status: true });
-        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
-
-        const products = await productModel.find({ status: true })
-            .populate('category')
-            .sort({ rate: 1 }) // Sort by price in ascending order
-            .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
-            .limit(ITEMS_PER_PAGE); // Limit products per page
-
-        const category = await categoryModel.find({});
-
-        res.render('product', {
-            isUser: req.session.isUser,
-            products,
-            category,
-            currentPage: page,
-            totalPages,
-            sort: 'priceLowToHigh', // Sorting identifier
-        });
-    } catch (error) {
-        console.error('Error sorting products by price (low to high):', error);
-        res.status(500).json({ message: 'Error sorting products by price (low to high).' });
-    }
-};
-
-const sortProductByPriceHighToLow = async (req, res) => {
-    try {
-        const page = +req.query.page || 1; // Current page, default to 1 if not provided
-        const totalProducts = await productModel.countDocuments({ status: true });
-        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE); // Calculate total pages
-
-        const products = await productModel.find({ status: true })
-            .populate('category')
-            .sort({ rate: -1 }) // Sort by price in descending order
-            .skip((page - 1) * ITEMS_PER_PAGE) // Skip products based on current page
-            .limit(ITEMS_PER_PAGE); // Limit products per page
-
-        const category = await categoryModel.find({});
-
-        res.render('product', {
-            isUser: req.session.isUser,
-            products,
-            category,
-            currentPage: page,
-            totalPages,
-            sort: 'priceHighToLow', // Sorting identifier
-        });
-    } catch (error) {
-        console.error('Error sorting products by price (high to low):', error);
-        res.status(500).json({ message: 'Error sorting products by price (high to low).' });
-    }
-};
-
-
 
 const productdetail = async (req, res) => {
     try {
@@ -461,11 +518,9 @@ module.exports = {
     productImageDelete,
 
     // User
-    product,
-    categoryProduct,
+    getProducts,
     productdetail,
-    sortProductByPriceLowToHigh ,
-    sortProductByPriceHighToLow ,
+
 };
 
 

@@ -163,7 +163,7 @@
 
     /*==================================================================
     [ +/- num product ]*/
-   
+
 
     /*==================================================================
     [ Rating ]*/
@@ -224,23 +224,23 @@
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Add to Wishlist button click handler
-    document.querySelectorAll('button.add-to-cart').forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            addToCart(productId);
-        });
-    });
+// document.addEventListener('DOMContentLoaded', function() {
+//     // Add to Wishlist button click handler
+//     document.querySelectorAll('button.add-to-cart').forEach(button => {
+//         button.addEventListener('click', function() {
+//             const productId = this.getAttribute('data-product-id');
+//             addToCart(productId);
+//         });
+//     });
 
-    // Remove from Wishlist button click handler
-    document.querySelectorAll('button.remove-from-wishlist').forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            removeFromWishlist(productId);
-        });
-    });
-});
+//     // Remove from Wishlist button click handler
+//     document.querySelectorAll('button.remove-from-wishlist').forEach(button => {
+//         button.addEventListener('click', function() {
+//             const productId = this.getAttribute('data-product-id');
+//             removeFromWishlist(productId);
+//         });
+//     });
+// });
 
 async function addToWishlist(productId) {
     try {
@@ -291,11 +291,25 @@ function toggleWishlistButton(productId, isInWishlist) {
     }
 }
 
-function displaySuccessMessage(title, message) {
-    swal({
+function displaySuccessMessage(title, text) {
+    Swal.fire({
         title: title,
-        text: message,
+        text: text,
         icon: 'success',
+        showClass: {
+            popup: `
+                animate__animated
+                animate__fadeInUp
+                animate__faster
+            `
+        },
+        hideClass: {
+            popup: `
+                animate__animated
+                animate__fadeOutDown
+                animate__faster
+            `
+        }
     });
 }
 
@@ -315,7 +329,7 @@ function displayErrorMessage(title, message) {
     });
 }
 
-function EmptyWishlistSidebar(title) {
+function EmptyWishlist(title) {
     Swal({
         title: title,
         showClass: {
@@ -337,45 +351,42 @@ function EmptyWishlistSidebar(title) {
 }
 
 function propertyNotSelected(title) {
-    Swal({
+    Swal.fire({
         title: title,
         showClass: {
             popup: `
-            animate__animated
-            animate__fadeInUp
-            animate__faster
-          `
+                animate__animated
+                animate__fadeInUp
+                animate__faster
+            `
         },
         hideClass: {
             popup: `
-            animate__animated
-            animate__fadeOutDown
-            animate__faster
-          `
+                animate__animated
+                animate__fadeOutDown
+                animate__faster
+            `
         }
     });
-
 }
 
-function Login(title) {
+function login(title) {
+    console.log("clicked");
     Swal.fire({
-        title:title,
-        text: "You won't be able to revert this!",
+        title: title,
+        text: "You need to be logged in to add items to the cart.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
+        confirmButtonText: "Login",
+        cancelButtonText: "Cancel"
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success"
-            });
+            // Redirect to login page or handle login
+            window.location.href = '/login'; // Adjust the URL as needed
         }
     });
-
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -401,5 +412,3 @@ async function updateWishlistSidebar() {
 
 
 // ======================================================
-
-

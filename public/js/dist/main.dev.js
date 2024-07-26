@@ -198,24 +198,23 @@
   $('.js-hide-modal1').on('click', function () {
     $('.js-modal1').removeClass('show-modal1');
   });
-})(jQuery);
+})(jQuery); // document.addEventListener('DOMContentLoaded', function() {
+//     // Add to Wishlist button click handler
+//     document.querySelectorAll('button.add-to-cart').forEach(button => {
+//         button.addEventListener('click', function() {
+//             const productId = this.getAttribute('data-product-id');
+//             addToCart(productId);
+//         });
+//     });
+//     // Remove from Wishlist button click handler
+//     document.querySelectorAll('button.remove-from-wishlist').forEach(button => {
+//         button.addEventListener('click', function() {
+//             const productId = this.getAttribute('data-product-id');
+//             removeFromWishlist(productId);
+//         });
+//     });
+// });
 
-document.addEventListener('DOMContentLoaded', function () {
-  // Add to Wishlist button click handler
-  document.querySelectorAll('button.add-to-cart').forEach(function (button) {
-    button.addEventListener('click', function () {
-      var productId = this.getAttribute('data-product-id');
-      addToCart(productId);
-    });
-  }); // Remove from Wishlist button click handler
-
-  document.querySelectorAll('button.remove-from-wishlist').forEach(function (button) {
-    button.addEventListener('click', function () {
-      var productId = this.getAttribute('data-product-id');
-      removeFromWishlist(productId);
-    });
-  });
-});
 
 function addToWishlist(productId) {
   var response;
@@ -314,11 +313,17 @@ function toggleWishlistButton(productId, isInWishlist) {
   }
 }
 
-function displaySuccessMessage(title, message) {
-  swal({
+function displaySuccessMessage(title, text) {
+  Swal.fire({
     title: title,
-    text: message,
-    icon: 'success'
+    text: text,
+    icon: 'success',
+    showClass: {
+      popup: "\n                animate__animated\n                animate__fadeInUp\n                animate__faster\n            "
+    },
+    hideClass: {
+      popup: "\n                animate__animated\n                animate__fadeOutDown\n                animate__faster\n            "
+    }
   });
 }
 
@@ -338,7 +343,7 @@ function displayErrorMessage(title, message) {
   });
 }
 
-function EmptyWishlistSidebar(title) {
+function EmptyWishlist(title) {
   Swal({
     title: title,
     showClass: {
@@ -351,33 +356,32 @@ function EmptyWishlistSidebar(title) {
 }
 
 function propertyNotSelected(title) {
-  Swal({
+  Swal.fire({
     title: title,
     showClass: {
-      popup: "\n            animate__animated\n            animate__fadeInUp\n            animate__faster\n          "
+      popup: "\n                animate__animated\n                animate__fadeInUp\n                animate__faster\n            "
     },
     hideClass: {
-      popup: "\n            animate__animated\n            animate__fadeOutDown\n            animate__faster\n          "
+      popup: "\n                animate__animated\n                animate__fadeOutDown\n                animate__faster\n            "
     }
   });
 }
 
-function Login(title) {
+function login(title) {
+  console.log("clicked");
   Swal.fire({
     title: title,
-    text: "You won't be able to revert this!",
+    text: "You need to be logged in to add items to the cart.",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!"
+    confirmButtonText: "Login",
+    cancelButtonText: "Cancel"
   }).then(function (result) {
     if (result.isConfirmed) {
-      Swal.fire({
-        title: "Deleted!",
-        text: "Your file has been deleted.",
-        icon: "success"
-      });
+      // Redirect to login page or handle login
+      window.location.href = '/login'; // Adjust the URL as needed
     }
   });
 }

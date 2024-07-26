@@ -57,14 +57,17 @@ router.get("/changePassword", userCheck.isUser, userController.changePassword); 
 router.post("/changePassword", userCheck.isUser, userController.changeVerify); // Change password action
 
 // Product listing page
-router.get("/product", userCheck.isUser, productController.product);
+router.get("/product", userCheck.isUser, productController.getProducts);
 
-// Products by category
-router.get("/product/category/:categoryid", userCheck.isUser, productController.categoryProduct);
+// // Products by category
+// router.get("/product/category/:categoryid", userCheck.isUser, productController.categoryProduct);
 
-// Sorting routes
-router.get('/product/sort/priceLowToHigh', userCheck.isUser, productController.sortProductByPriceLowToHigh); // Sort products by price (low to high)
-router.get('/product/sort/priceHighToLow', userCheck.isUser, productController.sortProductByPriceHighToLow); // Sort products by price (high to low)
+// // Sorting routes
+// router.get('/product/sort/priceLowToHigh', userCheck.isUser, productController.sortProductByPriceLowToHigh); // Sort products by price (low to high)
+// router.get('/product/sort/priceHighToLow', userCheck.isUser, productController.sortProductByPriceHighToLow); // Sort products by price (high to low)
+
+// //filtered by price range
+// router.get('/product/price-range/:min/:max', productController.filterByPriceRange);
 
 // Product detail route
 router.get("/product-detail/:id", productController.productdetail); // Product detail page
