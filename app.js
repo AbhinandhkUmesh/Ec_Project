@@ -6,6 +6,8 @@ const passport = require('passport')
 const userRoute = require('./server/router/userRoute')
 const adminRoute = require('./server/router/adminRoute')
 const authController = require('./server/controllers/authcontroller')
+
+
 const usermodel = require('./server/models/usermodel')
 const path = require('path')
 

@@ -48,6 +48,9 @@ router.get("/UserOrders", adminCheck.isAdmin, adminController.adminShowOrders);
 router.get('/orderEdit/:id', adminCheck.isAdmin,  adminController.adminShowOrderEditForm);
 router.post('/orderEditupdate/:id', adminCheck.isAdmin,  adminController.adminUpdateOrder);
 
+
+
+
 router.get("/logout", adminController.logout);
 
 module.exports = router

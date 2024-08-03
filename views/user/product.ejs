@@ -9,8 +9,10 @@
                         All Products
                     </a>
                     <% categories.forEach(category => { %>
+                      
                         <a href="/product?category=<%= category._id %>" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 category-btn">
-                            <%= category.name %>
+                            <%= category.category %>
+
                         </a>
                     <% }); %>
                 </div>
@@ -63,8 +65,9 @@
                     </div>
                 <% }); %>
             </div>
-
+            
             <!-- Load more -->
+  
             <div class="row justify-content-center mt-4">
                 <div class="col-auto">
                     <!-- Pagination -->

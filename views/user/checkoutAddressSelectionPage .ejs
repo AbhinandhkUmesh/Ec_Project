@@ -1,0 +1,91 @@
+<%- include('./partials/navbar.ejs') %>
+<br>
+<br>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Address Selection Column -->
+        <div class="col-lg-10 col-xl-8 m-b-50">
+            <div class="checkout bor10 p-lr-50 p-t-40 p-b-40 p-lr-15-sm">
+                <h3><a href="">1 Select Shipping Address</a></h3>
+                <hr>
+                <div class="col-lg-12">
+                    <% addresses.forEach((address, i) => { %>
+                        <div class=" d-flex align-items-center">
+                            <input type="radio" name="address" id="address<%= i %>" class="mr-2" value="<%= JSON.stringify(address) %>">
+                            <div class="d-inline-flex flex-column p-t-20">
+                                <label for="address<%= i %>" class="m-0">
+                                    <b><%= address.name %></b> - <%= address.streetAddress %>, <%= address.city %>, <%= address.state %>, <%= address.postalCode %>, <%= address.country %>
+                                </label>
+                                <span><a href="/addressEdit/<%= address._id %>" class="edit-link">Edit</a></span>
+                            </div>
+                        </div>
+                    <% }); %>
+                    <div class="col-12 text-center mt-3">
+                        <a href="/addressAdd" class="btn btn-primary">Add Address</a>
+                    </div>
+                </div>
+                <hr>
+                <h3><a href="">2 Payment Method</a></h3>
+                <hr>
+                <h3><a href="">3 Items and Delivery</a></h3>
+            </div>
+        </div>
+
+        <!-- Order Summary Column -->
+        <div class="col-lg-2 col-xl-4 m-b-50">
+            <div class="order-summary sticky-top bor10 p-lr-40 p-t-30 p-b-40 p-lr-15-sm bor14">
+                <h4 class="mtext-109 cl2 p-b-30">Order Summary</h4>
+                <div class="flex-w flex-t bor12 p-b-13">
+                    <div class="size-208">
+                        <span class="stext-110 cl2">Subtotal:</span>
+                    </div>
+                    <% if (cart) { %>
+                        <div class="size-209">
+                            <span class="mtext-110 cl2">$ <%= cart.cartTotal %></span>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Total -->
+                <div class="flex-w flex-t p-t-27 p-b-33">
+                    <div class="size-208">
+                        <span class="mtext-101 cl2">Total:</span>
+                    </div>
+                    <div class="size-209 p-t-1">
+                        <span id="cartotal" class="mtext-110 cl2">$ <%= cart.cartTotal %></span>
+                    </div>
+                </div>
+
+                <!-- Proceed Button -->
+                <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" onclick="goToPayment()">
+                    Use this address
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function goToPayment() {
+        const selectedAddress = document.querySelector('input[name="address"]:checked');
+        if (!selectedAddress) {
+            Swal.fire({
+                title: "Select Address",
+                text: "Please choose an address to proceed.",
+                icon: "warning",
+                showConfirmButton: false,
+                timer: 3000
+            });
+            return;
+        }
+        if (selectedAddress) {
+    
+             // For debugging purposes
+            window.location.href = `/proceedToCheckout/payment?address=${encodeURIComponent(selectedAddress.value)}`;
+        } else {
+            alert('Please select an address.');
+        }
+    }
+</script>
+
+<%- include('./partials/footer.ejs') %>

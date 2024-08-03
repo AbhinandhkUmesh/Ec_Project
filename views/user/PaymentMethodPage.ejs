@@ -1,0 +1,245 @@
+<%- include('./partials/navbar.ejs') %>
+
+    <!-- Payment Method Page -->
+    <div class="container mt-5">
+        <br>
+        <br>
+        <div class="row">
+            <!-- Address Selection Column -->
+            <div class="col-lg-10 col-xl-8 m-b-50">
+                <div class="checkout bor10 p-lr-50 p-t-40 p-b-40 p-lr-15-sm">
+                    <div class="DeliveryAddress d-flex justify-content-between align-items-start">
+                        <h3 class="mr-auto">1 Delivery Address</h3>
+                        <div class="address">
+                            <%= address %>
+                        </div>
+                        <div class="change-address ml-auto">
+                            <a href="/change-address">Change Address</a>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h3><a href="#">2 Payment Method</a></h3>
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <% if (cart.cartTotal < 10000) { %>
+                                    <label for="cod" class="d-flex mt-3 mb-3 align-items-center">
+                                        <input type="radio" id="cod" name="paymentMethod" value="COD" class="mr-2">
+                                        Cash on Delivery (COD)
+                                    </label>
+                                    <% } else { %>
+                                        <label for="cod" class="d-flex mt-3 mb-3 align-items-center">
+                                            <input type="radio" id="cod" name="paymentMethod" value="COD" class="mr-2"
+                                                disabled onclick="codNotWork()">
+                                            Cash on Delivery (COD)
+                                            <p class="text-danger mt-2">Cash on Delivery is not available for orders
+                                                over 10,000.</p>
+                                        </label>
+                                        <% } %>
+                                            <label for="RazorPay" class="d-flex mb-3 align-items-center">
+                                                <input type="radio" id="RazorPay" name="paymentMethod" value="RazorPay"
+                                                    class="mr-2">
+                                                RazorPay
+                                            </label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <hr>
+                    <h3><a href="#">3 Items and Delivery</a></h3>
+                </div>
+            </div>
+
+            <!-- Order Summary Column -->
+            <div class="col-lg-2 col-xl-4 m-b-50">
+                <div class="order-summary sticky-top bor10 p-lr-40 p-t-30 p-b-40 p-lr-15-sm bor14">
+                    <h4 class="mtext-109 cl2 p-b-30">Order Summary</h4>
+                    <div class="flex-w flex-t bor12 p-b-13">
+                        <div class="size-208">
+                            <span class="stext-110 cl2">Subtotal:</span>
+                        </div>
+                        <% if (cart) { %>
+                            <div class="size-209">
+                                <span class="mtext-110 cl2">$ <%= cart.cartTotal %></span>
+                            </div>
+                            <% } %>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="flex-w flex-t p-t-27 p-b-33">
+                        <div class="size-208">
+                            <span class="mtext-101 cl2">Total:</span>
+                        </div>
+                        <div class="size-209 p-t-1">
+                            <span id="cartotal" class="mtext-110 cl2">$ <%= cart.cartTotal %></span>
+                        </div>
+                    </div>
+
+                    <!-- Proceed Button -->
+                    <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer"
+                        onclick="placeOrder()">
+                        Place Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function codNotWork() {
+            alert("Cash on Delivery is not available for orders over $10,000.");
+        }
+
+        async function placeOrder() {
+            try {
+                console.log('Entered placeOrder');
+                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+
+                if (!selectedPaymentMethod) {
+                    return Swal.fire({
+                        title: "Select Payment Method",
+                        text: "Please select a payment method to proceed.",
+                        icon: "warning",
+                        showConfirmButton: true
+                    });
+                }
+
+                const paymentMethod = selectedPaymentMethod.value;
+                const urlParams = new URLSearchParams(window.location.search);
+                const address = urlParams.get('address');
+
+                let response;
+                if (paymentMethod === 'COD') {
+                    response = await fetch(`/placeOrder?address=${encodeURIComponent(address)}&payment=COD`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ address })
+                    });
+
+                    const data = await response.json();
+                    if (data.orderID) {
+                        return Swal.fire({
+                            text: "Order placed",
+                            icon: 'success',
+                            showCancelButton: false,
+                            showCloseButton: false,
+                            showConfirmButton: false,
+                            timer: 3000
+                        }).then(() => {
+                            window.location.href = `/orderConformation?id=${data.orderID}`;
+                        });
+                    }
+                } else if (paymentMethod === 'RazorPay') {
+                    const finalPrice = Math.round(parseFloat(document.getElementById('cartotal').innerText.replace('$', '').trim()) * 100);
+                    
+                    response = await fetch('/razorPay', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ finalPrice })
+                    });
+
+                    if (!response.ok) throw new Error('Failed to create order');
+
+                    const order = await response.json();
+                    console.log("////###order:",order)
+                    const options = {
+                        key: 'rzp_test_FvTtzr27lyciBF',
+                        amount: order.amount,
+                        currency: order.currency,
+                        order_id: order.id,
+                        name: 'AB STORE',
+                        description: 'Test Payment',
+                        handler: async function (response) {
+                            try {
+                                const verifyResponse = await fetch(`/verifyRazorpayPayment?address=${address}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_signature: response.razorpay_signature
+                                    })
+                                });
+
+                                if (!verifyResponse.ok) throw new Error('Error verifying payment');
+
+                                const data = await verifyResponse.json();
+                                if (data.result === 'success') {
+                                    Swal.fire({
+                                        text: "Order placed",
+                                        icon: 'success',
+                                        showCancelButton: false,
+                                        showCloseButton: false,
+                                        showConfirmButton: false,
+                                        timer: 3000
+                                    }).then(() => {
+                                        window.location.href = `/orderConformation?id=${data.orderId}`;
+                                    });
+                                } else {
+                                    console.error('Order placement failed');
+                                    Swal.fire({
+                                        text: "Order placement failed",
+                                        icon: 'error'
+                                    });
+                                }
+                            } catch (error) {
+                                console.error('Error verifying payment:', error);
+                                Swal.fire({
+                                    title: "Error",
+                                    text: "An unexpected error occurred. Please try again.",
+                                    icon: "error",
+                                    showConfirmButton: true
+                                });
+                            }
+                        },
+                        prefill: {
+                            name: 'Abhi',
+                            email: 'abhi@example.com',
+                            contact: '1234567890'
+                        },
+                        theme: {
+                            color: '#528FF0'
+                        }
+                    };
+
+                    const razorpayInstance = new Razorpay(options);
+
+                    razorpayInstance.on('payment.failed', function (response) {
+                        Swal.fire({
+                            title: 'Payment Failed',
+                            text: 'There was an error processing your payment. Redirecting to order history...',
+                            icon: 'error',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            willClose: () => {
+                                window.location.href = '/orderHistory';
+                            }
+                        });
+                    });
+                    razorpayInstance.open();
+                }
+            } catch (error) {
+                console.error('Error in placeOrder function:', error);
+                Swal.fire({
+                    title: "Error",
+                    text: "An unexpected error occurred. Please try again.",
+                    icon: "error",
+                    showConfirmButton: true
+                });
+            }
+        }
+
+
+
+    </script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <%- include('./partials/footer.ejs') %>

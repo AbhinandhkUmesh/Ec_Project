@@ -1,10 +1,4 @@
-﻿//[custom Javascript]
-//Project:	Aero - Responsive Bootstrap 4 Template
-//Version:  1.0
-//Last change:  15/12/2019
-//Primary use:	Aero - Responsive Bootstrap 4 Template
-//should be included in all pages. It controls some layout
-$(function() {
+﻿$(function() {
     "use strict";
     initSparkline();
     initC3Chart();    
@@ -16,21 +10,21 @@ function initSparkline() {
         $this.sparkline('html', $this.data());
     });
 }
+
 function initC3Chart() {
     setTimeout(function(){ 
         $(document).ready(function(){
             var chart = c3.generate({
-                bindto: '#chart-area-spline-sracked', // id of chart wrapper
+                bindto: '#chart-area-spline-sracked',
                 data: {
                     columns: [
-                        // each columns data
                         ['data1', 21, 8, 32, 18, 19, 17, 23, 12, 25, 37],
                         ['data2', 7, 11, 5, 7, 9, 16, 15, 23, 14, 55],
                         ['data3', 13, 7, 9, 15, 9, 31, 8, 27, 42, 18],
                     ],
-                    type: 'area-spline', // default type of chart
+                    type: 'area-spline',
                     groups: [
-                        [ 'data1', 'data2', 'data3']
+                        ['data1', 'data2', 'data3']
                     ],
                     colors: {
                         'data1': Aero.colors["gray"],
@@ -38,7 +32,6 @@ function initC3Chart() {
                         'data3': Aero.colors["lime"],
                     },
                     names: {
-                        // name of each serie
                         'data1': 'Revenue',
                         'data2': 'Returns',
                         'data3': 'Queries',
@@ -47,12 +40,11 @@ function initC3Chart() {
                 axis: {
                     x: {
                         type: 'category',
-                        // name of each category
                         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sept', 'Oct']
                     },
                 },
                 legend: {
-                    show: true, //hide legend
+                    show: true,
                 },
                 padding: {
                     bottom: 0,
@@ -62,31 +54,27 @@ function initC3Chart() {
         });    
         $(document).ready(function(){
             var chart = c3.generate({
-                bindto: '#chart-pie', // id of chart wrapper
+                bindto: '#chart-pie',
                 data: {
                     columns: [
-                        // each columns data
                         ['data1', 55],
                         ['data2', 25],
                         ['data3', 20],
                     ],
-                    type: 'pie', // default type of chart
+                    type: 'pie',
                     colors: {
                         'data1': Aero.colors["lime"],
                         'data2': Aero.colors["teal"],
                         'data3': Aero.colors["gray"],
                     },
                     names: {
-                        // name of each serie
                         'data1': 'Arizona',
                         'data2': 'Florida',
                         'data3': 'Texas',
                     }
                 },
-                axis: {
-                },
                 legend: {
-                    show: true, //hide legend
+                    show: true,
                 },
                 padding: {
                     bottom: 0,
@@ -96,20 +84,18 @@ function initC3Chart() {
         });
         $(document).ready(function(){
             var chart = c3.generate({
-                bindto: '#chart-area-step', // id of chart wrapper
+                bindto: '#chart-area-step',
                 data: {
                     columns: [
-                        // each columns data
                         ['data1', 11, 8, 15, 7, 11, 13],
                         ['data2', 7, 7, 5, 7, 9, 12]
                     ],
-                    type: 'area-step', // default type of chart
+                    type: 'area-step',
                     colors: {
                         'data1': Aero.colors["pink"],
                         'data2': Aero.colors["orange"]
                     },
                     names: {
-                        // name of each serie
                         'data1': 'Today',
                         'data2': 'month'
                     }
@@ -117,12 +103,11 @@ function initC3Chart() {
                 axis: {
                     x: {
                         type: 'category',
-                        // name of each category
                         categories: ['1', '2', '3', '4', '5', '6']
                     },
                 },
                 legend: {
-                    show: true, //hide legend
+                    show: true,
                 },
                 padding: {
                     bottom: 0,
@@ -130,8 +115,9 @@ function initC3Chart() {
                 },
             });
         });
-}, 500);
+    }, 500);
 }
+
 setTimeout(function(){
     "use strict";
     var mapData = {
@@ -151,47 +137,39 @@ setTimeout(function(){
             color: '#e6e6e6',
             regionStyle : {
                 initial : {
-                fill : '#f4f4f4'
+                    fill : '#f4f4f4'
                 }
             },
-
             markerStyle: {
-            initial: {
-                        r: 5,
-                        'fill': '#fff',
-                        'fill-opacity':1,
-                        'stroke': '#000',
-                        'stroke-width' : 1,
-                        'stroke-opacity': 0.4
-                    },
+                initial: {
+                    r: 5,
+                    'fill': '#fff',
+                    'fill-opacity':1,
+                    'stroke': '#000',
+                    'stroke-width' : 1,
+                    'stroke-opacity': 0.4
                 },
-        
+            },
             markers : [{
                 latLng : [21.00, 78.00],
                 name : 'INDIA : 350'
-            
             },
             {
                 latLng : [-33.00, 151.00],
                 name : 'Australia : 250'
-                
             },
             {
                 latLng : [36.77, -119.41],
                 name : 'USA : 250'
-            
             },
             {
                 latLng : [55.37, -3.41],
                 name : 'UK   : 250'
-            
             },
             {
                 latLng : [25.20, 55.27],
                 name : 'UAE : 250'
-            
             }],
-
             series: {
                 regions: [{
                     values: {
@@ -217,28 +195,23 @@ setTimeout(function(){
 }, 800);
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Get the selected theme preference from localStorage, default to 'light' if not set
     var selectedTheme = localStorage.getItem("selectedTheme") || "light";
 
-    // Apply the selected theme on page load
     applyTheme(selectedTheme);
 
-    // Function to apply the selected theme
     function applyTheme(theme) {
-      document.body.classList.remove("light-theme", "dark-theme"); // Remove existing theme classes
-      document.body.classList.add(theme + "-theme"); // Add the selected theme class
+        document.body.classList.remove("light-theme", "dark-theme");
+        document.body.classList.add(theme + "-theme");
 
-      // Update the radio input's checked state based on the selected theme
-      document.getElementById(theme + "theme").checked = true;
+        document.getElementById(theme + "theme").checked = true;
     }
 
-    // Event listener for theme radio buttons
     var themeRadios = document.querySelectorAll('input[name="radio1"]');
     themeRadios.forEach(function(radio) {
-      radio.addEventListener("change", function(event) {
-        var selectedRadio = event.target.value;
-        localStorage.setItem("selectedTheme", selectedRadio); // Store the selected theme in localStorage
-        applyTheme(selectedRadio); // Apply the selected theme
-      });
+        radio.addEventListener("change", function(event) {
+            var selectedRadio = event.target.value;
+            localStorage.setItem("selectedTheme", selectedRadio);
+            applyTheme(selectedRadio);
+        });
     });
-  });
+});

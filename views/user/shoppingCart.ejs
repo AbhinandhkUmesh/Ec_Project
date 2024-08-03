@@ -1,194 +1,213 @@
-<body class="animsition">
-    <!-- Header -->
-    <%- include('./partials/navbar.ejs') %>
+<!-- Header -->
+<%- include('./partials/navbar.ejs') %>
 
-    <!-- Shopping Cart -->
-    <form class="bg0 p-t-75 p-b-85">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-11 col-xl-8 m-lr-auto m-b-50">
-                    <div class="m-l-25 m-r--38 m-lr-0-xl">
-                        <div class="wrap-table-shopping-cart">
-                            <% if (cart.items && cart.items.length > 0) { %>
-                                <table class="table-shopping-cart table">
-                                    <thead>
-                                        <tr class="table_head text-center">
-                                            <th class="column-1">Product</th>
-                                            <th class="column-2 pl-2">Name</th>
-                                            <th class="column-3 pl-2">Price</th>
-                                            <th class="column-4 pl-2">Quantity</th>
-                                            <th class="column-5 pl-2">Total</th>
-                                            <th class="column-6 pl-2">Varient</th>
-        
-                                            <th class="column-8 pl-2">Stock</th>
-                                            <th class="column-9 pl-2">Remove</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% cart.items.forEach((item, i) => { %>
-                                            <tr class="table_row text-center">
-                                                <td class="column-1">
-                                                    <div class="how-itemcart1">
-                                                        <img src="/images/<%= item.productId.image[0] %>" alt="Product Image" style="width: 80px; height: auto;">
-                                                    </div>
-                                                </td>
-                                                <td class="column-2 pl-2"><a href="/product-detail/<%= item.productId._id %>"><%= item.productId.name %></a></td>
-                                                <td class="column-3 pl-2">$ <%= item.productId.rate %></td>
-                                                <td class="column-4 pl-2">
-                                                    <div class="wrap-num-product flex-w m-l-auto m-r-0">
-                                                        <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                                            <i class="fs-16 zmdi zmdi-minus"></i>
-                                                        </div>
-                                                        <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product<%= i %>" value="<%= item.quantity %>" data-product-id="<%= item.productId._id %>" data-index="<%= i %>" min="1">
-                                                        <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                                            <i class="fs-16 zmdi zmdi-plus"></i>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="column-5 pl-2 product-total" data-index="<%= i %>">$ <%= item.productTotal %></td>
-                                                <td class="column-6 pl-2"><%= item.color %> , <%= item.size %></td>
-                                                
-                                                <%
-                                                    const property = item.productId.properties.find(p => p.color === item.color && p.size === item.size);
-                                                    const stockQuantity = property ? property.stockQuantity : 0;
-                                                %>
-                                                <% if (stockQuantity > 0) { %>
-                                                    <td style="color: green;" class="column-8 stock-quantity" data-index="<%= i %>">In Stock</td>
-                                                <% } else { %>
-                                                    <td style="color: red;" class="column-8 stock-quantity" data-index="<%= i %>" >Out of Stock</td>
-                                                <% } %>
-                                                <td class="column-9 pl-2">
-                                                    <button type="button" class="delete-button btn btn-danger" data-product-id="<%= item.productId._id %>">Remove</button>
-                                                </td>
-                                            </tr>
-                                        <% }); %>
-                                    </tbody>
-                                </table>
-                            <% } else { %>
-                                <div class="text-center m-t-100">
-                                    <h2>Your Cart is Empty</h2>
-                                    <p>It looks like you haven't added anything to your cart yet.</p>
-                                    <a href="/product" class="btn btn-primary">Go to Shop</a>
-                                </div>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
-
+<!-- Shopping Cart -->
+<br>
+<br>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Cart Section -->
+        <div class="col-lg-8 col-xl-8 mb-5">
+            <div class="wrap-table-shopping-cart bor14">
                 <% if (cart.items && cart.items.length > 0) { %>
-                    <div class="col-sm-9 col-lg-6 col-xl-4 m-lr-auto m-b-50">
-                        <div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
-                            <h4 class="mtext-109 cl2 p-b-30">Cart Totals</h4>
-                            <div class="flex-w flex-t p-t-27 p-b-33">
-                                <div class="size-208">
-                                    <span class="mtext-101 cl2">Total:</span>
+                <table class="table-shopping-cart table">
+                    <thead>
+                        <tr class="table_head text-center">
+                            <th class="column-1">Product</th>
+                            <th class="column-2">Name</th>
+                            <th class="column-3">Price</th>
+                            <th class="column-4">Quantity</th>
+                            <th class="column-5">Total</th>
+                            <th class="column-6">Variant</th>
+                            <th class="column-8">Stock</th>
+                            <th class="column-9">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% cart.items.forEach((item, i) => { %>
+                        <tr class="table_row text-center">
+                            <td class="column-1">
+                                <div class="how-itemcart1">
+                                    <img src="/images/<%= item.productId.image[0] %>" alt="Product Image" style="width: 80px; height: auto;">
                                 </div>
-                                <div class="size-209">
-                                    <span class="mtext-110 cl2 cart-total">$ <%= cart.cartTotal %></span>
+                            </td>
+                            <td class="column-2">
+                                <a href="/product-detail/<%= item.productId._id %>"><%= item.productId.name %></a>
+                            </td>
+                            <td class="column-3">$ <%= item.productId.rate %></td>
+                            <td class="column-4">
+                                <div class="wrap-num-product flex-w m-l-auto m-r-0">
+                                    <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                        <i class="fs-16 zmdi zmdi-minus"></i>
+                                    </div>
+                                    <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product<%= i %>" value="<%= item.quantity %>" data-product-id="<%= item.productId._id %>" data-index="<%= i %>" min="1">
+                                    <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                        <i class="fs-16 zmdi zmdi-plus"></i>
+                                    </div>
                                 </div>
-                            </div>
-                            <a href="/proceedToCheckout" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">Proceed to Checkout</a>
-                        </div>
-                    </div>
+                            </td>
+                            <td class="column-5 product-total" data-index="<%= i %>">$ <%= item.productTotal %></td>
+                            <td class="column-6"><%= item.color %> , <%= item.size %></td>
+
+                            <%
+                                const property = item.productId.properties.find(p => p.color === item.color && p.size === item.size);
+                                const stockQuantity = property ? property.stockQuantity : 0;
+                            %>
+                            <% if (stockQuantity > 0) { %>
+                            <td style="color: green;" class="column-8 stock-quantity" data-index="<%= i %>">In Stock</td>
+                            <% } else { %>
+                            <td style="color: red;" class="column-8 stock-quantity" data-index="<%= i %>">Out of Stock</td>
+                            <% } %>
+                            <td class="column-9">
+                                <button type="button" class="delete-button btn btn-danger" data-product-id="<%= item.productId._id %>">Remove</button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+                <% } else { %>
+                <div class="text-center mt-5">
+                    <h2>Your Cart is Empty</h2>
+                    <p>It looks like you haven't added anything to your cart yet.</p>
+                    <a href="/product" class="btn btn-primary">Go to Shop</a>
+                </div>
                 <% } %>
             </div>
         </div>
-    </form>
 
-    <!-- Footer -->
-    <%- include('./partials/footer.ejs') %>
-
-    <!-- Back to top -->
-    <div class="btn-back-to-top" id="myBtn">
-        <span class="symbol-btn-back-to-top">
-            <i class="zmdi zmdi-chevron-up"></i>
-        </span>
+        <!-- Proceed to Checkout Section -->
+        <% if (cart.items && cart.items.length > 0) { %>
+        <div class="col-lg-4 col-xl-4">
+            <div class="checkout-summary sticky-top bor10 p-4 bor14">
+                <h4 class="mtext-109 cl2 pb-3">Cart Totals</h4>
+                <div class="d-flex justify-content-between pt-3 pb-4">
+                    <span class="mtext-101 cl2">Total:</span>
+                    <span class="mtext-110 cl2 cart-total">$ <%= cart.cartTotal %></span>
+                </div>
+                <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" onclick="proceedToCheckout()">Proceed To Checkout</button>
+              
+            </div>
+        </div>
+        <% } %>
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const quantityInputs = document.querySelectorAll('.num-product');
-            quantityInputs.forEach(input => {
-                input.addEventListener('change', updateQuantity);
-            });
+<!-- Footer -->
+<%- include('./partials/footer.ejs') %>
 
-            const btnNumProductUp = document.querySelectorAll('.btn-num-product-up');
-            btnNumProductUp.forEach(button => {
-                button.addEventListener('click', () => {
-                    const input = button.parentElement.querySelector('.num-product');
-                    if (parseInt(input.value) < 5) {
-                        input.value = parseInt(input.value) + 1;
-                        updateQuantity({ target: input });
-                    }
-                });
-            });
 
-            const btnNumProductDown = document.querySelectorAll('.btn-num-product-down');
-            btnNumProductDown.forEach(button => {
-                button.addEventListener('click', () => {
-                    const input = button.parentElement.querySelector('.num-product');
-                    if (parseInt(input.value) > 1) {
-                        input.value = parseInt(input.value) - 1;
-                        updateQuantity({ target: input });
-                    }
-                });
-            });
 
-            document.querySelectorAll('.delete-button').forEach(button => {
-                button.addEventListener('click', deleteProduct);
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const quantityInputs = document.querySelectorAll('.num-product');
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', updateQuantity);
+        });
+
+        const btnNumProductUp = document.querySelectorAll('.btn-num-product-up');
+        btnNumProductUp.forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.parentElement.querySelector('.num-product');
+                if (parseInt(input.value) < 5) {
+                    input.value = parseInt(input.value) + 1;
+                    updateQuantity({ target: input });
+                }
             });
         });
 
-        async function updateQuantity(event) {
-            const input = event.target;
-            const newQuantity = parseInt(input.value);
-            const productId = input.getAttribute('data-product-id');
-            const index = input.getAttribute('data-index');
-
-            try {
-                const response = await fetch(`/updateCartItem/${productId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ quantity: newQuantity })
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    const productTotalElement = document.querySelector(`.product-total[data-index="${index}"]`);
-                    const stockElement = document.querySelector(`.stock-quantity[data-index="${index}"]`);
-                    productTotalElement.textContent = `$ ${data.productTotal}`;
-                    stockElement.textContent = data.stockQuantity > 0 ? 'In Stock' : 'Out of Stock';
-                    document.querySelector('.cart-total').textContent = `$ ${data.cartTotal}`;
-                } else {
-                    console.error(data.message);
+        const btnNumProductDown = document.querySelectorAll('.btn-num-product-down');
+        btnNumProductDown.forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.parentElement.querySelector('.num-product');
+                if (parseInt(input.value) > 1) {
+                    input.value = parseInt(input.value) - 1;
+                    updateQuantity({ target: input });
                 }
-            } catch (error) {
-                console.error('Error updating product quantity:', error);
-            }
-        }
+            });
+        });
 
-        async function deleteProduct(event) {
-            const button = event.target;
-            const productId = button.getAttribute('data-product-id');
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', deleteProduct);
+        });
+    });
 
-            try {
-                const response = await fetch(`/deleteCartItem/${productId}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
-                });
+    async function updateQuantity(event) {
+        const input = event.target;
+        const newQuantity = parseInt(input.value);
+        const productId = input.getAttribute('data-product-id');
+        const index = input.getAttribute('data-index');
 
+        try {
+            const response = await fetch(`/updateCartItem/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity: newQuantity })
+            });
+
+            if (response.ok) {
                 const data = await response.json();
-                if (response.ok) {
-                    button.closest('.table_row').remove();
-                    document.querySelector('.cart-total').textContent = `$ ${data.cartTotal}`;
-                } else {
-                    console.error(data.message);
-                }
-            } catch (error) {
-                console.error('Error deleting product:', error);
+                const productTotalElement = document.querySelector(`.product-total[data-index="${index}"]`);
+                const stockElement = document.querySelector(`.stock-quantity[data-index="${index}"]`);
+                productTotalElement.textContent = `$ ${data.productTotal}`;
+                stockElement.textContent = data.stockQuantity > 0 ? 'In Stock' : 'Out of Stock';
+                document.querySelector('.cart-total').textContent = `$ ${data.cartTotal}`;
+            } else {
+                const errorData = await response.json();
+                console.error(errorData.message);
+                alert('Error updating quantity: ' + errorData.message);
             }
+        } catch (error) {
+            console.error('Error updating product quantity:', error);
+            alert('An error occurred while updating the product quantity.');
         }
-    </script>
+    }
+
+    async function deleteProduct(event) {
+        const button = event.target;
+        const productId = button.getAttribute('data-product-id');
+
+        try {
+            const response = await fetch(`/deleteCartItem/${productId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                button.closest('.table_row').remove();
+                document.querySelector('.cart-total').textContent = `$ ${data.cartTotal}`;
+                if (data.cartTotal === 0) {
+                    showEmptyCartMessage();
+                }
+            } else {
+                const errorData = await response.json();
+                console.error(errorData.message);
+                alert('Error deleting product: ' + errorData.message);
+            }
+        } catch (error) {
+            console.error('Error deleting product:', error);
+            alert('An error occurred while deleting the product.');
+        }
+    }
+
+    function showEmptyCartMessage() {
+        const cartSection = document.querySelector('.wrap-table-shopping-cart');
+        cartSection.innerHTML = `
+            <div class="text-center mt-5">
+                <h2>Your Cart is Empty</h2>
+                <p>It looks like you haven't added anything to your cart yet.</p>
+                <a href="/product" class="btn btn-primary">Go to Shop</a>
+            </div>
+        `;
+    }
+
+    function proceedToCheckout() {
+        // Redirect or handle checkout logic here
+        window.location.href = '/proceedToCheckout'; // example URL
+    }
+</script>
+
 </body>

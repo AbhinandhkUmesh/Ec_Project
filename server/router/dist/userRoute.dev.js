@@ -22,7 +22,10 @@ var multer = require("../middleware/multer");
 
 var wishlistMiddleware = require('../middleware/wishlistMiddleware');
 
-var wishlistController = require("../controllers/wishlistController"); // Middleware to fetch wishlist data for all routes
+var wishlistController = require("../controllers/wishlistController");
+
+var razorPay = require("../controllers/paymentController"); // const paymentController = require('../controllers/paymentController');
+// Middleware to fetch wishlist data for all routes
 
 
 router.use(wishlistMiddleware.fetchWishlist); // Public routes
@@ -117,10 +120,15 @@ router["delete"]('/deleteCartItem/:productId', userCheck.isUser, cartController.
 
 router.get('/proceedToCheckout', userCheck.isUser, checkOutController.checkOutPage); // Proceed to checkout page
 
-router.get('/OrderConformation?', userCheck.isUser, checkOutController.OrderConformation); // Order confirmation page
+router.get('/proceedToCheckout/payment', userCheck.isUser, checkOutController.payment);
+router.get('/orderConformation', userCheck.isUser, checkOutController.OrderConformation); // Order confirmation page
 
 router.post('/placeOrder', userCheck.isUser, checkOutController.placeOrder); // Place order action
-// Order routes
+
+router.post('/verifyRazorpayPayment', userCheck.isUser, checkOutController.verifyRazorpayPayment);
+router.get('/placeOrderFailed', userCheck.isUser, checkOutController.placeOrderFailed); // router.get('/placeOrderFailedToSuccess',userCheck.isUser,checkOutController.placeOrderFailedToSuccess)
+
+router.post('/razorPay', userCheck.isUser, razorPay.createRazorpayOrder); // Order routes
 
 router.get('/Order', userCheck.isUser, orderController.orders); // Orders page
 
@@ -129,5 +137,9 @@ router.post('/cancelOrder/:id', userCheck.isUser, orderController.orderCancel); 
 router.get('/orderDetails/:orderId', orderController.viewOrderDetails); // Order details page
 
 router.post('/returnOrder/:id', orderController.orderReturn); // Return order action
+// // Route to create a payment session
+// router.post('/create-session', authMiddleware, paymentController.createPaymentSession);
+// // Route to handle payment callback
+// router.post('/payment-callback', paymentController.handlePaymentCallback);
 
 module.exports = router; // Export the router

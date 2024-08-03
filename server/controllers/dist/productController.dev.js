@@ -6,6 +6,9 @@ var categoryModel = require('../models/categorymodel');
 
 var category = require('../models/categorymodel');
 
+var _require = require('console'),
+    log = _require.log;
+
 var ObjectId = require('mongoose').Types.ObjectId; // Node.js route handlers
 
 
@@ -544,7 +547,7 @@ var productImageDelete = function productImageDelete(req, res) {
 var ITEMS_PER_PAGE = 8; // Adjust as needed
 
 var getProducts = function getProducts(req, res) {
-  var page, sortOption, sortDirection, categoryFilter, minPrice, maxPrice, query, totalProducts, totalPages, sortCriteria, products, categories;
+  var page, sortOption, sortDirection, categoryFilter, minPrice, maxPrice, searchQuery, query, totalProducts, totalPages, sortCriteria, products, categories;
   return regeneratorRuntime.async(function getProducts$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
@@ -556,6 +559,7 @@ var getProducts = function getProducts(req, res) {
           categoryFilter = req.query.category || '';
           minPrice = +req.query.minPrice || 0;
           maxPrice = +req.query.maxPrice || Infinity;
+          searchQuery = req.query.search || '';
           query = {
             status: true,
             rate: {
@@ -568,10 +572,17 @@ var getProducts = function getProducts(req, res) {
             query.category = categoryFilter;
           }
 
-          _context9.next = 11;
+          if (searchQuery) {
+            query.name = {
+              $regex: searchQuery,
+              $options: 'i'
+            };
+          }
+
+          _context9.next = 13;
           return regeneratorRuntime.awrap(productModel.countDocuments(query));
 
-        case 11:
+        case 13:
           totalProducts = _context9.sent;
           totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
           sortCriteria = {};
@@ -580,15 +591,15 @@ var getProducts = function getProducts(req, res) {
             sortCriteria.rate = sortDirection;
           }
 
-          _context9.next = 17;
+          _context9.next = 19;
           return regeneratorRuntime.awrap(productModel.find(query).populate('category').sort(sortCriteria).skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE));
 
-        case 17:
+        case 19:
           products = _context9.sent;
-          _context9.next = 20;
+          _context9.next = 22;
           return regeneratorRuntime.awrap(categoryModel.find({}));
 
-        case 20:
+        case 22:
           categories = _context9.sent;
           res.render('product', {
             isUser: req.session.isUser,
@@ -600,25 +611,28 @@ var getProducts = function getProducts(req, res) {
             sortDirection: sortDirection,
             categoryFilter: categoryFilter,
             minPrice: minPrice,
-            maxPrice: maxPrice
+            maxPrice: maxPrice,
+            searchQuery: searchQuery,
+            // Make sure to pass searchQuery to the view
+            noResults: products.length === 0
           });
-          _context9.next = 28;
+          _context9.next = 30;
           break;
 
-        case 24:
-          _context9.prev = 24;
+        case 26:
+          _context9.prev = 26;
           _context9.t0 = _context9["catch"](0);
           console.error('Error fetching products:', _context9.t0);
           res.status(500).json({
             message: 'Error fetching products.'
           });
 
-        case 28:
+        case 30:
         case "end":
           return _context9.stop();
       }
     }
-  }, null, null, [[0, 24]]);
+  }, null, null, [[0, 26]]);
 };
 
 var productdetail = function productdetail(req, res) {

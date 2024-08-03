@@ -34,7 +34,7 @@ var index = function index(req, res) {
         case 3:
           category = _context.sent;
           _context.next = 6;
-          return regeneratorRuntime.awrap(productModel.findOne({
+          return regeneratorRuntime.awrap(productModel.find({
             status: true
           }).limit(8));
 
@@ -439,7 +439,9 @@ var redirectUser = function redirectUser(req, res) {
         case 3:
           category = _context6.sent;
           _context6.next = 6;
-          return regeneratorRuntime.awrap(productModel.find({}));
+          return regeneratorRuntime.awrap(productModel.find({
+            status: true
+          }).limit(8));
 
         case 6:
           products = _context6.sent;

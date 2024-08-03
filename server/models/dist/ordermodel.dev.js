@@ -37,11 +37,11 @@ var orderSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  //   paymentMethod: {
-  //     type: String,
-  //     required: true,
-  //     trim: true,
-  //   },
+  paymentMethod: {
+    type: String,
+    required: true,
+    trim: true
+  },
   date: {
     type: Date,
     trim: true
@@ -51,11 +51,10 @@ var orderSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  //   paymentStatus: {
-  //     type: String,
-  //     required: true,
-  //     trim: true,
-  //   },
+  paymentStatus: {
+    type: String,
+    trim: true
+  },
   //   return_Reason: {
   //     type: String,
   //     trim: true,

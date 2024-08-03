@@ -1,6 +1,7 @@
 const productModel = require('../models/productmodel');
 const categoryModel = require('../models/categorymodel');
 const category = require('../models/categorymodel');
+const { log } = require('console');
 
 
 const {
@@ -417,14 +418,19 @@ const getProducts = async (req, res) => {
         const categoryFilter = req.query.category || '';
         const minPrice = +req.query.minPrice || 0;
         const maxPrice = +req.query.maxPrice || Infinity;
+        const searchQuery = req.query.search || '';
 
         const query = {
             status: true,
-            rate: { $gte: minPrice, $lte: maxPrice }
+            rate: { $gte: minPrice, $lte: maxPrice },
         };
 
         if (categoryFilter) {
             query.category = categoryFilter;
+        }
+
+        if (searchQuery) {
+            query.name = { $regex: searchQuery, $options: 'i' };
         }
 
         const totalProducts = await productModel.countDocuments(query);
@@ -453,16 +459,15 @@ const getProducts = async (req, res) => {
             sortDirection,
             categoryFilter,
             minPrice,
-            maxPrice
+            maxPrice,
+            searchQuery, // Make sure to pass searchQuery to the view
+            noResults: products.length === 0 
         });
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ message: 'Error fetching products.' });
     }
 };
-
-
-
 
 
 
