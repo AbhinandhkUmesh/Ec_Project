@@ -2,9 +2,11 @@
 
 var Razorpay = require("razorpay");
 
+require("dotenv").config();
+
 var razorpayInstance = new Razorpay({
-  key_id: "rzp_test_FvTtzr27lyciBF",
-  key_secret: "ZHHwWxudD39Oq9gfu2KrDEcP" // Replace with your key secret
+  key_id: process.env.PAYMENT_GATEWAY_API_KEY,
+  key_secret: process.env.PAYMENT_GATEWAY_KEY_SECRET // Replace with your key secret
 
 });
 
