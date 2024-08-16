@@ -52,6 +52,26 @@ var product = new mongoose.Schema({
     "default": true,
     require: true
   },
+  ratingNumber: {
+    type: Number,
+    "default": 0
+  },
+  userRatings: [{
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: true
+    },
+    rating: {
+      type: Number
+    },
+    review: {
+      type: String
+    },
+    date: {
+      type: Date
+    }
+  }],
   offer: {
     type: Number
   },

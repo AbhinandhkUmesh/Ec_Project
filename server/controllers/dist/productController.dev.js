@@ -675,13 +675,21 @@ var productdetail = function productdetail(req, res) {
           return _context10.abrupt("return", res.status(404).send("Category not found or unavailable."));
 
         case 13:
-          _context10.next = 15;
+          // Format the dates for userRatings
+          productData.userRatings.forEach(function (rating) {
+            rating.formattedDate = new Date(rating.date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+          });
+          _context10.next = 16;
           return regeneratorRuntime.awrap(productModel.find({
             category: productData.category,
             status: true
           }).limit(4));
 
-        case 15:
+        case 16:
           relatedProduct = _context10.sent;
           res.render('productDetail', {
             isUser: req.session.isUser,
@@ -689,21 +697,21 @@ var productdetail = function productdetail(req, res) {
             category: categoryData,
             relatedProduct: relatedProduct
           });
-          _context10.next = 23;
+          _context10.next = 24;
           break;
 
-        case 19:
-          _context10.prev = 19;
+        case 20:
+          _context10.prev = 20;
           _context10.t0 = _context10["catch"](0);
           console.error("Error in productdetail:", _context10.t0);
           res.render('error'); // Render an error page if there's an error
 
-        case 23:
+        case 24:
         case "end":
           return _context10.stop();
       }
     }
-  }, null, null, [[0, 19]]);
+  }, null, null, [[0, 20]]);
 };
 
 module.exports = {

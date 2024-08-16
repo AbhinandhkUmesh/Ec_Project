@@ -229,7 +229,6 @@ module.exports = {
     addressPage,
     addressAddPage,
     AddNewAddress,
-
     addressEditPage,
     updateAddress,
     addressDelete

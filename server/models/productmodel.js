@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
-const { type } = require('os');
+const {
+  type
+} = require('os');
 const wishlist = require('./wishlistmodel');
 
 
-const product = new mongoose.Schema({ 
+const product = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -14,20 +16,18 @@ const product = new mongoose.Schema({
     ref: 'category',
     required: true,
   },
-  properties: [
-    {
-      color: {
-        type: String,
-      },
-      size: {
-        type: String,
-      },
-      
-      stockQuantity: {
-        type: Number,
-      },
+  properties: [{
+    color: {
+      type: String,
     },
-  ],
+    size: {
+      type: String,
+    },
+
+    stockQuantity: {
+      type: Number,
+    },
+  }, ],
   rate: {
     type: Number,
     required: true,
@@ -53,6 +53,30 @@ const product = new mongoose.Schema({
     default: true,
     require: true
   },
+
+
+  ratingNumber: {
+    type: Number,
+    default: 0
+  },
+  
+  userRatings: [{
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: true
+    },
+    rating: {
+      type: Number
+    },
+    review: {
+      type: String
+    },
+    date: {
+      type: Date
+    },
+  }, ],
+
   offer: {
     type: Number
   },

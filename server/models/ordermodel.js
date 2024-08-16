@@ -26,12 +26,6 @@ const orderSchema = new mongoose.Schema({
         trim: true,
     },
 
-    //   discount: {
-    //     type: Number,
-    //     required: true,
-    //     trim: true,
-    //   },
-
     address: {
         type: Object,
         required: true,

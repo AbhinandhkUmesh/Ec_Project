@@ -27,11 +27,6 @@ var orderSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  //   discount: {
-  //     type: Number,
-  //     required: true,
-  //     trim: true,
-  //   },
   address: {
     type: Object,
     required: true,

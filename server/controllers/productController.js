@@ -492,11 +492,19 @@ const productdetail = async (req, res) => {
             return res.status(404).send("Category not found or unavailable.");
         }
 
+
+         // Format the dates for userRatings
+         productData.userRatings.forEach(rating => {
+            rating.formattedDate = new Date(rating.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        });
+
         const relatedProduct = await productModel.find({
             category: productData.category,
             status: true
         }).limit(4);
      
+
+
 
         res.render('productDetail', {
             isUser: req.session.isUser,

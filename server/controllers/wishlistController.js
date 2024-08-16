@@ -58,6 +58,5 @@ const removeFromWishlist = async (req, res) => {
 
 module.exports = {
     addToWishlist,
-    removeFromWishlist,
-    
+    removeFromWishlist,   
 };
