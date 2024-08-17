@@ -1,4 +1,16 @@
+# Node modules
 node_modules/
 
+# Logs
+logs/
+*.log
+
+# Environment variables
 .env
-node_modules/
+
+# Build files
+dist/
+build/
+
+# Cache files
+.cache/
