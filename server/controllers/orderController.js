@@ -83,6 +83,7 @@ const orderCancel = async (req, res) => {
                 console.error(`Variant not found for product ${product._id}, color: ${item.color}, size: ${item.size}`);
             }
             console.log("==========After======", productVariant.stockQuantity)
+
         }
 
         // Update order status to 'Cancelled'
