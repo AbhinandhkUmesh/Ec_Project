@@ -1,7 +1,9 @@
 const productModel = require('../models/productmodel');
 const categoryModel = require('../models/categorymodel');
 const category = require('../models/categorymodel');
-const { log } = require('console');
+const {
+    log
+} = require('console');
 
 
 const {
@@ -125,7 +127,7 @@ const AddProduct = async (req, res) => {
         if (existingProduct) {
             return res.redirect('/admin/NewProduct?error=Product already exists, please update');
         }
- 
+
         // Parse properties from form
 
         // Create new product instance
@@ -138,7 +140,7 @@ const AddProduct = async (req, res) => {
             offer,
             discountAmount,
             catOffer,
-            properties// Save properties as an array of objects
+            properties // Save properties as an array of objects
         });
 
         // Save the new product
@@ -243,7 +245,7 @@ const productupdate = async (req, res) => {
                 offer: updateData.offer,
                 discountAmount: updateData.discountAmount,
                 catOffer: updateData.catOffer,
-                properties:updateData.properties
+                properties: updateData.properties
             }
         })
 
@@ -344,6 +346,7 @@ const productImageDelete = async (req, res) => {
 //             totalPages,
 //             sort: '', // Default sort value
 //         });
+
 //     } catch (error) {
 //         console.error('Error fetching products by category:', error);
 //         res.status(500).json({ message: 'Error fetching products by category.' });
@@ -379,7 +382,7 @@ const productImageDelete = async (req, res) => {
 //         res.status(500).json({ message: 'Error sorting products by price (low to high).' });
 //     }
 // };
-  
+
 // const sortProductByPriceHighToLow = async (req, res) => {
 //     try {
 //         const page = +req.query.page || 1; // Current page, default to 1 if not provided
@@ -420,9 +423,13 @@ const getProducts = async (req, res) => {
         const maxPrice = +req.query.maxPrice || Infinity;
         const searchQuery = req.query.search || '';
 
+
         const query = {
             status: true,
-            rate: { $gte: minPrice, $lte: maxPrice },
+            rate: {
+                $gte: minPrice,
+                $lte: maxPrice
+            },
         };
 
         if (categoryFilter) {
@@ -430,15 +437,32 @@ const getProducts = async (req, res) => {
         }
 
         if (searchQuery) {
-            query.name = { $regex: searchQuery, $options: 'i' };
+            query.name = {
+                $regex: searchQuery,
+                $options: 'i'
+            };
         }
 
         const totalProducts = await productModel.countDocuments(query);
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
         const sortCriteria = {};
-        if (sortOption === 'rate') {
-            sortCriteria.rate = sortDirection;
+        switch (sortOption) {
+            case 'popularity':
+                sortCriteria.popularity = sortDirection;
+                break;
+            case 'rating':
+                sortCriteria.rating = sortDirection;
+                break;
+            case 'rate':
+                sortCriteria.rate = sortDirection;
+                break;
+            case 'newness':
+                sortCriteria.createdAt = sortDirection;
+                break;
+            default:
+                sortCriteria.createdAt = -1; // Default sort by newest first
+                break;
         }
 
         const products = await productModel.find(query)
@@ -461,11 +485,13 @@ const getProducts = async (req, res) => {
             minPrice,
             maxPrice,
             searchQuery, // Make sure to pass searchQuery to the view
-            noResults: products.length === 0 
+            noResults: products.length === 0
         });
     } catch (error) {
         console.error('Error fetching products:', error);
-        res.status(500).json({ message: 'Error fetching products.' });
+        res.status(500).json({
+            message: 'Error fetching products.'
+        });
     }
 };
 
@@ -485,26 +511,25 @@ const productdetail = async (req, res) => {
             return res.status(404).send("Product not found or unavailable.");
         }
 
-
         const categoryData = await categoryModel.findById(productData.category);
         if (!categoryData) {
             // Category not found or unavailable
             return res.status(404).send("Category not found or unavailable.");
         }
 
-
-         // Format the dates for userRatings
-         productData.userRatings.forEach(rating => {
-            rating.formattedDate = new Date(rating.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        // Format the dates for userRatings
+        productData.userRatings.forEach(rating => {
+            rating.formattedDate = new Date(rating.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
         });
 
         const relatedProduct = await productModel.find({
             category: productData.category,
             status: true
         }).limit(4);
-     
-
-
 
         res.render('productDetail', {
             isUser: req.session.isUser,
@@ -515,17 +540,16 @@ const productdetail = async (req, res) => {
     } catch (error) {
         console.error("Error in productdetail:", error);
         res.render('error'); // Render an error page if there's an error
-
     }
 };
 
-             
 
+        
 
 module.exports = {
     // Admin
     adminProduct,
-    NewProduct,  
+    NewProduct,
     AddProduct,
     ProductStatus,
     getproductPage,
@@ -538,6 +562,3 @@ module.exports = {
     productdetail,
 
 };
-
-
- 

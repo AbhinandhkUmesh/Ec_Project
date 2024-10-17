@@ -9,6 +9,7 @@ const Razorpay = require('razorpay')
 const crypto = require('crypto');
 
 
+
 // RazorPay key id and key secret
 
 
@@ -147,7 +148,7 @@ const placeOrder = async (req, res) => {
         const newOrder = new orderModel({
             userID: userId,
             orderID: orderId,
-            user: req.session.userName,
+            customerName:address.name,
             products: products,
             totalOrderValue: totalOrderValue,
             address: JSON.parse(address),
@@ -236,10 +237,10 @@ const verifyRazorpayPayment = async (req, res) => {
         const newOrder = new orderModel({
             userID: userId,
             orderID: orderId,
-            user: req.session.userName,
+            customerName:JSON.parse(address.name),
             products: products,
             totalOrderValue: totalOrderValue,
-            address: parsedAddress, // Use parsed address
+            address:JSON.parse(address), // Use parsed address
             date: new Date(),
             paymentMethod: 'RazorPay',
             status: 'Pending',
@@ -293,7 +294,7 @@ const placeOrderFailed = async (req, res) => {
         const newOrder = new orderModel({
             userID: req.session.userId,
             orderID: orderId,
-            user: address.name,
+            customerName: JSON.parse(address.name),
             totalOrderValue: req.session.finalPrice || cartData.cartTotal,
             discount: discountPrice,
             address: address,

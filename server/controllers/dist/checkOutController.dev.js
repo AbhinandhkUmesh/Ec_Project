@@ -224,7 +224,7 @@ var placeOrder = function placeOrder(req, res) {
           newOrder = new orderModel({
             userID: userId,
             orderID: orderId,
-            user: req.session.userName,
+            customerName: address.name,
             products: products,
             totalOrderValue: totalOrderValue,
             address: JSON.parse(address),
@@ -375,10 +375,10 @@ var verifyRazorpayPayment = function verifyRazorpayPayment(req, res) {
           newOrder = new orderModel({
             userID: userId,
             orderID: orderId,
-            user: req.session.userName,
+            customerName: JSON.parse(address.name),
             products: products,
             totalOrderValue: totalOrderValue,
-            address: parsedAddress,
+            address: JSON.parse(address),
             // Use parsed address
             date: new Date(),
             paymentMethod: 'RazorPay',
@@ -479,7 +479,7 @@ var placeOrderFailed = function placeOrderFailed(req, res) {
           newOrder = new orderModel({
             userID: req.session.userId,
             orderID: orderId,
-            user: address.name,
+            customerName: JSON.parse(address.name),
             totalOrderValue: req.session.finalPrice || cartData.cartTotal,
             discount: discountPrice,
             address: address,

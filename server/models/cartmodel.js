@@ -35,7 +35,8 @@ const cartSchema = new mongoose.Schema({
         require: true
     }
 
-}, {
+}, 
+{
     strictPopulate: false
 })
 

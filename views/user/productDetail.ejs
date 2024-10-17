@@ -50,7 +50,7 @@
 							<%=console.log(products._id)%>
 								<div class="p-t-33">
 
-							
+
 									<!-- Color Selector using radio buttons -->
 									<div class="form-group mt-3">
 										<label for="colorSelect">Select Color:</label><br>
@@ -163,8 +163,8 @@
 														class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04">
 														Add to cart
 													</button>
-												<% } %>
-										</div> 
+													<% } %>
+										</div>
 									</div>
 
 								</div>
@@ -211,7 +211,7 @@
 								<div class="row">
 									<div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
 										<ul class="p-lr-28 p-lr-15-sm">
-											
+
 											<li class="flex-w flex-t p-b-7">
 												<span class="stext-102 cl3 size-205">
 													Weight
@@ -383,7 +383,7 @@
 				<!-- Slide2 -->
 				<div class="wrap-slick2">
 					<div class="slick2">
-						<% relatedProduct.forEach(product => { %>
+						<% relatedProduct.forEach(product=> { %>
 							<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
 								<!-- Block2 -->
 								<div class="block2">
@@ -541,6 +541,31 @@
 				// 	});
 				// }
 
+				function propertyNotSelected(title) {
+					Swal.fire({
+						title: title,
+						showClass: {
+							popup: 'animate__animated animate__fadeInUp animate__faster'
+						},
+						hideClass: {
+							popup: 'animate__animated animate__fadeOutDown animate__faster'
+						}
+					});
+				}
+
+				function displaySuccessMessage(title, text) {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'success',
+            showClass: {
+                popup: 'animate__animated animate__fadeInUp animate__faster'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutDown animate__faster'
+            }
+        });
+    }
 				function updateProductQuantityAndStock(productId, quantity) {
 					// Logic to update the product quantity and stock
 					console.log(`Product ${productId} quantity updated to ${quantity}`);

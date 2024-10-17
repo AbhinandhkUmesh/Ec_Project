@@ -16,8 +16,6 @@ var adminRoute = require('./server/router/adminRoute');
 
 var authController = require('./server/controllers/authcontroller');
 
-var usermodel = require('./server/models/usermodel');
-
 var path = require('path');
 
 require("dotenv").config(); // Middleware

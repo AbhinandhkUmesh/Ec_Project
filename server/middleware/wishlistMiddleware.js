@@ -16,13 +16,15 @@ const fetchWishlist = async (req, res, next) => {
         res.locals.wishlist = wishlistItems;
         res.locals.wishlistCount = wishlistCount;
 
-
         next(); // Proceed to next middleware or route handler
-    } catch (error) {
+    } catch (error) { dw
         console.error('Error fetching wishlist:', error);
         next(error); // Pass error to error handling middleware
     }
 };
+
+
+
 
 module.exports = {
  fetchWishlist

@@ -9,7 +9,9 @@ const productModel = require('../models/productmodel');
 const categoryModel = require('../models/categorymodel')
 const addressModel = require('../models/addressmodel');
 const wishlist = require('../models/wishlistmodel');
-const { ObjectId } = require('mongoose').Types;
+const {
+    ObjectId
+} = require('mongoose').Types;
 
 const index = async (req, res) => {
     try {
@@ -20,7 +22,7 @@ const index = async (req, res) => {
         console.log("=====", products)
         if (req.session.isUser) {
             res.redirect('/home');
-        
+
         } else {
             res.render('home', {
                 isUser: req.session.isUser,
@@ -29,7 +31,7 @@ const index = async (req, res) => {
                 category,
                 products
             });
-           
+
         }
     } catch (error) {
         console.log("Error rendering index page: " + error);
@@ -82,9 +84,9 @@ const signUp = async (req, res) => {
         // const numberRegex = /[0-9]/;
         // const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
 
-        if (email === '' && password === ''  ) {
+        if (email === '' && password === '') {
             return res.redirect('/signup?error=Enter your details');
-        } 
+        }
         // Check if email or username already exists
         const alreadyExist = await userModel.findOne({
             $or: [{
@@ -273,17 +275,14 @@ const redirectUser = async (req, res) => {
             status: true
         }).limit(8)
         const userId = req.session.userId
-        
-  
-     
-            res.render("home", {
-                isUser: req.session.isUser,
-                products: products,
-                category: category,
-                wishlist: res.locals.wishlist,
-            });
-      
-       
+        res.render("home", {
+            isUser: req.session.isUser,
+            products: products,
+            category: category,
+            wishlist: res.locals.wishlist,
+        });
+
+
     } catch (error) {
         console.log("Error redirecting user: " + error);
         res.render('error');
@@ -316,7 +315,7 @@ const forgotpasswordOtp = async (req, res) => {
 
         req.session.email = email
         req.session.OTP = otpData
-        
+
         res.redirect('/forgotOtpPage')
     } catch (error) {
         console.log("Error during user forgot password:", error);
@@ -345,7 +344,7 @@ const forgotPassVerifyOtp = async (req, res) => {
         const otp = req.body.otp
         console.log(otpdata, "=======", otp)
         if (otpdata === otp) {
-           res.redirect('/newpasswordPage')
+            res.redirect('/newpasswordPage')
         } else {
             res.render("ForgotOtpPage", {
                 email: req.session.email,
@@ -359,7 +358,7 @@ const forgotPassVerifyOtp = async (req, res) => {
     }
 };
 
-const newpasswordPage = async (req,res) => {
+const newpasswordPage = async (req, res) => {
     try {
         res.render('newpassword', {
             email: req.session.email,
@@ -397,7 +396,7 @@ const newPassCreate = async (req, res) => {
         const conformPassword = req.body.conformPassword
 
 
-        console.log(password,"=========",conformPassword)
+        console.log(password, "=========", conformPassword)
         const uppercaseRegex = /[A-Z]/;
         const lowercaseRegex = /[a-z]/;
         const numberRegex = /[0-9]/;
@@ -415,8 +414,7 @@ const newPassCreate = async (req, res) => {
             return res.redirect('/newpasswordPage?error=Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-
+         
         const updatedUserpassword = await userModel.updateOne({
             email: email
         }, {
@@ -424,7 +422,7 @@ const newPassCreate = async (req, res) => {
                 password: hashedPassword
             }
         })
-        console.log("++++++",updatedUserpassword)
+        console.log("++++++", updatedUserpassword)
         res.redirect('/login')
     } catch (error) {
         console.log("Error during user forgot password:", error);
@@ -608,10 +606,10 @@ const userImageDelete = async (req, res) => {
         res.redirect(`/userdetails`);
     } catch (error) {
         console.error("Error updating user:", error);
-        res.render('error');
+        res.render('error');      
     }
 }
-
+    
 
 module.exports = {
     index,

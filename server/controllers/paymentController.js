@@ -22,8 +22,6 @@ const createRazorpayOrder = async (req, res) => {
       receipt: "order_rcptid_11", // Unique identifier for the receipt
     };
 
-
-
     razorpayInstance.orders.create(options, (err, order) => {
       if (err) {
         console.error("Error creating Razorpay order:", err);

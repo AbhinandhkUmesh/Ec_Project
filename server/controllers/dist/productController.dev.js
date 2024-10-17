@@ -586,20 +586,41 @@ var getProducts = function getProducts(req, res) {
           totalProducts = _context9.sent;
           totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
           sortCriteria = {};
-
-          if (sortOption === 'rate') {
-            sortCriteria.rate = sortDirection;
-          }
-
-          _context9.next = 19;
-          return regeneratorRuntime.awrap(productModel.find(query).populate('category').sort(sortCriteria).skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE));
+          _context9.t0 = sortOption;
+          _context9.next = _context9.t0 === 'popularity' ? 19 : _context9.t0 === 'rating' ? 21 : _context9.t0 === 'rate' ? 23 : _context9.t0 === 'newness' ? 25 : 27;
+          break;
 
         case 19:
+          sortCriteria.popularity = sortDirection;
+          return _context9.abrupt("break", 29);
+
+        case 21:
+          sortCriteria.rating = sortDirection;
+          return _context9.abrupt("break", 29);
+
+        case 23:
+          sortCriteria.rate = sortDirection;
+          return _context9.abrupt("break", 29);
+
+        case 25:
+          sortCriteria.createdAt = sortDirection;
+          return _context9.abrupt("break", 29);
+
+        case 27:
+          sortCriteria.createdAt = -1; // Default sort by newest first
+
+          return _context9.abrupt("break", 29);
+
+        case 29:
+          _context9.next = 31;
+          return regeneratorRuntime.awrap(productModel.find(query).populate('category').sort(sortCriteria).skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE));
+
+        case 31:
           products = _context9.sent;
-          _context9.next = 22;
+          _context9.next = 34;
           return regeneratorRuntime.awrap(categoryModel.find({}));
 
-        case 22:
+        case 34:
           categories = _context9.sent;
           res.render('product', {
             isUser: req.session.isUser,
@@ -616,23 +637,23 @@ var getProducts = function getProducts(req, res) {
             // Make sure to pass searchQuery to the view
             noResults: products.length === 0
           });
-          _context9.next = 30;
+          _context9.next = 42;
           break;
 
-        case 26:
-          _context9.prev = 26;
-          _context9.t0 = _context9["catch"](0);
-          console.error('Error fetching products:', _context9.t0);
+        case 38:
+          _context9.prev = 38;
+          _context9.t1 = _context9["catch"](0);
+          console.error('Error fetching products:', _context9.t1);
           res.status(500).json({
             message: 'Error fetching products.'
           });
 
-        case 30:
+        case 42:
         case "end":
           return _context9.stop();
       }
     }
-  }, null, null, [[0, 26]]);
+  }, null, null, [[0, 38]]);
 };
 
 var productdetail = function productdetail(req, res) {

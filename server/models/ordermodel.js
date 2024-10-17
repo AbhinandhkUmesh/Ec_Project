@@ -6,20 +6,24 @@ const orderSchema = new mongoose.Schema({
         ref: 'UserData',
         required: true
     },
+
     orderID: {
         type: String,
         required: true,
         trim: true,
     },
-    user: {
+
+    customerName: {
         type: String,
         trim: true,
     },
+
     products: {
         type: Array,
         required: true,
         trim: true,
     },
+
     totalOrderValue: {
         type: Number,
         required: true,
@@ -48,6 +52,7 @@ const orderSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    
     paymentStatus: {
         type: String,
         trim: true,

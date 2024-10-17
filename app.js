@@ -8,7 +8,6 @@ const adminRoute = require('./server/router/adminRoute')
 const authController = require('./server/controllers/authcontroller')
 
 
-const usermodel = require('./server/models/usermodel')
 const path = require('path')
 
 require("dotenv").config();

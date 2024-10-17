@@ -13,7 +13,7 @@ var orderSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  user: {
+  customerName: {
     type: String,
     trim: true
   },

@@ -1,63 +1,89 @@
+<style>
+    /* Remove underline from all links in the filter panel */
+    .panel-filter a {
+        text-decoration: none;
+    }
+
+    /* Add hover effect if needed */
+    .panel-filter a:hover {
+        text-decoration: none;
+        /* Keeps it underlined on hover */
+    }
+</style>
+
 <!-- Filter -->
 <div class="panel-filter w-full p-t-10 dis-none" id="filterPanel">
     <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
+        <!-- Sort By -->
         <div class="filter-col1 p-r-15 p-b-27">
-            <div class="mtext-102 cl2 p-b-15">
-                Sort By
-            </div>
+            <div class="mtext-102 cl2 p-b-15">Sort By</div>
             <ul>
                 <li class="p-b-6">
-                    <a href="/product?<%= new URLSearchParams({sort: 'default', direction: 'asc', category: categoryFilter, minPrice: minPrice, maxPrice: maxPrice}).toString() %>" class="filter-link stext-106 trans-04">
-                        Default
-                    </a>
+                    <a href="/product?<%= new URLSearchParams({sort: 'default', direction: 'asc', category: categoryFilter, minPrice: minPrice, maxPrice: maxPrice}).toString() %>"
+                        class="filter-link stext-106 trans-04">Default</a>
                 </li>
                 <li class="p-b-6">
-                    <a href="/product?<%= new URLSearchParams({sort: 'rate', direction: 'asc', category: categoryFilter, minPrice: minPrice, maxPrice: maxPrice}).toString() %>" class="filter-link stext-106 trans-04">
-                        Price: Low to High
-                    </a>
+
+                    <a href="/product?<%= new URLSearchParams({sort: 'popularity', direction: 'asc', category: categoryFilter, minPrice: minPrice, maxPrice: maxPrice}).toString() %>"
+                        class="filter-link stext-106 trans-04">Sort by popularity</a>
                 </li>
                 <li class="p-b-6">
-                    <a href="/product?<%= new URLSearchParams({sort: 'rate', direction: 'desc', category: categoryFilter, minPrice: minPrice, maxPrice: maxPrice}).toString() %>" class="filter-link stext-106 trans-04">
-                        Price: High to Low
-                    </a>
+                    <a href="/product?<%= new URLSearchParams({sort: 'rating', direction: 'asc', category: categoryFilter, minPrice: minPrice, maxPrice: maxPrice}).toString() %>"
+                        class="filter-link stext-106 trans-04">Sort by average rating</a>
+                </li>
+                <li class="p-b-6">
+                    <a href="/product?<%= new URLSearchParams({sort: 'rate', direction: 'asc', category: categoryFilter, minPrice: minPrice, maxPrice: maxPrice}).toString() %>"
+                        class="filter-link stext-106 trans-04">Price: Low to High</a>
+                </li>
+                <li class="p-b-6">
+                    <a href="/product?<%= new URLSearchParams({sort: 'rate', direction: 'desc', category: categoryFilter, minPrice: minPrice, maxPrice: maxPrice}).toString() %>"
+                        class="filter-link stext-106 trans-04">Price: High to Low</a>
                 </li>
             </ul>
         </div>
 
+        <!-- Price Filter -->
         <div class="filter-col2 p-r-15 p-b-27">
-            <div class="mtext-102 cl2 p-b-15">
-                Price
-            </div>
-
+            <div class="mtext-102 cl2 p-b-15">Price</div>
             <ul>
                 <li class="p-b-6">
-                    <a href="/product?<%= new URLSearchParams({sort: sortOption, direction: sortDirection, category: categoryFilter, minPrice: 0, maxPrice: Infinity}).toString() %>" class="filter-link stext-106 trans-04 filter-link-active">
-                        All
-                    </a>
+                    <a href="/product?<%= new URLSearchParams({sort: sortOption, direction: sortDirection, category: categoryFilter, minPrice: 200, maxPrice: 500}).toString() %>"
+                        class="filter-link stext-106 trans-04">₹200.00 - ₹500.00</a>
                 </li>
-
                 <li class="p-b-6">
-                    <a href="/product?<%= new URLSearchParams({sort: sortOption, direction: sortDirection, category: categoryFilter, minPrice: 200, maxPrice: 500}).toString() %>" class="filter-link stext-106 trans-04">
-                        ₹200.00 - ₹500.00
-                    </a>
+                    <a href="/product?<%= new URLSearchParams({sort: sortOption, direction: sortDirection, category: categoryFilter, minPrice: 500, maxPrice: 1000}).toString() %>"
+                        class="filter-link stext-106 trans-04">₹500.00 - ₹1000.00</a>
                 </li>
-
                 <li class="p-b-6">
-                    <a href="/product?<%= new URLSearchParams({sort: sortOption, direction: sortDirection, category: categoryFilter, minPrice: 500, maxPrice: 1000}).toString() %>" class="filter-link stext-106 trans-04">
-                        ₹500.00 - ₹1000.00
-                    </a>
+                    <a href="/product?<%= new URLSearchParams({sort: sortOption, direction: sortDirection, category: categoryFilter, minPrice: 1000, maxPrice: 5000}).toString() %>"
+                        class="filter-link stext-106 trans-04">₹1000.00 - ₹5000.00</a>
                 </li>
-
                 <li class="p-b-6">
-                    <a href="/product?<%= new URLSearchParams({sort: sortOption, direction: sortDirection, category: categoryFilter, minPrice: 1000, maxPrice: 5000}).toString() %>" class="filter-link stext-106 trans-04">
-                        ₹1000.00 - ₹5000.00
-                    </a>
+                    <a href="/product?<%= new URLSearchParams({sort: sortOption, direction: sortDirection, category: categoryFilter, minPrice: 5000, maxPrice: Infinity}).toString() %>"
+                        class="filter-link stext-106 trans-04">₹5000.00+</a>
                 </li>
+            </ul>
+        </div>
 
+        <!-- Stock Filter -->
+        <div class="filter-col2 p-r-15 p-b-27">
+            <div class="mtext-102 cl2 p-b-15">FILTER BY STOCK</div>
+            <ul class="ps-list--filter">
                 <li class="p-b-6">
-                    <a href="/product?<%= new URLSearchParams({sort: sortOption, direction: sortDirection, category: categoryFilter, minPrice: 5000, maxPrice: Infinity}).toString() %>" class="filter-link stext-106 trans-04">
-                        ₹5000.00+
-                    </a>
+                    <a href="/product?<%= new URLSearchParams({sort: 'newness', direction: sortDirection, category: categoryFilter, minPrice: 5000, maxPrice: Infinity}).toString() %>"
+                        class="filter-link stext-106 trans-04">New</a>
+                </li>
+                <li class="p-b-6">
+                    <a href="/product?<%= new URLSearchParams({sort: 'saleOff', direction: sortDirection, category: categoryFilter, minPrice: 5000, maxPrice: Infinity}).toString() %>"
+                        class="filter-link stext-106 trans-04">Sale Off</a>
+                </li>
+                <li class="p-b-6">
+                    <a href="/product?<%= new URLSearchParams({sort: 'inStock', direction: sortDirection, category: categoryFilter, minPrice: 5000, maxPrice: Infinity}).toString() %>"
+                        class="filter-link stext-106 trans-04">In Stock Only</a>
+                </li>
+                <li class="p-b-6">
+                    <a href="/product?<%= new URLSearchParams({sort: 'OutofStock', direction: sortDirection, category: categoryFilter, minPrice: 5000, maxPrice: Infinity}).toString() %>"
+                        class="filter-link stext-106 trans-04">Out of Stock</a>
                 </li>
             </ul>
         </div>

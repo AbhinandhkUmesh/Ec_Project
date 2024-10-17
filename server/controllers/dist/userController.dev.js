@@ -210,7 +210,8 @@ var signUp = function signUp(req, res) {
 };
 
 var authOTP = function authOTP(req, res) {
-  var otp, storedOTP, hashedPassword, registeredUser;
+  var otp, storedOTP, _hashedPassword, registeredUser;
+
   return regeneratorRuntime.async(function authOTP$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
@@ -243,12 +244,12 @@ var authOTP = function authOTP(req, res) {
           return regeneratorRuntime.awrap(bcrypt.hash(req.session.userDetails.password, 10));
 
         case 12:
-          hashedPassword = _context3.sent;
-          console.log(hashedPassword); // Create a new user with hashed password
+          _hashedPassword = _context3.sent;
+          console.log(_hashedPassword); // Create a new user with hashed password
 
           registeredUser = new userModel({
             Username: req.session.userDetails.Username,
-            password: hashedPassword,
+            password: _hashedPassword,
             email: req.session.email,
             status: true,
             isAdmin: 0
@@ -654,7 +655,7 @@ var ForgotresendOTP = function ForgotresendOTP(req, res) {
 };
 
 var newPassCreate = function newPassCreate(req, res) {
-  var email, _password2, conformPassword, uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, hashedPassword, updatedUserpassword;
+  var email, _password2, conformPassword, uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, updatedUserpassword;
 
   return regeneratorRuntime.async(function newPassCreate$(_context12) {
     while (1) {
@@ -683,11 +684,6 @@ var newPassCreate = function newPassCreate(req, res) {
 
         case 12:
           _context12.next = 14;
-          return regeneratorRuntime.awrap(bcrypt.hash(_password2, 10));
-
-        case 14:
-          hashedPassword = _context12.sent;
-          _context12.next = 17;
           return regeneratorRuntime.awrap(userModel.updateOne({
             email: email
           }, {
@@ -696,25 +692,25 @@ var newPassCreate = function newPassCreate(req, res) {
             }
           }));
 
-        case 17:
+        case 14:
           updatedUserpassword = _context12.sent;
           console.log("++++++", updatedUserpassword);
           res.redirect('/login');
-          _context12.next = 26;
+          _context12.next = 23;
           break;
 
-        case 22:
-          _context12.prev = 22;
+        case 19:
+          _context12.prev = 19;
           _context12.t0 = _context12["catch"](0);
           console.log("Error during user forgot password:", _context12.t0);
           res.render('error');
 
-        case 26:
+        case 23:
         case "end":
           return _context12.stop();
       }
     }
-  }, null, null, [[0, 22]]);
+  }, null, null, [[0, 19]]);
 };
 
 var changePassword = function changePassword(req, res) {
@@ -741,7 +737,8 @@ var changePassword = function changePassword(req, res) {
 };
 
 var changeVerify = function changeVerify(req, res) {
-  var email, newPassword, oldPassword, uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, userProfile, verifyOldPassword, verifyNewPassword, hashedPassword;
+  var email, newPassword, oldPassword, uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, userProfile, verifyOldPassword, verifyNewPassword, _hashedPassword2;
+
   return regeneratorRuntime.async(function changeVerify$(_context14) {
     while (1) {
       switch (_context14.prev = _context14.next) {
@@ -810,13 +807,13 @@ var changeVerify = function changeVerify(req, res) {
           return regeneratorRuntime.awrap(bcrypt.hash(newPassword.toString(), 10));
 
         case 27:
-          hashedPassword = _context14.sent;
+          _hashedPassword2 = _context14.sent;
           _context14.next = 30;
           return regeneratorRuntime.awrap(userModel.updateOne({
             email: email
           }, {
             $set: {
-              password: hashedPassword
+              password: _hashedPassword2
             }
           }));
 

@@ -47,7 +47,7 @@
                     <% orders.forEach(order => { %>
                       <tr style="text-align:center;">
                         <td><%= order.orderID %></td>
-                        <td><%=order.user %></td>
+                        <td><%=order.customerName %></td>
                         <td>
                           <% order.products.forEach(product => { %>
                             <div><%= product.name %> (Qty: <%= product.quantity %>)</div>
