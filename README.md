@@ -1,4 +1,4 @@
-## Welcome to the E-Commerce Website project! This is an ongoing project aimed at creating a full-fledged e-commerce platform.
+## Welcome to the E-Commerce Website project! This is an project aimed at creating a full-fledged e-commerce platform.
 
 This project is an e-commerce website built using modern web technologies. The website includes features such as product listings, user authentication, shopping cart functionality, and order processing.
 
