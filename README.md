@@ -2,7 +2,7 @@
 
 This project is an e-commerce website built using modern web technologies. The website includes features such as product listings, user authentication, shopping cart functionality, and order processing.
 
-<a href="abstore.fashion/">Preview</a>
+<a href="https://abstore.fashion/">Preview</a>
 
 ## Features
 
